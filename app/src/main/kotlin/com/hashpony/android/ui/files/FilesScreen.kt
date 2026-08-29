@@ -118,9 +118,13 @@ fun FilesScreen(
                 modifier = Modifier.padding(top = 24.dp),
             )
         } else {
+            val doneFiles = files.filter { it.status == HashStatus.DONE && it.results.isNotEmpty() }
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(files, key = { it.uri.toString() }) { file ->
                     FileCard(file, compareInput, uppercase)
+                }
+                if (doneFiles.isNotEmpty()) {
+                    item(key = "export") { ExportPanel(doneFiles, uppercase) }
                 }
             }
         }
