@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Compose owns all in-app theming; this XML theme only styles the initial
+      window (splash background, transparent system bars for edge-to-edge).
+      Based on a platform theme so no Material Components dependency is needed.
+    -->
+    <style name="Theme.HashPony" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

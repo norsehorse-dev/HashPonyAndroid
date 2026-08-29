@@ -1,0 +1,19 @@
+HashPony
+Copyright (c) 2026 NorseHorse
+
+This product includes a pure-Kotlin port of xxHash (XXH32, XXH64, XXH3-64,
+XXH3-128), located under :core (com.hashpony.core.xxhash). It is adapted from
+the reference C implementation by Yann Collet:
+
+    xxHash — Extremely fast non-cryptographic hash algorithm
+    https://github.com/Cyan4973/xxHash
+    Copyright (c) Yann Collet
+    Licensed under the BSD 2-Clause License.
+
+The port is a clean-room transcription of the scalar reference paths, verified
+against the reference vectors produced by the official implementation. No
+third-party runtime dependency is introduced by it.
+
+Cryptographic digests outside the SHA-2 family are provided by The Legion of
+the Bouncy Castle (https://www.bouncycastle.org/), used under the Bouncy Castle
+license.
