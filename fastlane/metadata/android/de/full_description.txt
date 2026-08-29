@@ -1,0 +1,5 @@
+HashPony berechnet Prüfsummen von Dateien und Text, prüft Downloads anhand einer Prüfsummendatei und schreibt Prüfsummendateien, die Desktop-Tools akzeptieren.
+
+Null Berechtigungen und keine INTERNET-Berechtigung, sodass die Offline-Zusage im Manifest überprüfbar ist. Der gesamte Dateizugriff läuft über die System-Dateiauswahl und das Teilen-Menü.
+
+Unterstützt die SHA-2- und SHA-3-Familien, BLAKE2/BLAKE3, Keccak-256, die regionalen SM3 und Streebog, klassische Verfahren wie MD5/SHA-1 sowie die nicht-kryptografischen CRC32, Adler-32 und xxHash.

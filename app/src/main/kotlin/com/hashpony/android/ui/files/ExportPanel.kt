@@ -27,10 +27,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.Hex
+import com.hashpony.android.R
 import com.hashpony.core.sums.SumsOutputFormat
 import com.hashpony.core.sums.SumsWriter
 import com.hashpony.core.sums.WriteEntry
@@ -62,21 +64,24 @@ fun ExportPanel(doneFiles: List<FileUiState>, uppercase: Boolean, modifier: Modi
 
     fun buildText(): String = SumsWriter.emit(algorithm, entries(), format, uppercase)
 
+    val savedMsg = stringResource(R.string.export_saved)
+    val shareTitle = stringResource(R.string.export_share_title)
+
     val saver = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
         if (uri != null) {
             val text = pendingText
             scope.launch(Dispatchers.IO) {
                 runCatching { context.contentResolver.openOutputStream(uri)?.use { it.write(text.toByteArray()) } }
             }
-            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, savedMsg, Toast.LENGTH_SHORT).show()
         }
     }
 
     Card(modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp)) {
-            Text("Export sums file", fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.export_title), fontWeight = FontWeight.SemiBold)
 
-            Text("Algorithm", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
+            Text(stringResource(R.string.export_algorithm), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (id in availableAlgorithms) {
                     FilterChip(
@@ -90,12 +95,12 @@ fun ExportPanel(doneFiles: List<FileUiState>, uppercase: Boolean, modifier: Modi
                 }
             }
 
-            Text("Format", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
+            Text(stringResource(R.string.export_format), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = format == SumsOutputFormat.GNU, onClick = { format = SumsOutputFormat.GNU }, label = { Text("GNU") })
-                FilterChip(selected = format == SumsOutputFormat.BSD_TAG, onClick = { format = SumsOutputFormat.BSD_TAG }, label = { Text("BSD tag") })
+                FilterChip(selected = format == SumsOutputFormat.GNU, onClick = { format = SumsOutputFormat.GNU }, label = { Text(stringResource(R.string.format_gnu)) })
+                FilterChip(selected = format == SumsOutputFormat.BSD_TAG, onClick = { format = SumsOutputFormat.BSD_TAG }, label = { Text(stringResource(R.string.format_bsd)) })
                 if (algorithm == "crc32") {
-                    FilterChip(selected = format == SumsOutputFormat.SFV, onClick = { format = SumsOutputFormat.SFV }, label = { Text("SFV") })
+                    FilterChip(selected = format == SumsOutputFormat.SFV, onClick = { format = SumsOutputFormat.SFV }, label = { Text(stringResource(R.string.format_sfv)) })
                 }
             }
 
@@ -104,15 +109,15 @@ fun ExportPanel(doneFiles: List<FileUiState>, uppercase: Boolean, modifier: Modi
                 Button(onClick = {
                     pendingText = buildText()
                     saver.launch(SumsWriter.suggestedFileName(algorithm, format, entries()))
-                }) { Text("Save") }
+                }) { Text(stringResource(R.string.action_save)) }
                 Spacer(Modifier.width(8.dp))
                 OutlinedButton(onClick = {
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, buildText())
                     }
-                    context.startActivity(Intent.createChooser(send, "Share sums file"))
-                }) { Text("Share") }
+                    context.startActivity(Intent.createChooser(send, shareTitle))
+                }) { Text(stringResource(R.string.action_share)) }
             }
         }
     }

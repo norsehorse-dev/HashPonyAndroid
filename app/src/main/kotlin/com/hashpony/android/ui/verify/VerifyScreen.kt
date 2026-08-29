@@ -37,9 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.hashpony.android.R
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.sums.EntryResult
 import com.hashpony.core.sums.EntryStatus
@@ -81,7 +82,7 @@ fun VerifyScreen(
                 onOpenSums = { sumsPicker.launch(arrayOf("*/*")) },
             )
 
-            is VerifyUiState.Working -> CenterProgress("Working…")
+            is VerifyUiState.Working -> CenterProgress(stringResource(R.string.verify_working))
 
             is VerifyUiState.FolderScanned -> FolderScannedView(
                 folderName = s.folderName,
@@ -92,20 +93,20 @@ fun VerifyScreen(
             )
 
             is VerifyUiState.AwaitingFolder -> Column {
-                Text("Opened ${s.sumsName}", fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.verify_opened, s.sumsName), fontWeight = FontWeight.SemiBold)
                 Text(
-                    "Now grant the folder that contains the files it lists, so they can be checked.",
+                    stringResource(R.string.verify_need_folder),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp),
                 )
-                Button(onClick = { folderForSumsPicker.launch(null) }) { Text("Choose folder") }
+                Button(onClick = { folderForSumsPicker.launch(null) }) { Text(stringResource(R.string.verify_choose_folder)) }
             }
 
             is VerifyUiState.NeedAlgorithm -> Column {
-                Text("Which algorithm produced ${s.sumsName}?", fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.verify_need_algo_title, s.sumsName), fontWeight = FontWeight.SemiBold)
                 Text(
-                    "The file doesn't say, and its hash length matches several enabled algorithms.",
+                    stringResource(R.string.verify_need_algo_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -121,9 +122,9 @@ fun VerifyScreen(
             is VerifyUiState.Results -> ResultsView(s.sumsName, s.report, onReset = viewModel::reset)
 
             is VerifyUiState.Failed -> Column {
-                Text("Couldn't verify", fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.verify_failed_title), fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.error)
                 Text(s.message, modifier = Modifier.padding(vertical = 8.dp))
-                TextButton(onClick = viewModel::reset) { Text("Start over") }
+                TextButton(onClick = viewModel::reset) { Text(stringResource(R.string.verify_start_over)) }
             }
         }
     }
@@ -132,17 +133,16 @@ fun VerifyScreen(
 @Composable
 private fun IdleView(onPickFolder: () -> Unit, onOpenSums: () -> Unit) {
     Column {
-        Text("Verify a download", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.verify_title), style = MaterialTheme.typography.headlineSmall)
         Text(
-            "Point HashPony at the folder you downloaded into. It finds the sums file " +
-                "(SHA256SUMS, .sha256, .sfv, and the rest) and checks every entry.",
+            stringResource(R.string.verify_intro),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(vertical = 12.dp),
         )
-        Button(onClick = onPickFolder, modifier = Modifier.fillMaxWidth()) { Text("Pick a folder") }
+        Button(onClick = onPickFolder, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.verify_pick_folder)) }
         Spacer(Modifier.height(8.dp))
-        OutlinedButton(onClick = onOpenSums, modifier = Modifier.fillMaxWidth()) { Text("Open a sums file") }
+        OutlinedButton(onClick = onOpenSums, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.verify_open_sums)) }
     }
 }
 
@@ -157,18 +157,18 @@ private fun FolderScannedView(
     Column {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(folderName, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-            TextButton(onClick = onReset) { Text("Change") }
+            TextButton(onClick = onReset) { Text(stringResource(R.string.verify_change)) }
         }
         if (candidates.isEmpty()) {
             Text(
-                "No sums file found in that folder. You can open one directly.",
+                stringResource(R.string.verify_no_sums),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
-            OutlinedButton(onClick = onOpenSums) { Text("Open a sums file") }
+            OutlinedButton(onClick = onOpenSums) { Text(stringResource(R.string.verify_open_sums)) }
         } else {
-            Text("Tap a sums file to verify:", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 8.dp))
+            Text(stringResource(R.string.verify_tap_hint), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 8.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(candidates, key = { it.relativePath }) { c ->
                     Card(Modifier.fillMaxWidth().clickable { onVerify(c) }) {
@@ -190,9 +190,9 @@ private fun ResultsView(sumsName: String, report: VerifyReport, onReset: () -> U
     Column {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(sumsName, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-            TextButton(onClick = onReset) { Text("Done") }
+            TextButton(onClick = onReset) { Text(stringResource(R.string.verify_done)) }
         }
-        val verdict = if (report.allOk) "All ${report.ok} files verified" else "Verification found issues"
+        val verdict = if (report.allOk) stringResource(R.string.verify_all_ok, report.ok) else stringResource(R.string.verify_issues)
         Text(
             verdict,
             fontWeight = FontWeight.Bold,
@@ -200,9 +200,9 @@ private fun ResultsView(sumsName: String, report: VerifyReport, onReset: () -> U
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(top = 4.dp),
         )
+        val counts = stringResource(R.string.verify_counts, report.ok, report.failed, report.missing)
         Text(
-            "OK ${report.ok}  ·  Failed ${report.failed}  ·  Missing ${report.missing}" +
-                if (report.unsupported > 0) "  ·  Unknown ${report.unsupported}" else "",
+            if (report.unsupported > 0) stringResource(R.string.verify_counts_unknown, counts, report.unsupported) else counts,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 8.dp),
@@ -224,7 +224,7 @@ private fun EntryRow(entry: EntryResult) {
                 StatusIcon(entry.status)
                 Spacer(Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(entry.name.ifEmpty { "(unnamed)" }, fontWeight = FontWeight.Medium)
+                    Text(entry.name.ifEmpty { stringResource(R.string.entry_unnamed) }, fontWeight = FontWeight.Medium)
                     Text(
                         "${statusLabel(entry.status)}${entry.algorithmName?.let { "  ·  $it" } ?: ""}",
                         style = MaterialTheme.typography.bodySmall,
@@ -234,10 +234,10 @@ private fun EntryRow(entry: EntryResult) {
             }
             if (expanded) {
                 Spacer(Modifier.height(8.dp))
-                Text("expected", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.verify_expected), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                 Text(entry.expectedHex, style = MonoDigestStyle)
                 if (entry.computedHex != null) {
-                    Text("computed", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 4.dp))
+                    Text(stringResource(R.string.verify_computed), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 4.dp))
                     Text(
                         entry.computedHex,
                         style = MonoDigestStyle,
@@ -254,10 +254,10 @@ private fun StatusIcon(status: EntryStatus) {
     val red = MaterialTheme.colorScheme.error
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     when (status) {
-        EntryStatus.OK -> Icon(Icons.Filled.CheckCircle, contentDescription = "OK", tint = MatchGreen)
-        EntryStatus.FAILED -> Icon(Icons.Filled.Cancel, contentDescription = "Failed", tint = red)
-        EntryStatus.MISSING -> Icon(Icons.Filled.RemoveCircleOutline, contentDescription = "Missing", tint = muted)
-        EntryStatus.UNSUPPORTED -> Icon(Icons.Filled.HelpOutline, contentDescription = "Unknown", tint = muted)
+        EntryStatus.OK -> Icon(Icons.Filled.CheckCircle, contentDescription = stringResource(R.string.entry_ok), tint = MatchGreen)
+        EntryStatus.FAILED -> Icon(Icons.Filled.Cancel, contentDescription = stringResource(R.string.entry_failed), tint = red)
+        EntryStatus.MISSING -> Icon(Icons.Filled.RemoveCircleOutline, contentDescription = stringResource(R.string.entry_missing), tint = muted)
+        EntryStatus.UNSUPPORTED -> Icon(Icons.Filled.HelpOutline, contentDescription = stringResource(R.string.entry_unknown), tint = muted)
     }
 }
 
@@ -269,9 +269,10 @@ private fun CenterProgress(label: String) {
     }
 }
 
+@Composable
 private fun statusLabel(status: EntryStatus): String = when (status) {
-    EntryStatus.OK -> "OK"
-    EntryStatus.FAILED -> "FAILED"
-    EntryStatus.MISSING -> "MISSING"
-    EntryStatus.UNSUPPORTED -> "algorithm unknown"
+    EntryStatus.OK -> stringResource(R.string.entry_ok)
+    EntryStatus.FAILED -> stringResource(R.string.entry_failed)
+    EntryStatus.MISSING -> stringResource(R.string.entry_missing)
+    EntryStatus.UNSUPPORTED -> stringResource(R.string.entry_unknown)
 }

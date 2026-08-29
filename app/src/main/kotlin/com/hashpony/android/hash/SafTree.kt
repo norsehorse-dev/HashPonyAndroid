@@ -8,6 +8,9 @@ import java.io.InputStream
 /** A sums file discovered inside a granted tree. */
 data class SumsCandidate(val name: String, val relativePath: String, val uri: Uri)
 
+/** Any file discovered inside a granted tree, with its tree-relative path. */
+data class IndexedFile(val relativePath: String, val uri: Uri, val size: Long?)
+
 /**
  * An index of a granted document tree (from OpenDocumentTree), mapping each
  * file's tree-relative path to its document Uri. Built with one batched
@@ -17,6 +20,7 @@ data class SumsCandidate(val name: String, val relativePath: String, val uri: Ur
 class SafTree private constructor(
     private val resolver: ContentResolver,
     private val filesByPath: Map<String, Uri>,
+    val files: List<IndexedFile>,
     val sumsCandidates: List<SumsCandidate>,
 ) {
     /** Open a referenced file by its `subdir/name` relative path, or basename fallback. */
@@ -32,11 +36,11 @@ class SafTree private constructor(
         private const val MAX_NODES = 50_000
 
         fun index(resolver: ContentResolver, treeUri: Uri): SafTree {
-            val files = LinkedHashMap<String, Uri>()
+            val byPath = LinkedHashMap<String, Uri>()
+            val all = ArrayList<IndexedFile>()
             val candidates = ArrayList<SumsCandidate>()
             val rootId = DocumentsContract.getTreeDocumentId(treeUri)
 
-            // BFS over directories; prefix is the tree-relative path of the parent.
             val queue = ArrayDeque<Pair<String, String>>() // (documentId, prefix)
             queue.add(rootId to "")
             var nodes = 0
@@ -50,12 +54,14 @@ class SafTree private constructor(
                         DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                         DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                         DocumentsContract.Document.COLUMN_MIME_TYPE,
+                        DocumentsContract.Document.COLUMN_SIZE,
                     ),
                     null, null, null,
                 )?.use { c ->
                     val idIdx = c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                     val nameIdx = c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
                     val mimeIdx = c.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+                    val sizeIdx = c.getColumnIndex(DocumentsContract.Document.COLUMN_SIZE)
                     while (c.moveToNext()) {
                         nodes++
                         val docId = c.getString(idIdx)
@@ -66,13 +72,15 @@ class SafTree private constructor(
                             queue.add(docId to "$path/")
                         } else {
                             val uri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
-                            files[path] = uri
+                            val size = if (sizeIdx >= 0 && !c.isNull(sizeIdx)) c.getLong(sizeIdx) else null
+                            byPath[path] = uri
+                            all.add(IndexedFile(path, uri, size))
                             if (isSumsFileName(name)) candidates.add(SumsCandidate(name, path, uri))
                         }
                     }
                 }
             }
-            return SafTree(resolver, files, candidates)
+            return SafTree(resolver, byPath, all, candidates)
         }
 
         /** Recognise the common sums-file names, case-insensitively. */

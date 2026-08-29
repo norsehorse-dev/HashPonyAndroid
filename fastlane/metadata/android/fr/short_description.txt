@@ -1,0 +1,1 @@
+Calculer et vérifier des sommes de contrôle. Zéro autorisation, hors ligne.

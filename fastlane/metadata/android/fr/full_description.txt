@@ -1,0 +1,5 @@
+HashPony calcule les empreintes de fichiers et de texte, vérifie les téléchargements à l'aide d'un fichier de sommes et écrit des fichiers de sommes acceptés par les outils de bureau.
+
+Zéro autorisation et aucune autorisation INTERNET, si bien que la promesse « hors ligne » est vérifiable dans le manifeste. Tout accès aux fichiers passe par le sélecteur du système et le menu de partage.
+
+Prend en charge les familles SHA-2 et SHA-3, BLAKE2/BLAKE3, Keccak-256, les SM3 et Streebog régionaux, des algorithmes hérités comme MD5/SHA-1, ainsi que les CRC32, Adler-32 et xxHash non cryptographiques.

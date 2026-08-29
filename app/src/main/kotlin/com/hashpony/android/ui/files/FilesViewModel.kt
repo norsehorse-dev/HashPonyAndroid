@@ -1,6 +1,7 @@
 package com.hashpony.android.ui.files
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +9,10 @@ import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashCancelledException
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.hash.FileHashing
+import com.hashpony.android.hash.SafTree
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -75,6 +78,21 @@ class FilesViewModel(app: Application) : AndroidViewModel(app) {
         if (added.isEmpty()) return
         _files.value = _files.value + added
         rehashAll()
+    }
+
+    /** Recursively add every file in a granted folder, hashed with relative paths. */
+    fun addFolder(treeUri: Uri) {
+        runCatching { resolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+        viewModelScope.launch {
+            val tree = withContext(Dispatchers.IO) { SafTree.index(resolver, treeUri) }
+            val existing = _files.value.map { it.uri }.toSet()
+            val added = tree.files
+                .filter { it.uri !in existing }
+                .map { FileUiState(it.uri, it.relativePath, it.size, HashStatus.PENDING, null, emptyMap()) }
+            if (added.isEmpty()) return@launch
+            _files.value = _files.value + added
+            rehashAll()
+        }
     }
 
     fun clear() {

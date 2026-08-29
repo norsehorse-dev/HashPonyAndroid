@@ -22,7 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hashpony.android.R
 import com.hashpony.android.ui.files.FilesScreen
 import com.hashpony.android.ui.files.FilesViewModel
 import com.hashpony.android.ui.settings.SettingsScreen
@@ -32,11 +35,11 @@ import com.hashpony.android.ui.text.TextViewModel
 import com.hashpony.android.ui.verify.VerifyScreen
 import com.hashpony.android.ui.verify.VerifyViewModel
 
-private enum class Tab(val label: String, val icon: ImageVector) {
-    FILES("Files", Icons.Filled.Description),
-    TEXT("Text", Icons.Filled.TextFields),
-    VERIFY("Verify", Icons.Filled.FactCheck),
-    SETTINGS("Settings", Icons.Filled.Settings),
+private enum class Tab(@StringRes val labelRes: Int, val icon: ImageVector) {
+    FILES(R.string.tab_files, Icons.Filled.Description),
+    TEXT(R.string.tab_text, Icons.Filled.TextFields),
+    VERIFY(R.string.tab_verify, Icons.Filled.FactCheck),
+    SETTINGS(R.string.tab_settings, Icons.Filled.Settings),
 }
 
 @Composable
@@ -66,11 +69,12 @@ fun HashPonyApp(
         bottomBar = {
             NavigationBar {
                 Tab.entries.forEachIndexed { index, tab ->
+                    val label = stringResource(tab.labelRes)
                     NavigationBarItem(
                         selected = selected == index,
                         onClick = { selected = index },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        icon = { Icon(tab.icon, contentDescription = label) },
+                        label = { Text(label) },
                     )
                 }
             }

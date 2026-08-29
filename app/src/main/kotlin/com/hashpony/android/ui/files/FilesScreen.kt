@@ -45,12 +45,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashComparer
 import com.hashpony.core.Hex
+import com.hashpony.android.R
 import com.hashpony.android.ui.formatSize
 import com.hashpony.android.ui.theme.MatchGreen
 import com.hashpony.android.ui.theme.MonoDigestStyle
@@ -73,6 +75,9 @@ fun FilesScreen(
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
         viewModel.addUris(uris)
     }
+    val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) viewModel.addFolder(uri)
+    }
 
     androidx.compose.runtime.LaunchedEffect(sharedUris) {
         if (sharedUris.isNotEmpty()) {
@@ -85,13 +90,13 @@ fun FilesScreen(
         androidx.compose.material3.OutlinedTextField(
             value = compareInput,
             onValueChange = viewModel::setCompareInput,
-            label = { Text("Compare against an expected value") },
+            label = { Text(stringResource(R.string.files_compare_label)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 if (compareInput.isNotEmpty()) {
                     IconButton(onClick = { viewModel.setCompareInput("") }) {
-                        Icon(Icons.Filled.Clear, contentDescription = "Clear")
+                        Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.action_clear))
                     }
                 }
             },
@@ -102,17 +107,19 @@ fun FilesScreen(
 
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedButton(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Pick files") }
+            OutlinedButton(onClick = { picker.launch(arrayOf("*/*")) }) { Text(stringResource(R.string.files_pick)) }
+            Spacer(Modifier.width(8.dp))
+            OutlinedButton(onClick = { folderPicker.launch(null) }) { Text(stringResource(R.string.files_pick_folder)) }
             if (files.isNotEmpty()) {
                 Spacer(Modifier.width(8.dp))
-                TextButton(onClick = viewModel::clear) { Text("Clear") }
+                TextButton(onClick = viewModel::clear) { Text(stringResource(R.string.action_clear)) }
             }
         }
 
         Spacer(Modifier.height(8.dp))
         if (files.isEmpty()) {
             Text(
-                "Pick files, or share them to HashPony from any app.",
+                stringResource(R.string.files_empty),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 24.dp),
@@ -120,6 +127,9 @@ fun FilesScreen(
         } else {
             val doneFiles = files.filter { it.status == HashStatus.DONE && it.results.isNotEmpty() }
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (doneFiles.size == 2) {
+                    item(key = "vs") { FileVsFileVerdict(doneFiles[0], doneFiles[1]) }
+                }
                 items(files, key = { it.uri.toString() }) { file ->
                     FileCard(file, compareInput, uppercase)
                 }
@@ -127,6 +137,29 @@ fun FilesScreen(
                     item(key = "export") { ExportPanel(doneFiles, uppercase) }
                 }
             }
+        }
+    }
+}
+
+/** Identical/differ verdict for exactly two hashed files, over their shared digests. */
+@Composable
+private fun FileVsFileVerdict(a: FileUiState, b: FileUiState) {
+    val shared = a.results.keys intersect b.results.keys
+    if (shared.isEmpty()) return
+    val identical = shared.all { a.results.getValue(it).contentEquals(b.results.getValue(it)) }
+    val algoName = AlgorithmRegistry.byId(shared.first())?.displayName ?: shared.first()
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp)) {
+            Text(
+                stringResource(if (identical) R.string.file_vs_identical else R.string.file_vs_differ),
+                fontWeight = FontWeight.Bold,
+                color = if (identical) MatchGreen else MaterialTheme.colorScheme.error,
+            )
+            Text(
+                stringResource(R.string.file_vs_sub, a.name, b.name, algoName),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -172,9 +205,9 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
                 Spacer(Modifier.height(8.dp))
                 val matchNames = outcome.matched.mapNotNull { AlgorithmRegistry.byId(it)?.displayName }
                 if (outcome.isMatch) {
-                    Text("Match — ${matchNames.joinToString(", ")}", color = MatchGreen, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.files_match, matchNames.joinToString(", ")), color = MatchGreen, fontWeight = FontWeight.Bold)
                 } else {
-                    Text("No match", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.files_no_match), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -193,10 +226,11 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
     }
 }
 
+@Composable
 private fun statusLabel(file: FileUiState): String = when (file.status) {
-    HashStatus.PENDING -> "Queued"
-    HashStatus.HASHING -> "Hashing…"
-    HashStatus.DONE -> "Done"
-    HashStatus.ERROR -> file.error ?: "Failed"
-    HashStatus.CANCELLED -> "Cancelled"
+    HashStatus.PENDING -> stringResource(R.string.status_queued)
+    HashStatus.HASHING -> stringResource(R.string.status_hashing)
+    HashStatus.DONE -> stringResource(R.string.status_done)
+    HashStatus.ERROR -> file.error ?: stringResource(R.string.status_failed)
+    HashStatus.CANCELLED -> stringResource(R.string.status_cancelled)
 }

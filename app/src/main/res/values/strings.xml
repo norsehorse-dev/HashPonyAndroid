@@ -1,4 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HashPony</string>
+
+    <!-- Tabs -->
+    <string name="tab_files">Files</string>
+    <string name="tab_text">Text</string>
+    <string name="tab_verify">Verify</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Common -->
+    <string name="action_clear">Clear</string>
+    <string name="action_share">Share</string>
+    <string name="action_save">Save</string>
+    <string name="action_back">Back</string>
+
+    <!-- Files -->
+    <string name="files_compare_label">Compare against an expected value</string>
+    <string name="files_pick">Pick files</string>
+    <string name="files_pick_folder">Pick folder</string>
+    <string name="files_empty">Pick files or a folder, or share them to HashPony from any app.</string>
+    <string name="files_match">Match — %1$s</string>
+    <string name="files_no_match">No match</string>
+    <string name="copied">Copied %1$s</string>
+    <string name="copied_uppercase">Copied uppercase</string>
+    <string name="copy_content_desc">Copy %1$s</string>
+    <string name="menu_copy_uppercase">Copy uppercase</string>
+    <string name="share_digest_title">Share digest</string>
+    <string name="status_queued">Queued</string>
+    <string name="status_hashing">Hashing…</string>
+    <string name="status_done">Done</string>
+    <string name="status_failed">Failed</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="file_vs_identical">These two files are identical</string>
+    <string name="file_vs_differ">These two files differ</string>
+    <string name="file_vs_sub">%1$s vs %2$s · compared by %3$s</string>
+
+    <!-- Text -->
+    <string name="text_label">Text to hash</string>
+    <string name="text_encoding">UTF-8 encoding</string>
+    <string name="text_enable_hint">Enable at least one algorithm in Settings.</string>
+
+    <!-- Verify -->
+    <string name="verify_title">Verify a download</string>
+    <string name="verify_intro">Point HashPony at the folder you downloaded into. It finds the sums file (SHA256SUMS, .sha256, .sfv, and the rest) and checks every entry.</string>
+    <string name="verify_pick_folder">Pick a folder</string>
+    <string name="verify_open_sums">Open a sums file</string>
+    <string name="verify_working">Working…</string>
+    <string name="verify_change">Change</string>
+    <string name="verify_done">Done</string>
+    <string name="verify_no_sums">No sums file found in that folder. You can open one directly.</string>
+    <string name="verify_tap_hint">Tap a sums file to verify:</string>
+    <string name="verify_opened">Opened %1$s</string>
+    <string name="verify_need_folder">Now grant the folder that contains the files it lists, so they can be checked.</string>
+    <string name="verify_choose_folder">Choose folder</string>
+    <string name="verify_need_algo_title">Which algorithm produced %1$s?</string>
+    <string name="verify_need_algo_body">The file doesn\'t say, and its hash length matches several enabled algorithms.</string>
+    <string name="verify_all_ok">All %1$d files verified</string>
+    <string name="verify_issues">Verification found issues</string>
+    <string name="verify_counts">OK %1$d · Failed %2$d · Missing %3$d</string>
+    <string name="verify_counts_unknown">%1$s · Unknown %2$d</string>
+    <string name="verify_failed_title">Couldn\'t verify</string>
+    <string name="verify_start_over">Start over</string>
+    <string name="verify_expected">expected</string>
+    <string name="verify_computed">computed</string>
+    <string name="entry_ok">OK</string>
+    <string name="entry_failed">FAILED</string>
+    <string name="entry_missing">MISSING</string>
+    <string name="entry_unknown">algorithm unknown</string>
+    <string name="entry_unnamed">(unnamed)</string>
+
+    <!-- Export -->
+    <string name="export_title">Export sums file</string>
+    <string name="export_algorithm">Algorithm</string>
+    <string name="export_format">Format</string>
+    <string name="export_saved">Saved</string>
+    <string name="export_share_title">Share sums file</string>
+    <string name="format_gnu">GNU</string>
+    <string name="format_bsd">BSD tag</string>
+    <string name="format_sfv">SFV</string>
+
+    <!-- Settings -->
+    <string name="settings_algorithms">Algorithms</string>
+    <string name="settings_display">Display</string>
+    <string name="settings_uppercase">Uppercase hex</string>
+    <string name="settings_dynamic">Material You colors</string>
+    <string name="settings_theme">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_help">Help</string>
+    <string name="help_files_title">Files</string>
+    <string name="help_files_body">Pick files or a whole folder, or share them in from another app. Each file shows its digests as they stream; tap a digest to copy. Paste an expected value into the compare box to check a download.</string>
+    <string name="help_verify_title">Verify</string>
+    <string name="help_verify_body">Point HashPony at the folder you downloaded into and it finds the sums file and checks every entry: OK, FAILED or MISSING.</string>
+    <string name="help_text_title">Text</string>
+    <string name="help_text_body">Live digests for typed or pasted text, UTF-8.</string>
+    <string name="settings_more">More from NorseHorse</string>
+    <string name="more_body">Encryption, key management and private messaging are handled by other apps in the family.</string>
+    <string name="link_hub">Visit the hub</string>
+    <string name="link_source">Source code</string>
+    <string name="link_licenses">Open-source licenses</string>
+    <string name="settings_about">About</string>
+    <string name="about_version">HashPony 1.0.0</string>
+    <string name="about_body">Checksums, checked. Zero permissions, fully offline. Nothing leaves the device except what you explicitly share or save.</string>
+    <string name="licenses_title">Open-source licenses</string>
+    <string name="licenses_note">The xxHash algorithms are a clean-room Kotlin port of Yann Collet\'s reference implementation, with attribution in the project NOTICE file.</string>
 </resources>

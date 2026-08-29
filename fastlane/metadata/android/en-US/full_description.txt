@@ -1,0 +1,14 @@
+HashPony hashes files and text, verifies downloads against a sums file, and writes sums files that desktop tools accept byte for byte.
+
+Zero permissions. Not "minimal" — zero. There is no INTERNET permission, so the offline claim is checkable in the manifest itself. All file access goes through the system file picker and the share sheet.
+
+Features:
+
+* Hash one or many files, or a whole folder, with any combination of algorithms in a single read pass
+* Hash typed or pasted text
+* Compare against an expected value with a clear match verdict — for checking an ISO or APK against a published hash
+* Verify a folder against its sums file (SHA256SUMS, .sha256, .md5, .sfv, BSD tags, plain single-hash files) with per-entry OK / FAILED / MISSING
+* Export sums files that desktop "sha256sum -c", "shasum -c" and "xxhsum -c" accept, plus SFV
+* Act as a share target so any app can send files straight in
+
+Algorithms include the SHA-2 and SHA-3 families, BLAKE2 and BLAKE3, Keccak-256, the regional SM3 and Streebog, legacy MD5/SHA-1 and more, and the non-cryptographic CRC32, Adler-32 and xxHash.

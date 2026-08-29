@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.Hex
+import com.hashpony.android.R
 import com.hashpony.android.ui.DigestRow
 
 @Composable
@@ -36,12 +38,12 @@ fun TextScreen(viewModel: TextViewModel, modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = input,
             onValueChange = viewModel::setInput,
-            label = { Text("Text to hash") },
+            label = { Text(stringResource(R.string.text_label)) },
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
         )
         Text(
-            "UTF-8 encoding",
+            stringResource(R.string.text_encoding),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp),
@@ -50,7 +52,7 @@ fun TextScreen(viewModel: TextViewModel, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(8.dp))
         if (results.isEmpty()) {
             Text(
-                "Enable at least one algorithm in Settings.",
+                stringResource(R.string.text_enable_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

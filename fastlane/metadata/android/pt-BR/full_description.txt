@@ -1,0 +1,5 @@
+O HashPony calcula somas de arquivos e texto, verifica downloads com um arquivo de somas e grava arquivos de somas que as ferramentas de desktop aceitam.
+
+Zero permissões e sem permissão de INTERNET, então a promessa de funcionar offline pode ser conferida no manifesto. Todo acesso a arquivos passa pelo seletor do sistema e pelo menu de compartilhamento.
+
+Inclui as famílias SHA-2 e SHA-3, BLAKE2/BLAKE3, Keccak-256, os regionais SM3 e Streebog, algoritmos legados como MD5/SHA-1 e os não criptográficos CRC32, Adler-32 e xxHash.

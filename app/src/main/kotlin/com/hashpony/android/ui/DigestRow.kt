@@ -24,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import com.hashpony.android.R
 import com.hashpony.android.ui.theme.MatchGreen
 import com.hashpony.android.ui.theme.MonoDigestStyle
 
@@ -39,6 +41,11 @@ fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String
     val clipboard = LocalClipboardManager.current
     val context = LocalContext.current
     var menuOpen by remember { mutableStateOf(false) }
+
+    val copiedMsg = stringResource(R.string.copied, label)
+    val copiedUpperMsg = stringResource(R.string.copied_uppercase)
+    val copyDesc = stringResource(R.string.copy_content_desc, label)
+    val shareTitle = stringResource(R.string.share_digest_title)
 
     fun copy(text: String, toast: String) {
         clipboard.setText(AnnotatedString(text))
@@ -55,25 +62,25 @@ fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String
                 modifier = Modifier
                     .weight(1f)
                     .combinedClickable(
-                        onClick = { copy(hex, "Copied $label") },
+                        onClick = { copy(hex, copiedMsg) },
                         onLongClick = { menuOpen = true },
                     ),
             )
-            IconButton(onClick = { copy(hex, "Copied $label") }) {
-                Icon(Icons.Filled.ContentCopy, contentDescription = "Copy $label")
+            IconButton(onClick = { copy(hex, copiedMsg) }) {
+                Icon(Icons.Filled.ContentCopy, contentDescription = copyDesc)
             }
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                DropdownMenuItem(text = { Text("Copy uppercase") }, onClick = {
-                    copy(hex.uppercase(), "Copied uppercase")
+                DropdownMenuItem(text = { Text(stringResource(R.string.menu_copy_uppercase)) }, onClick = {
+                    copy(hex.uppercase(), copiedUpperMsg)
                     menuOpen = false
                 })
-                DropdownMenuItem(text = { Text("Share") }, onClick = {
+                DropdownMenuItem(text = { Text(stringResource(R.string.action_share)) }, onClick = {
                     menuOpen = false
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, "$label ($shareContext)\n$hex")
                     }
-                    context.startActivity(Intent.createChooser(send, "Share digest"))
+                    context.startActivity(Intent.createChooser(send, shareTitle))
                 })
             }
         }

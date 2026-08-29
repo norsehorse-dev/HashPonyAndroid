@@ -1,0 +1,1 @@
+Calcula y verifica sumas de verificación. Cero permisos, sin conexión.

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Maschinelle Übersetzung; sicherheitsrelevante Texte sollten muttersprachlich geprüft werden. -->
+<resources>
+    <string name="tab_files">Dateien</string>
+    <string name="tab_text">Text</string>
+    <string name="tab_verify">Prüfen</string>
+    <string name="tab_settings">Einstellungen</string>
+
+    <string name="action_clear">Leeren</string>
+    <string name="action_share">Teilen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_back">Zurück</string>
+
+    <string name="files_compare_label">Mit erwartetem Wert vergleichen</string>
+    <string name="files_pick">Dateien wählen</string>
+    <string name="files_pick_folder">Ordner wählen</string>
+    <string name="files_empty">Wähle Dateien oder einen Ordner, oder teile sie aus einer anderen App an HashPony.</string>
+    <string name="files_match">Übereinstimmung — %1$s</string>
+    <string name="files_no_match">Keine Übereinstimmung</string>
+    <string name="copied">%1$s kopiert</string>
+    <string name="copied_uppercase">In Großbuchstaben kopiert</string>
+    <string name="copy_content_desc">%1$s kopieren</string>
+    <string name="menu_copy_uppercase">In Großbuchstaben kopieren</string>
+    <string name="share_digest_title">Prüfsumme teilen</string>
+    <string name="status_queued">In Warteschlange</string>
+    <string name="status_hashing">Wird berechnet…</string>
+    <string name="status_done">Fertig</string>
+    <string name="status_failed">Fehlgeschlagen</string>
+    <string name="status_cancelled">Abgebrochen</string>
+    <string name="file_vs_identical">Diese beiden Dateien sind identisch</string>
+    <string name="file_vs_differ">Diese beiden Dateien unterscheiden sich</string>
+    <string name="file_vs_sub">%1$s vs. %2$s · verglichen mit %3$s</string>
+
+    <string name="text_label">Zu hashender Text</string>
+    <string name="text_encoding">UTF-8-Kodierung</string>
+    <string name="text_enable_hint">Aktiviere mindestens einen Algorithmus in den Einstellungen.</string>
+
+    <string name="verify_title">Einen Download prüfen</string>
+    <string name="verify_intro">Richte HashPony auf den Ordner, in den du heruntergeladen hast. Es findet die Prüfsummendatei (SHA256SUMS, .sha256, .sfv und die übrigen) und prüft jeden Eintrag.</string>
+    <string name="verify_pick_folder">Ordner wählen</string>
+    <string name="verify_open_sums">Prüfsummendatei öffnen</string>
+    <string name="verify_working">Wird bearbeitet…</string>
+    <string name="verify_change">Ändern</string>
+    <string name="verify_done">Fertig</string>
+    <string name="verify_no_sums">In diesem Ordner wurde keine Prüfsummendatei gefunden. Du kannst eine direkt öffnen.</string>
+    <string name="verify_tap_hint">Tippe auf eine Prüfsummendatei zum Prüfen:</string>
+    <string name="verify_opened">%1$s geöffnet</string>
+    <string name="verify_need_folder">Gewähre nun Zugriff auf den Ordner mit den aufgeführten Dateien, damit sie geprüft werden können.</string>
+    <string name="verify_choose_folder">Ordner auswählen</string>
+    <string name="verify_need_algo_title">Welcher Algorithmus hat %1$s erzeugt?</string>
+    <string name="verify_need_algo_body">Die Datei gibt es nicht an, und ihre Hash-Länge passt zu mehreren aktivierten Algorithmen.</string>
+    <string name="verify_all_ok">Alle %1$d Dateien geprüft</string>
+    <string name="verify_issues">Prüfung hat Probleme gefunden</string>
+    <string name="verify_counts">OK %1$d · Fehlgeschlagen %2$d · Fehlend %3$d</string>
+    <string name="verify_counts_unknown">%1$s · Unbekannt %2$d</string>
+    <string name="verify_failed_title">Prüfung nicht möglich</string>
+    <string name="verify_start_over">Neu beginnen</string>
+    <string name="verify_expected">erwartet</string>
+    <string name="verify_computed">berechnet</string>
+    <string name="entry_ok">OK</string>
+    <string name="entry_failed">FEHLGESCHLAGEN</string>
+    <string name="entry_missing">FEHLT</string>
+    <string name="entry_unknown">Algorithmus unbekannt</string>
+    <string name="entry_unnamed">(ohne Namen)</string>
+
+    <string name="export_title">Prüfsummendatei exportieren</string>
+    <string name="export_algorithm">Algorithmus</string>
+    <string name="export_format">Format</string>
+    <string name="export_saved">Gespeichert</string>
+    <string name="export_share_title">Prüfsummendatei teilen</string>
+    <string name="format_gnu">GNU</string>
+    <string name="format_bsd">BSD-Tag</string>
+    <string name="format_sfv">SFV</string>
+
+    <string name="settings_algorithms">Algorithmen</string>
+    <string name="settings_display">Darstellung</string>
+    <string name="settings_uppercase">Hex in Großbuchstaben</string>
+    <string name="settings_dynamic">Material-You-Farben</string>
+    <string name="settings_theme">Design</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="settings_help">Hilfe</string>
+    <string name="help_files_title">Dateien</string>
+    <string name="help_files_body">Wähle Dateien oder einen ganzen Ordner, oder teile sie aus einer anderen App. Jede Datei zeigt ihre Prüfsummen, während sie berechnet werden; tippe auf eine Prüfsumme zum Kopieren. Füge einen erwarteten Wert in das Vergleichsfeld ein, um einen Download zu prüfen.</string>
+    <string name="help_verify_title">Prüfen</string>
+    <string name="help_verify_body">Richte HashPony auf den Download-Ordner; es findet die Prüfsummendatei und prüft jeden Eintrag: OK, FEHLGESCHLAGEN oder FEHLT.</string>
+    <string name="help_text_title">Text</string>
+    <string name="help_text_body">Live-Prüfsummen für getippten oder eingefügten Text, UTF-8.</string>
+    <string name="settings_more">Mehr von NorseHorse</string>
+    <string name="more_body">Verschlüsselung, Schlüsselverwaltung und private Nachrichten übernehmen andere Apps der Familie.</string>
+    <string name="link_hub">Zum Hub</string>
+    <string name="link_source">Quellcode</string>
+    <string name="link_licenses">Open-Source-Lizenzen</string>
+    <string name="settings_about">Über</string>
+    <string name="about_version">HashPony 1.0.0</string>
+    <string name="about_body">Prüfsummen, geprüft. Null Berechtigungen, vollständig offline. Nichts verlässt das Gerät außer dem, was du ausdrücklich teilst oder speicherst.</string>
+    <string name="licenses_title">Open-Source-Lizenzen</string>
+    <string name="licenses_note">Die xxHash-Algorithmen sind eine Clean-Room-Kotlin-Portierung von Yann Collets Referenzimplementierung, mit Quellenangabe in der NOTICE-Datei des Projekts.</string>
+</resources>
