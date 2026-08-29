@@ -30,6 +30,7 @@ import com.hashpony.android.ui.settings.SettingsViewModel
 import com.hashpony.android.ui.text.TextScreen
 import com.hashpony.android.ui.text.TextViewModel
 import com.hashpony.android.ui.verify.VerifyScreen
+import com.hashpony.android.ui.verify.VerifyViewModel
 
 private enum class Tab(val label: String, val icon: ImageVector) {
     FILES("Files", Icons.Filled.Description),
@@ -39,9 +40,15 @@ private enum class Tab(val label: String, val icon: ImageVector) {
 }
 
 @Composable
-fun HashPonyApp(sharedUris: List<Uri>, onSharedConsumed: () -> Unit) {
+fun HashPonyApp(
+    sharedUris: List<Uri>,
+    onSharedConsumed: () -> Unit,
+    verifyUri: Uri?,
+    onVerifyConsumed: () -> Unit,
+) {
     val filesViewModel: FilesViewModel = viewModel()
     val textViewModel: TextViewModel = viewModel()
+    val verifyViewModel: VerifyViewModel = viewModel()
     val settingsViewModel: SettingsViewModel = viewModel()
 
     var selected by rememberSaveable { mutableIntStateOf(0) }
@@ -49,6 +56,10 @@ fun HashPonyApp(sharedUris: List<Uri>, onSharedConsumed: () -> Unit) {
     // A share always lands on the Files tab.
     LaunchedEffect(sharedUris) {
         if (sharedUris.isNotEmpty()) selected = Tab.FILES.ordinal
+    }
+    // Open-with of a sums file lands on the Verify tab.
+    LaunchedEffect(verifyUri) {
+        if (verifyUri != null) selected = Tab.VERIFY.ordinal
     }
 
     Scaffold(
@@ -69,7 +80,7 @@ fun HashPonyApp(sharedUris: List<Uri>, onSharedConsumed: () -> Unit) {
             when (Tab.entries[selected]) {
                 Tab.FILES -> FilesScreen(filesViewModel, sharedUris, onSharedConsumed)
                 Tab.TEXT -> TextScreen(textViewModel)
-                Tab.VERIFY -> VerifyScreen()
+                Tab.VERIFY -> VerifyScreen(verifyViewModel, verifyUri, onVerifyConsumed)
                 Tab.SETTINGS -> SettingsScreen(settingsViewModel)
             }
         }

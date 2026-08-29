@@ -12,5 +12,3 @@ build/
 *.keystore
 *.jks
 local.properties
-
-/_to_delete/

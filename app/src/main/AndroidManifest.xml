@@ -51,6 +51,32 @@
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="application/octet-stream" />
             </intent-filter>
+
+            <!--
+              Extension-based open-with (mainly for file:// managers; SAF content
+              Uris are covered by the lenient MIME filter above). Case-sensitive,
+              so common lower-case extensions are listed explicitly.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.sha256" />
+                <data android:pathPattern=".*\\.sha512" />
+                <data android:pathPattern=".*\\.sha384" />
+                <data android:pathPattern=".*\\.sha224" />
+                <data android:pathPattern=".*\\.sha1" />
+                <data android:pathPattern=".*\\.md5" />
+                <data android:pathPattern=".*\\.b2" />
+                <data android:pathPattern=".*\\.sfv" />
+                <data android:pathPattern=".*\\.xxh32" />
+                <data android:pathPattern=".*\\.xxh64" />
+                <data android:pathPattern=".*\\.xxh128" />
+                <data android:pathPattern=".*\\.xxh3" />
+            </intent-filter>
         </activity>
     </application>
 

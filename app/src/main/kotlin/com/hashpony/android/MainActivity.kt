@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val initialShared = extractSharedUris(intent)
+        val initialVerify = extractVerifyUri(intent)
 
         setContent {
             val prefs = remember { PreferencesRepository(applicationContext) }
@@ -42,25 +43,34 @@ class MainActivity : ComponentActivity() {
             val dynamic = settings?.dynamicColor ?: true
 
             var shared by remember { mutableStateOf(initialShared) }
+            var verify by remember { mutableStateOf(initialVerify) }
 
             HashPonyTheme(darkTheme = dark, dynamicColor = dynamic) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    HashPonyApp(sharedUris = shared, onSharedConsumed = { shared = emptyList() })
+                    HashPonyApp(
+                        sharedUris = shared,
+                        onSharedConsumed = { shared = emptyList() },
+                        verifyUri = verify,
+                        onVerifyConsumed = { verify = null },
+                    )
                 }
             }
         }
     }
 
-    /** Pull file Uris from a share (SEND / SEND_MULTIPLE) or an open-with (VIEW). */
+    /** Files shared in for hashing (SEND / SEND_MULTIPLE). */
     private fun extractSharedUris(intent: Intent?): List<Uri> {
         intent ?: return emptyList()
         return when (intent.action) {
             Intent.ACTION_SEND -> listOfNotNull(intent.parcelableExtra(Intent.EXTRA_STREAM))
             Intent.ACTION_SEND_MULTIPLE -> intent.parcelableArrayListExtra(Intent.EXTRA_STREAM) ?: emptyList()
-            Intent.ACTION_VIEW -> listOfNotNull(intent.data)
             else -> emptyList()
         }
     }
+
+    /** A sums file opened with HashPony (VIEW) goes to the Verify flow. */
+    private fun extractVerifyUri(intent: Intent?): Uri? =
+        if (intent?.action == Intent.ACTION_VIEW) intent.data else null
 
     @Suppress("DEPRECATION")
     private inline fun <reified T : android.os.Parcelable> Intent.parcelableExtra(key: String): T? =
