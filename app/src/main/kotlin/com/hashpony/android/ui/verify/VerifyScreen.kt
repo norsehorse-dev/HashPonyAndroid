@@ -236,10 +236,11 @@ private fun EntryRow(entry: EntryResult) {
                 Spacer(Modifier.height(8.dp))
                 Text(stringResource(R.string.verify_expected), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                 Text(entry.expectedHex, style = MonoDigestStyle)
-                if (entry.computedHex != null) {
+                val computed = entry.computedHex
+                if (computed != null) {
                     Text(stringResource(R.string.verify_computed), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 4.dp))
                     Text(
-                        entry.computedHex,
+                        computed,
                         style = MonoDigestStyle,
                         color = if (entry.status == EntryStatus.OK) MatchGreen else MaterialTheme.colorScheme.error,
                     )

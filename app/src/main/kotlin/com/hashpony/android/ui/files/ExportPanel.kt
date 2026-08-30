@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
  * computed) and a format, then Save (CreateDocument) or Share as text. SFV is
  * offered only for CRC32.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ExportPanel(doneFiles: List<FileUiState>, uppercase: Boolean, modifier: Modifier = Modifier) {
     val context = LocalContext.current
