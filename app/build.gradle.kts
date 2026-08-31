@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,11 +21,34 @@ android {
         // No default vector-drawable/appcompat shims needed; zero-permission app.
     }
 
+    signingConfigs {
+        // Release signing is driven by keystore.properties at the repo root
+        // (gitignored), so no keystore path or password is ever committed. Keys:
+        // storeFile, storePassword, keyAlias, keyPassword. When the file is
+        // absent (CI, a clean checkout) the release build is left unsigned
+        // rather than failing.
+        create("release") {
+            val keystoreProps = rootProject.file("keystore.properties")
+            if (keystoreProps.exists()) {
+                val props = Properties()
+                keystoreProps.inputStream().use { props.load(it) }
+                val storePath = props.getProperty("storeFile")
+                if (storePath != null) {
+                    storeFile = file(storePath)
+                    storePassword = props.getProperty("storePassword")
+                    keyAlias = props.getProperty("keyAlias")
+                    keyPassword = props.getProperty("keyPassword")
+                }
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release").takeIf { it.storeFile != null }
         }
     }
 

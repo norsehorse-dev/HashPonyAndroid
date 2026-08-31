@@ -12,3 +12,6 @@ build/
 *.keystore
 *.jks
 local.properties
+
+/_deploy/
+keystore.properties
