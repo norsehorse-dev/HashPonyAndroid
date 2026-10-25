@@ -1,16 +1,13 @@
 package com.hashpony.android.ui.files
 
-import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,41 +19,46 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.hashpony.android.R
+import com.hashpony.android.ui.DigestRow
+import com.hashpony.android.ui.formatSize
+import com.hashpony.android.ui.theme.FailRed
+import com.hashpony.android.ui.theme.InstrumentChip
+import com.hashpony.android.ui.theme.InstrumentField
+import com.hashpony.android.ui.theme.InstrumentPanel
+import com.hashpony.android.ui.theme.InstrumentProgress
+import com.hashpony.android.ui.theme.LineSoft
+import com.hashpony.android.ui.theme.MatchGreen
+import com.hashpony.android.ui.theme.MonoLabelStyle
+import com.hashpony.android.ui.theme.MonoUiStyle
+import com.hashpony.android.ui.theme.PrimaryAction
+import com.hashpony.android.ui.theme.QuietAction
+import com.hashpony.android.ui.theme.SecondaryAction
+import com.hashpony.android.ui.theme.SectionLabel
+import com.hashpony.android.ui.theme.StatusTag
+import com.hashpony.android.ui.theme.TextDim
+import com.hashpony.android.ui.theme.TextFaint
+import com.hashpony.android.ui.theme.TextPrimary
+import com.hashpony.android.ui.theme.VerdictPanel
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashComparer
 import com.hashpony.core.Hex
-import com.hashpony.android.R
-import com.hashpony.android.ui.formatSize
-import com.hashpony.android.ui.theme.MatchGreen
-import com.hashpony.android.ui.theme.MonoDigestStyle
 
 private val QUICK_TOGGLE_IDS = listOf("sha512", "sha1", "md5")
 
@@ -80,63 +82,85 @@ fun FilesScreen(
         if (uri != null) viewModel.addFolder(uri)
     }
 
-    androidx.compose.runtime.LaunchedEffect(sharedUris) {
+    LaunchedEffect(sharedUris) {
         if (sharedUris.isNotEmpty()) {
             viewModel.addUris(sharedUris)
             onSharedConsumed()
         }
     }
 
-    Column(modifier.fillMaxSize().padding(16.dp)) {
-        androidx.compose.material3.OutlinedTextField(
-            value = compareInput,
-            onValueChange = viewModel::setCompareInput,
-            label = { Text(stringResource(R.string.files_compare_label)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = {
-                if (compareInput.isNotEmpty()) {
-                    IconButton(onClick = { viewModel.setCompareInput("") }) {
-                        Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.action_clear))
+    val doneFiles = files.filter { it.status == HashStatus.DONE && it.results.isNotEmpty() }
+
+    // One scrolling column: controls on top, then the file readouts and export.
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        item(key = "controls") {
+            Column {
+                SectionLabel(stringResource(R.string.label_compare))
+                InstrumentField(
+                    value = compareInput,
+                    onValueChange = viewModel::setCompareInput,
+                    placeholder = stringResource(R.string.files_compare_label),
+                    trailingIcon = if (compareInput.isNotEmpty()) {
+                        {
+                            IconButton(onClick = { viewModel.setCompareInput("") }) {
+                                Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.action_clear))
+                            }
+                        }
+                    } else {
+                        null
+                    },
+                )
+
+                Spacer(Modifier.height(14.dp))
+                SectionLabel(stringResource(R.string.settings_algorithms))
+                QuickToggles(enabled) { id, on -> viewModel.setAlgorithmEnabled(id, on) }
+
+                Spacer(Modifier.height(14.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    PrimaryAction(
+                        text = stringResource(R.string.files_pick),
+                        onClick = { picker.launch(arrayOf("*/*")) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    SecondaryAction(
+                        text = stringResource(R.string.files_pick_folder),
+                        onClick = { folderPicker.launch(null) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                if (files.isNotEmpty()) {
+                    Row(Modifier.fillMaxWidth().padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                        SectionLabel(stringResource(R.string.tab_files), Modifier.weight(1f))
+                        QuietAction(stringResource(R.string.action_clear), onClick = viewModel::clear)
                     }
                 }
-            },
-        )
-
-        Spacer(Modifier.height(8.dp))
-        QuickToggles(enabled) { id, on -> viewModel.setAlgorithmEnabled(id, on) }
-
-        Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedButton(onClick = { picker.launch(arrayOf("*/*")) }) { Text(stringResource(R.string.files_pick)) }
-            Spacer(Modifier.width(8.dp))
-            OutlinedButton(onClick = { folderPicker.launch(null) }) { Text(stringResource(R.string.files_pick_folder)) }
-            if (files.isNotEmpty()) {
-                Spacer(Modifier.width(8.dp))
-                TextButton(onClick = viewModel::clear) { Text(stringResource(R.string.action_clear)) }
             }
         }
 
-        Spacer(Modifier.height(8.dp))
         if (files.isEmpty()) {
-            Text(
-                stringResource(R.string.files_empty),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 24.dp),
-            )
+            item(key = "empty") {
+                InstrumentPanel(Modifier.padding(top = 6.dp)) {
+                    Text(
+                        stringResource(R.string.files_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextDim,
+                    )
+                }
+            }
         } else {
-            val doneFiles = files.filter { it.status == HashStatus.DONE && it.results.isNotEmpty() }
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                if (doneFiles.size == 2) {
-                    item(key = "vs") { FileVsFileVerdict(doneFiles[0], doneFiles[1]) }
-                }
-                items(files, key = { it.uri.toString() }) { file ->
-                    FileCard(file, compareInput, uppercase)
-                }
-                if (doneFiles.isNotEmpty()) {
-                    item(key = "export") { ExportPanel(doneFiles, uppercase) }
-                }
+            if (doneFiles.size == 2) {
+                item(key = "vs") { FileVsFileVerdict(doneFiles[0], doneFiles[1]) }
+            }
+            items(files, key = { it.uri.toString() }) { file ->
+                FileCard(file, compareInput, uppercase)
+            }
+            if (doneFiles.isNotEmpty()) {
+                item(key = "export") { ExportPanel(doneFiles, uppercase) }
             }
         }
     }
@@ -149,33 +173,27 @@ private fun FileVsFileVerdict(a: FileUiState, b: FileUiState) {
     if (shared.isEmpty()) return
     val identical = shared.all { a.results.getValue(it).contentEquals(b.results.getValue(it)) }
     val algoName = AlgorithmRegistry.byId(shared.first())?.displayName ?: shared.first()
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp)) {
-            Text(
-                stringResource(if (identical) R.string.file_vs_identical else R.string.file_vs_differ),
-                fontWeight = FontWeight.Bold,
-                color = if (identical) MatchGreen else MaterialTheme.colorScheme.error,
-            )
-            Text(
-                stringResource(R.string.file_vs_sub, a.name, b.name, algoName),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
+    VerdictPanel(
+        title = stringResource(if (identical) R.string.file_vs_identical else R.string.file_vs_differ),
+        detail = stringResource(R.string.file_vs_sub, a.name, b.name, algoName),
+        color = if (identical) MatchGreen else FailRed,
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun QuickToggles(enabled: Set<String>, onToggle: (String, Boolean) -> Unit) {
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         for (id in QUICK_TOGGLE_IDS) {
             val algo = AlgorithmRegistry.byId(id) ?: continue
             val on = id in enabled
-            FilterChip(
+            InstrumentChip(
+                label = algo.displayName,
                 selected = on,
                 onClick = { onToggle(id, !on) },
-                label = { Text(algo.displayName) },
             )
         }
     }
@@ -184,46 +202,63 @@ private fun QuickToggles(enabled: Set<String>, onToggle: (String, Boolean) -> Un
 @Composable
 private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean) {
     val outcome = remember(file.results, compareInput) { HashComparer.compare(compareInput, file.results) }
+    val comparing = compareInput.isNotBlank() && file.results.isNotEmpty()
 
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp)) {
-            Text(file.name, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+    InstrumentPanel {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "${formatSize(file.size)}  ·  ${statusLabel(file)}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                file.name,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = TextPrimary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
             )
-
-            if (file.status == HashStatus.HASHING) {
-                Spacer(Modifier.height(8.dp))
-                if (file.progress != null) {
-                    LinearProgressIndicator(progress = { file.progress }, modifier = Modifier.fillMaxWidth())
-                } else {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                }
-            }
-
-            if (compareInput.isNotBlank() && file.results.isNotEmpty()) {
-                Spacer(Modifier.height(8.dp))
-                val matchNames = outcome.matched.mapNotNull { AlgorithmRegistry.byId(it)?.displayName }
+            if (comparing) {
+                Spacer(Modifier.width(8.dp))
                 if (outcome.isMatch) {
-                    Text(stringResource(R.string.files_match, matchNames.joinToString(", ")), color = MatchGreen, fontWeight = FontWeight.Bold)
+                    StatusTag(stringResource(R.string.tag_match), MatchGreen)
                 } else {
-                    Text(stringResource(R.string.files_no_match), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+                    StatusTag(stringResource(R.string.files_no_match), FailRed)
                 }
             }
+        }
+        Text(
+            "${formatSize(file.size)}  ·  ${statusLabel(file)}",
+            style = MonoLabelStyle,
+            color = if (file.status == HashStatus.ERROR) FailRed else TextFaint,
+            modifier = Modifier.padding(top = 3.dp),
+        )
 
-            // Result rows in registry order.
-            val ids = AlgorithmRegistry.all.map { it.id }.filter { file.results.containsKey(it) }
-            for (id in ids) {
-                val bytes = file.results.getValue(id)
-                com.hashpony.android.ui.DigestRow(
-                    label = AlgorithmRegistry.byId(id)?.displayName ?: id,
-                    hex = Hex.encode(bytes, uppercase),
-                    matched = id in outcome.matched && compareInput.isNotBlank(),
-                    shareContext = file.name,
-                )
-            }
+        if (file.status == HashStatus.HASHING) {
+            Spacer(Modifier.height(10.dp))
+            InstrumentProgress(file.progress)
+        }
+
+        if (comparing && outcome.isMatch) {
+            val matchNames = outcome.matched.mapNotNull { AlgorithmRegistry.byId(it)?.displayName }
+            Text(
+                stringResource(R.string.files_match, matchNames.joinToString(", ")),
+                style = MonoUiStyle,
+                color = MatchGreen,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+        }
+
+        // Result rows in registry order.
+        val ids = AlgorithmRegistry.all.map { it.id }.filter { file.results.containsKey(it) }
+        if (ids.isNotEmpty()) {
+            HorizontalDivider(Modifier.padding(top = 10.dp, bottom = 2.dp), thickness = 1.dp, color = LineSoft)
+        }
+        for (id in ids) {
+            val bytes = file.results.getValue(id)
+            DigestRow(
+                label = AlgorithmRegistry.byId(id)?.displayName ?: id,
+                hex = Hex.encode(bytes, uppercase),
+                matched = comparing && id in outcome.matched,
+                shareContext = file.name,
+            )
         }
     }
 }

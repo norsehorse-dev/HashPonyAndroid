@@ -1,45 +1,53 @@
 package com.hashpony.android.ui
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.FactCheck
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TextFields
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.annotation.StringRes
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hashpony.android.R
-import com.hashpony.android.ui.files.FilesScreen
 import com.hashpony.android.ui.files.FilesViewModel
+import com.hashpony.android.ui.hash.HashScreen
 import com.hashpony.android.ui.settings.SettingsScreen
 import com.hashpony.android.ui.settings.SettingsViewModel
-import com.hashpony.android.ui.text.TextScreen
 import com.hashpony.android.ui.text.TextViewModel
+import com.hashpony.android.ui.theme.Ground
+import com.hashpony.android.ui.theme.HashPonyTopBar
+import com.hashpony.android.ui.theme.LineSoft
+import com.hashpony.android.ui.theme.MonoUiStyle
+import com.hashpony.android.ui.theme.PanelHigh
+import com.hashpony.android.ui.theme.SilverBright
+import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.android.ui.verify.VerifyScreen
 import com.hashpony.android.ui.verify.VerifyViewModel
 
-private enum class Tab(@StringRes val labelRes: Int, val icon: ImageVector) {
-    FILES(R.string.tab_files, Icons.Filled.Description),
-    TEXT(R.string.tab_text, Icons.Filled.TextFields),
-    VERIFY(R.string.tab_verify, Icons.Filled.FactCheck),
-    SETTINGS(R.string.tab_settings, Icons.Filled.Settings),
+private enum class Pillar(@StringRes val labelRes: Int, val icon: ImageVector) {
+    HASH(R.string.pillar_hash, Icons.Filled.Tag),
+    VERIFY(R.string.tab_verify, Icons.Filled.VerifiedUser),
 }
 
 @Composable
@@ -54,38 +62,61 @@ fun HashPonyApp(
     val verifyViewModel: VerifyViewModel = viewModel()
     val settingsViewModel: SettingsViewModel = viewModel()
 
-    var selected by rememberSaveable { mutableIntStateOf(0) }
+    var pillar by rememberSaveable { mutableIntStateOf(0) }
+    var showSettings by rememberSaveable { mutableStateOf(false) }
 
-    // A share always lands on the Files tab.
+    // System back leaves Settings instead of closing the app.
+    BackHandler(enabled = showSettings) { showSettings = false }
+
+    // A share lands on Hash / Files; an open-with sums file lands on Verify.
     LaunchedEffect(sharedUris) {
-        if (sharedUris.isNotEmpty()) selected = Tab.FILES.ordinal
+        if (sharedUris.isNotEmpty()) { showSettings = false; pillar = Pillar.HASH.ordinal }
     }
-    // Open-with of a sums file lands on the Verify tab.
     LaunchedEffect(verifyUri) {
-        if (verifyUri != null) selected = Tab.VERIFY.ordinal
+        if (verifyUri != null) { showSettings = false; pillar = Pillar.VERIFY.ordinal }
     }
 
     Scaffold(
+        containerColor = Ground,
+        topBar = {
+            HashPonyTopBar(
+                inSettings = showSettings,
+                onSettings = { showSettings = true },
+                onBack = { showSettings = false },
+            )
+        },
         bottomBar = {
-            NavigationBar {
-                Tab.entries.forEachIndexed { index, tab ->
-                    val label = stringResource(tab.labelRes)
-                    NavigationBarItem(
-                        selected = selected == index,
-                        onClick = { selected = index },
-                        icon = { Icon(tab.icon, contentDescription = label) },
-                        label = { Text(label) },
-                    )
+            if (!showSettings) {
+                Column {
+                    HorizontalDivider(thickness = 1.dp, color = LineSoft)
+                    NavigationBar(containerColor = Ground, tonalElevation = 0.dp) {
+                        Pillar.entries.forEachIndexed { index, p ->
+                            val label = stringResource(p.labelRes)
+                            NavigationBarItem(
+                                selected = pillar == index,
+                                onClick = { pillar = index },
+                                icon = { Icon(p.icon, contentDescription = label) },
+                                label = { Text(label, style = MonoUiStyle) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = SilverBright,
+                                    selectedTextColor = SilverBright,
+                                    indicatorColor = PanelHigh,
+                                    unselectedIconColor = TextFaint,
+                                    unselectedTextColor = TextFaint,
+                                ),
+                            )
+                        }
+                    }
                 }
             }
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
-            when (Tab.entries[selected]) {
-                Tab.FILES -> FilesScreen(filesViewModel, sharedUris, onSharedConsumed)
-                Tab.TEXT -> TextScreen(textViewModel)
-                Tab.VERIFY -> VerifyScreen(verifyViewModel, verifyUri, onVerifyConsumed)
-                Tab.SETTINGS -> SettingsScreen(settingsViewModel)
+            when {
+                showSettings -> SettingsScreen(settingsViewModel)
+                Pillar.entries[pillar] == Pillar.HASH ->
+                    HashScreen(filesViewModel, textViewModel, sharedUris, onSharedConsumed)
+                else -> VerifyScreen(verifyViewModel, verifyUri, onVerifyConsumed)
             }
         }
     }

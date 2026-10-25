@@ -6,6 +6,12 @@
     <string name="tab_verify">Prüfen</string>
     <string name="tab_settings">Einstellungen</string>
 
+    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <string name="pillar_hash">Hashen</string>
+    <string name="label_compare">Vergleich</string>
+    <string name="label_digests">Prüfsummen</string>
+    <string name="tag_match">Treffer</string>
+
     <string name="action_clear">Leeren</string>
     <string name="action_share">Teilen</string>
     <string name="action_save">Speichern</string>

@@ -1,51 +1,70 @@
 package com.hashpony.android.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val LightColors = lightColorScheme(
-    primary = SteelSilverDark,
-    onPrimary = White,
-    secondary = SteelSilver,
-    background = BackgroundLight,
-    surface = White,
+// The Instrument: a bespoke silver-on-charcoal identity. Dynamic (Material You)
+// color is intentionally not used — the palette is the brand.
+private val InstrumentDark = darkColorScheme(
+    primary = Silver,
+    onPrimary = Ground,
+    secondary = SilverDim,
+    onSecondary = Ground,
+    background = Ground,
+    onBackground = TextPrimary,
+    surface = Panel,
+    onSurface = TextPrimary,
+    surfaceVariant = PanelElev,
+    onSurfaceVariant = TextDim,
+    primaryContainer = PanelHigh,
+    onPrimaryContainer = SilverBright,
+    outline = Line,
+    outlineVariant = LineSoft,
+    error = FailRed,
+    onError = Ground,
+    // Pin every surface role M3 components reach for (menus, dialogs, the nav
+    // bar indicator, snackbars) so nothing falls back to the baseline purples.
+    surfaceTint = Silver,
+    surfaceDim = Ground,
+    surfaceBright = PanelHigh,
+    surfaceContainerLowest = Ground,
+    surfaceContainerLow = Panel,
+    surfaceContainer = PanelElev,
+    surfaceContainerHigh = PanelElev,
+    surfaceContainerHighest = PanelHigh,
+    secondaryContainer = PanelHigh,
+    onSecondaryContainer = SilverBright,
+    tertiary = MatchGreen,
+    onTertiary = Ground,
+    inverseSurface = SilverBright,
+    inverseOnSurface = Ground,
+    scrim = Ground,
 )
 
-private val DarkColors = darkColorScheme(
-    primary = SteelSilver,
-    onPrimary = Graphite,
-    secondary = SteelSilverDark,
-    background = Graphite,
-    surface = GraphiteElev,
+private val InstrumentLight = lightColorScheme(
+    primary = SilverDim,
+    onPrimary = White,
+    background = LightGround,
+    surface = LightPanel,
+    onSurface = LightInk,
+    error = FailRed,
 )
 
 /**
- * HashPony theme. Uses Material You dynamic color on Android 12+, falling back to
- * the steel-silver brand scheme. [dynamicColor] can be turned off from Settings.
+ * HashPony theme. Signature is preserved for MainActivity; for now it commits to
+ * the dark Instrument scheme regardless of the passed flags, since that is the
+ * 1.0 identity. Light and a user toggle come back once the dark look is locked.
  */
 @Composable
 fun HashPonyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColors
-        else -> LightColors
-    }
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = InstrumentDark,
         typography = HashPonyTypography,
         content = content,
     )

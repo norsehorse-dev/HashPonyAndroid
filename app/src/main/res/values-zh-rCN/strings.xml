@@ -6,6 +6,12 @@
     <string name="tab_verify">校验</string>
     <string name="tab_settings">设置</string>
 
+    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <string name="pillar_hash">哈希</string>
+    <string name="label_compare">比较</string>
+    <string name="label_digests">哈希值</string>
+    <string name="tag_match">匹配</string>
+
     <string name="action_clear">清除</string>
     <string name="action_share">分享</string>
     <string name="action_save">保存</string>

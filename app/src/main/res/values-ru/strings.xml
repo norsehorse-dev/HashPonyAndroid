@@ -6,6 +6,12 @@
     <string name="tab_verify">Проверка</string>
     <string name="tab_settings">Настройки</string>
 
+    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <string name="pillar_hash">Хеш</string>
+    <string name="label_compare">Сравнение</string>
+    <string name="label_digests">Хеши</string>
+    <string name="tag_match">Совпадает</string>
+
     <string name="action_clear">Очистить</string>
     <string name="action_share">Поделиться</string>
     <string name="action_save">Сохранить</string>

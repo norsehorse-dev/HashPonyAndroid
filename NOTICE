@@ -17,3 +17,12 @@ third-party runtime dependency is introduced by it.
 Cryptographic digests outside the SHA-2 family are provided by The Legion of
 the Bouncy Castle (https://www.bouncycastle.org/), used under the Bouncy Castle
 license.
+
+The in-app monospace typeface is IBM Plex Mono (Regular, Medium, SemiBold),
+bundled under app/src/main/res/font:
+
+    IBM Plex Mono
+    https://github.com/IBM/plex
+    Copyright (c) IBM Corp.
+    Licensed under the SIL Open Font License, Version 1.1.
+    Full license text: licenses/IBM-Plex-Mono-OFL.txt

@@ -5,20 +5,13 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,16 +22,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.hashpony.android.R
+import com.hashpony.android.ui.theme.InstrumentChip
+import com.hashpony.android.ui.theme.InstrumentPanel
+import com.hashpony.android.ui.theme.MonoLabelStyle
+import com.hashpony.android.ui.theme.PrimaryAction
+import com.hashpony.android.ui.theme.SecondaryAction
+import com.hashpony.android.ui.theme.SectionLabel
+import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.Hex
-import com.hashpony.android.R
 import com.hashpony.core.sums.SumsOutputFormat
 import com.hashpony.core.sums.SumsWriter
 import com.hashpony.core.sums.WriteEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 /**
  * Writes a sums file from the hashed files. Choose an algorithm (any that was
@@ -79,48 +80,87 @@ fun ExportPanel(doneFiles: List<FileUiState>, uppercase: Boolean, modifier: Modi
         }
     }
 
-    Card(modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp)) {
-            Text(stringResource(R.string.export_title), fontWeight = FontWeight.SemiBold)
+    InstrumentPanel(modifier.padding(top = 4.dp)) {
+        SectionLabel(stringResource(R.string.export_title))
 
-            Text(stringResource(R.string.export_algorithm), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                for (id in availableAlgorithms) {
-                    FilterChip(
-                        selected = algorithm == id,
-                        onClick = {
-                            algorithm = id
-                            if (id != "crc32" && format == SumsOutputFormat.SFV) format = SumsOutputFormat.GNU
-                        },
-                        label = { Text(AlgorithmRegistry.byId(id)?.displayName ?: id) },
-                    )
-                }
+        FieldCaption(stringResource(R.string.export_algorithm))
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            for (id in availableAlgorithms) {
+                InstrumentChip(
+                    label = AlgorithmRegistry.byId(id)?.displayName ?: id,
+                    selected = algorithm == id,
+                    role = Role.RadioButton,
+                    onClick = {
+                        algorithm = id
+                        if (id != "crc32" && format == SumsOutputFormat.SFV) format = SumsOutputFormat.GNU
+                    },
+                )
             }
+        }
 
-            Text(stringResource(R.string.export_format), style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(top = 8.dp))
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilterChip(selected = format == SumsOutputFormat.GNU, onClick = { format = SumsOutputFormat.GNU }, label = { Text(stringResource(R.string.format_gnu)) })
-                FilterChip(selected = format == SumsOutputFormat.BSD_TAG, onClick = { format = SumsOutputFormat.BSD_TAG }, label = { Text(stringResource(R.string.format_bsd)) })
-                if (algorithm == "crc32") {
-                    FilterChip(selected = format == SumsOutputFormat.SFV, onClick = { format = SumsOutputFormat.SFV }, label = { Text(stringResource(R.string.format_sfv)) })
-                }
+        Spacer(Modifier.height(12.dp))
+        FieldCaption(stringResource(R.string.export_format))
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            InstrumentChip(
+                label = stringResource(R.string.format_gnu),
+                selected = format == SumsOutputFormat.GNU,
+                role = Role.RadioButton,
+                onClick = { format = SumsOutputFormat.GNU },
+            )
+            InstrumentChip(
+                label = stringResource(R.string.format_bsd),
+                selected = format == SumsOutputFormat.BSD_TAG,
+                role = Role.RadioButton,
+                onClick = { format = SumsOutputFormat.BSD_TAG },
+            )
+            if (algorithm == "crc32") {
+                InstrumentChip(
+                    label = stringResource(R.string.format_sfv),
+                    selected = format == SumsOutputFormat.SFV,
+                    role = Role.RadioButton,
+                    onClick = { format = SumsOutputFormat.SFV },
+                )
             }
+        }
 
-            Spacer(Modifier.height(12.dp))
-            Row {
-                Button(onClick = {
+        Spacer(Modifier.height(16.dp))
+        Row {
+            PrimaryAction(
+                text = stringResource(R.string.action_save),
+                onClick = {
                     pendingText = buildText()
                     saver.launch(SumsWriter.suggestedFileName(algorithm, format, entries()))
-                }) { Text(stringResource(R.string.action_save)) }
-                Spacer(Modifier.width(8.dp))
-                OutlinedButton(onClick = {
+                },
+                modifier = Modifier.weight(1f),
+            )
+            Spacer(Modifier.width(8.dp))
+            SecondaryAction(
+                text = stringResource(R.string.action_share),
+                onClick = {
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, buildText())
                     }
                     context.startActivity(Intent.createChooser(send, shareTitle))
-                }) { Text(stringResource(R.string.action_share)) }
-            }
+                },
+                modifier = Modifier.weight(1f),
+            )
         }
     }
+}
+
+@Composable
+private fun FieldCaption(text: String) {
+    Text(
+        text.uppercase(Locale.getDefault()),
+        style = MonoLabelStyle,
+        color = TextFaint,
+        modifier = Modifier.padding(bottom = 6.dp),
+    )
 }

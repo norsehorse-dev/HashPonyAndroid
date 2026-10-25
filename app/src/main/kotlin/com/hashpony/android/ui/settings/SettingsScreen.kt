@@ -2,9 +2,10 @@ package com.hashpony.android.ui.settings
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,17 +35,32 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.hashpony.android.R
+import com.hashpony.android.ui.Links
+import com.hashpony.android.ui.theme.InstrumentPanel
+import com.hashpony.android.ui.theme.LineSoft
+import com.hashpony.android.ui.theme.MonoLabelStyle
+import com.hashpony.android.ui.theme.MonoUiStyle
+import com.hashpony.android.ui.theme.SectionLabel
+import com.hashpony.android.ui.theme.Silver
+import com.hashpony.android.ui.theme.SilverBright
+import com.hashpony.android.ui.theme.TextDim
+import com.hashpony.android.ui.theme.TextFaint
+import com.hashpony.android.ui.theme.TextPrimary
+import com.hashpony.android.ui.theme.instrumentSwitchColors
 import com.hashpony.core.AlgorithmGroup
 import com.hashpony.core.AlgorithmRegistry
-import com.hashpony.android.R
-import com.hashpony.android.data.ThemeMode
-import com.hashpony.android.ui.Links
+import java.util.Locale
 
 private enum class SettingsPage { MAIN, LICENSES }
+
+private val ListPadding = PaddingValues(start = 14.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
     var page by remember { mutableStateOf(SettingsPage.MAIN) }
+    // System back from Licenses returns to the main Settings page.
+    BackHandler(enabled = page == SettingsPage.LICENSES) { page = SettingsPage.MAIN }
     when (page) {
         SettingsPage.MAIN -> MainSettings(viewModel, onOpenLicenses = { page = SettingsPage.LICENSES }, modifier = modifier)
         SettingsPage.LICENSES -> LicensesScreen(onBack = { page = SettingsPage.MAIN }, modifier = modifier)
@@ -64,88 +79,83 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
     ) {
-        SectionHeader(stringResource(R.string.settings_algorithms))
+        SectionLabel(stringResource(R.string.settings_algorithms))
         for (group in AlgorithmGroup.entries) {
-            Text(
-                group.label,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
-            )
-            for (algo in AlgorithmRegistry.byGroup(group)) {
-                Row(
-                    Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text(algo.displayName, style = MaterialTheme.typography.bodyLarge)
-                        algo.note?.let {
-                            Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-                    Switch(
-                        checked = algo.id in enabled,
-                        onCheckedChange = { viewModel.setAlgorithmEnabled(algo.id, it) },
-                    )
-                }
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        SectionHeader(stringResource(R.string.settings_display))
-        SwitchRow(stringResource(R.string.settings_uppercase), settings?.uppercaseHex ?: false) { viewModel.setUppercaseHex(it) }
-        SwitchRow(stringResource(R.string.settings_dynamic), settings?.dynamicColor ?: true) { viewModel.setDynamicColor(it) }
-
-        Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val current = settings?.themeMode ?: ThemeMode.SYSTEM
-            for (mode in ThemeMode.entries) {
-                val label = when (mode) {
-                    ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
-                    ThemeMode.LIGHT -> stringResource(R.string.theme_light)
-                    ThemeMode.DARK -> stringResource(R.string.theme_dark)
-                }
-                FilterChip(
-                    selected = current == mode,
-                    onClick = { viewModel.setThemeMode(mode) },
-                    label = { Text(label) },
+            InstrumentPanel(Modifier.padding(bottom = 10.dp), contentPadding = ListPadding) {
+                Text(
+                    group.label.uppercase(Locale.getDefault()),
+                    style = MonoLabelStyle,
+                    color = Silver,
+                    modifier = Modifier.padding(top = 6.dp, bottom = 4.dp),
                 )
+                val algos = AlgorithmRegistry.byGroup(group)
+                algos.forEachIndexed { i, algo ->
+                    if (i > 0) RowDivider()
+                    Row(
+                        Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(algo.displayName, style = MonoUiStyle, color = TextPrimary)
+                            algo.note?.let {
+                                Text(it, style = MaterialTheme.typography.bodySmall, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
+                            }
+                        }
+                        Switch(
+                            checked = algo.id in enabled,
+                            onCheckedChange = { viewModel.setAlgorithmEnabled(algo.id, it) },
+                            colors = instrumentSwitchColors(),
+                        )
+                    }
+                }
             }
         }
 
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        SectionHeader(stringResource(R.string.settings_help))
-        HelpText(stringResource(R.string.help_files_title), stringResource(R.string.help_files_body))
-        HelpText(stringResource(R.string.help_verify_title), stringResource(R.string.help_verify_body))
-        HelpText(stringResource(R.string.help_text_title), stringResource(R.string.help_text_body))
+        // Theme mode and Material You toggles are hidden while the dark Instrument
+        // look is the only scheme (see HashPonyTheme); the prefs stay in place.
+        Spacer(Modifier.height(8.dp))
+        SectionLabel(stringResource(R.string.settings_display))
+        InstrumentPanel(contentPadding = ListPadding) {
+            SwitchRow(stringResource(R.string.settings_uppercase), settings?.uppercaseHex ?: false) { viewModel.setUppercaseHex(it) }
+        }
 
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        SectionHeader(stringResource(R.string.settings_more))
-        Text(
-            stringResource(R.string.more_body),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 4.dp),
-        )
-        LinkRow(stringResource(R.string.link_hub)) { open(Links.HUB) }
-        LinkRow(stringResource(R.string.link_source)) { open(Links.SOURCE) }
-        NavRow(stringResource(R.string.link_licenses), onOpenLicenses)
+        Spacer(Modifier.height(18.dp))
+        SectionLabel(stringResource(R.string.settings_help))
+        InstrumentPanel {
+            HelpText(stringResource(R.string.help_files_title), stringResource(R.string.help_files_body))
+            HelpText(stringResource(R.string.help_verify_title), stringResource(R.string.help_verify_body))
+            HelpText(stringResource(R.string.help_text_title), stringResource(R.string.help_text_body))
+        }
 
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        SectionHeader(stringResource(R.string.settings_about))
-        Text(stringResource(R.string.about_version), style = MaterialTheme.typography.bodyLarge)
-        Text(
-            stringResource(R.string.about_body),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp),
-        )
+        Spacer(Modifier.height(18.dp))
+        SectionLabel(stringResource(R.string.settings_more))
+        InstrumentPanel(contentPadding = ListPadding) {
+            Text(
+                stringResource(R.string.more_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDim,
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+            )
+            LinkRow(stringResource(R.string.link_hub)) { open(Links.HUB) }
+            RowDivider()
+            LinkRow(stringResource(R.string.link_source)) { open(Links.SOURCE) }
+            RowDivider()
+            LinkRow(stringResource(R.string.link_licenses), onOpenLicenses)
+        }
+
+        Spacer(Modifier.height(18.dp))
+        SectionLabel(stringResource(R.string.settings_about))
+        InstrumentPanel {
+            Text(stringResource(R.string.about_version), style = MonoUiStyle, fontWeight = FontWeight.SemiBold, color = SilverBright)
+            Text(
+                stringResource(R.string.about_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDim,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+        }
     }
 }
 
@@ -155,23 +165,28 @@ private fun LicensesScreen(onBack: () -> Unit, modifier: Modifier) {
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 24.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back)) }
-            Text(stringResource(R.string.licenses_title), style = MaterialTheme.typography.titleLarge)
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back), tint = TextDim)
+            }
+            Text(stringResource(R.string.licenses_title), style = MonoUiStyle, fontWeight = FontWeight.SemiBold, color = SilverBright)
         }
-        for ((name, license) in COMPONENTS) {
-            Column(Modifier.padding(vertical = 6.dp)) {
-                Text(name, fontWeight = FontWeight.Medium)
-                Text(license, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        InstrumentPanel(contentPadding = ListPadding) {
+            COMPONENTS.forEachIndexed { i, (name, license) ->
+                if (i > 0) RowDivider()
+                Column(Modifier.padding(vertical = 8.dp)) {
+                    Text(name, style = MonoUiStyle, color = TextPrimary)
+                    Text(license, style = MaterialTheme.typography.bodySmall, color = TextDim, modifier = Modifier.padding(top = 2.dp))
+                }
             }
         }
-        Spacer(Modifier.height(12.dp))
         Text(
             stringResource(R.string.licenses_note),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = TextFaint,
+            modifier = Modifier.padding(top = 12.dp, start = 2.dp),
         )
     }
 }
@@ -179,50 +194,43 @@ private fun LicensesScreen(onBack: () -> Unit, modifier: Modifier) {
 private val COMPONENTS = listOf(
     "Bouncy Castle (bcprov)" to "Bouncy Castle License (MIT-style)",
     "xxHash (vendored port)" to "BSD 2-Clause — © Yann Collet",
+    "IBM Plex Mono" to "SIL Open Font License 1.1 — © IBM Corp.",
     "AndroidX & Jetpack Compose" to "Apache License 2.0",
     "Material Components / Material 3" to "Apache License 2.0",
     "Kotlin & Kotlin Coroutines" to "Apache License 2.0",
 )
 
 @Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
-    )
+private fun RowDivider() {
+    HorizontalDivider(thickness = 1.dp, color = LineSoft)
 }
 
 @Composable
 private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        Modifier.fillMaxWidth().padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-        Switch(checked = checked, onCheckedChange = onChange)
+        Text(label, Modifier.weight(1f), style = MonoUiStyle, color = TextPrimary)
+        Switch(checked = checked, onCheckedChange = onChange, colors = instrumentSwitchColors())
     }
 }
 
 @Composable
 private fun HelpText(title: String, body: String) {
-    Column(Modifier.padding(vertical = 4.dp)) {
-        Text(title, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
-        Text(body, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Column(Modifier.padding(vertical = 5.dp)) {
+        Text(title, style = MonoUiStyle, fontWeight = FontWeight.SemiBold, color = Silver)
+        Text(body, style = MaterialTheme.typography.bodyMedium, color = TextDim, modifier = Modifier.padding(top = 2.dp))
     }
 }
 
 @Composable
 private fun LinkRow(label: String, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 12.dp),
+        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(label, Modifier.weight(1f), style = MonoUiStyle, color = TextPrimary)
+        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextFaint)
     }
 }
-
-@Composable
-private fun NavRow(label: String, onClick: () -> Unit) = LinkRow(label, onClick)

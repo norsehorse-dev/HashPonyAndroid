@@ -8,6 +8,13 @@
     <string name="tab_verify">Verify</string>
     <string name="tab_settings">Settings</string>
 
+    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <string name="wordmark" translatable="false">hashpony</string>
+    <string name="pillar_hash">Hash</string>
+    <string name="label_compare">Compare</string>
+    <string name="label_digests">Digests</string>
+    <string name="tag_match">Match</string>
+
     <!-- Common -->
     <string name="action_clear">Clear</string>
     <string name="action_share">Share</string>

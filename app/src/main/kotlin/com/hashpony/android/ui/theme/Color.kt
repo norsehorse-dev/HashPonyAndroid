@@ -2,16 +2,39 @@ package com.hashpony.android.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Family brand: steel silver on graphite — a two-tone identity that reads as
-// precision and sits cleanly next to PassPony orange and VaultPony gold.
-val SteelSilver = Color(0xFF9AA0A6)
-val SteelSilverDark = Color(0xFF6B7176)
-val Graphite = Color(0xFF16181B)
-val GraphiteElev = Color(0xFF202327)
+// The Instrument palette — metallic silver on charcoal, shared token-for-token
+// with hashpony.app so the app and the site read as one product.
+val Ground       = Color(0xFF0B0D10)
+val Panel        = Color(0xFF15181D)
+val PanelElev    = Color(0xFF1B1F26)
+val PanelHigh    = Color(0xFF22272F)
+val Line         = Color(0xFF2A2F38)
+val LineSoft     = Color(0xFF20242B)
 
-val MatchGreen = Color(0xFF2E7D32)
-val MatchGreenContainer = Color(0xFFB7E1B9)
-val MatchGreenDark = Color(0xFF7FD487)
+val Silver       = Color(0xFFC7CBD0)
+val SilverBright = Color(0xFFE9EDF2)
+val SilverDim    = Color(0xFF7D838B)
 
-val White = Color(0xFFFFFFFF)
-val BackgroundLight = Color(0xFFF6F7F8)
+val TextPrimary  = Color(0xFFE7EAEF)
+val TextDim      = Color(0xFF9AA1A9)
+val TextFaint    = Color(0xFF6B727B)
+
+// Semantic, kept separate from the silver accent.
+val MatchGreen   = Color(0xFF46D17F) // OK / match — name preserved (referenced app-wide)
+val FailRed      = Color(0xFFF0575D)
+val MissAmber    = Color(0xFFE2A54A)
+
+// Light variant grounds (Instrument is dark-first; light is a fallback for now).
+val LightGround  = Color(0xFFEDEFF2)
+val LightPanel   = Color(0xFFFFFFFF)
+val LightInk     = Color(0xFF1A1D22)
+
+// Legacy names kept as literals so any older reference still resolves.
+val Graphite         = Color(0xFF0B0D10)
+val GraphiteElev     = Color(0xFF15181D)
+val SteelSilver      = Color(0xFFC7CBD0)
+val SteelSilverDark  = Color(0xFF7D838B)
+val MatchGreenContainer = Color(0xFF16321F)
+val MatchGreenDark   = Color(0xFF46D17F)
+val White            = Color(0xFFFFFFFF)
+val BackgroundLight  = Color(0xFFEDEFF2)

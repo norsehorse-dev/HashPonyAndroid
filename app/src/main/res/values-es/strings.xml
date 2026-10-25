@@ -6,6 +6,12 @@
     <string name="tab_verify">Verificar</string>
     <string name="tab_settings">Ajustes</string>
 
+    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <string name="pillar_hash">Hash</string>
+    <string name="label_compare">Comparar</string>
+    <string name="label_digests">Hashes</string>
+    <string name="tag_match">Coincide</string>
+
     <string name="action_clear">Limpiar</string>
     <string name="action_share">Compartir</string>
     <string name="action_save">Guardar</string>
