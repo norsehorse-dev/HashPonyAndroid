@@ -3,6 +3,7 @@ package com.hashpony.android.ui.settings
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.hashpony.android.data.AlgorithmKit
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.data.ThemeMode
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,9 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setAlgorithmEnabled(id: String, enabled: Boolean) =
         viewModelScope.launch { prefs.setAlgorithmEnabled(id, enabled) }
+
+    fun applyKit(kit: AlgorithmKit) =
+        viewModelScope.launch { prefs.applyKit(kit) }
 
     fun setUppercaseHex(value: Boolean) =
         viewModelScope.launch { prefs.setUppercaseHex(value) }

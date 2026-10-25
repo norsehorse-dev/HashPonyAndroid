@@ -103,4 +103,28 @@
     <string name="about_body">Prüfsummen, geprüft. Null Berechtigungen, vollständig offline. Nichts verlässt das Gerät außer dem, was du ausdrücklich teilst oder speicherst.</string>
     <string name="licenses_title">Open-Source-Lizenzen</string>
     <string name="licenses_note">Die xxHash-Algorithmen sind eine Clean-Room-Kotlin-Portierung von Yann Collets Referenzimplementierung, mit Quellenangabe in der NOTICE-Datei des Projekts.</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">Algorithmen-Set</string>
+    <string name="kit_downloads">Downloads</string>
+    <string name="kit_forensics">Forensik</string>
+    <string name="kit_everything">Alles</string>
+    <string name="kit_custom">Eigenes</string>
+    <string name="kit_all_count">Alle %1$d Algorithmen</string>
+    <string name="action_paste">Einfügen</string>
+    <string name="action_close">Schließen</string>
+    <string name="action_scan_qr">QR-Code scannen</string>
+    <string name="scan_no_app">Keine QR-Scanner-App gefunden. Installiere eine, zum Beispiel Binary Eye, oder füge den Wert stattdessen ein.</string>
+    <string name="menu_show_qr">QR-Code anzeigen</string>
+    <string name="qr_hint">Scanne den Code mit einem anderen Gerät, um zu vergleichen.</string>
+    <string name="files_closest">Am ähnlichsten: %1$s, %2$d von %3$d Zeichen weichen ab</string>
+    <string name="files_no_length">Keine der berechneten Prüfsummen ist %1$d Zeichen lang. Probiere ein anderes Algorithmen-Set.</string>
+    <string name="verify_share_receipt">Beleg teilen</string>
+    <string name="verify_save_receipt">Beleg speichern</string>
+    <string name="receipt_title">HashPony-Prüfbeleg</string>
+    <string name="receipt_sums_file">Prüfsummendatei</string>
+    <string name="receipt_checked">Geprüft</string>
+    <string name="receipt_result">Ergebnis</string>
+    <string name="receipt_share_title">Prüfbeleg teilen</string>
+    <string name="tile_label">Dateien hashen</string>
 </resources>

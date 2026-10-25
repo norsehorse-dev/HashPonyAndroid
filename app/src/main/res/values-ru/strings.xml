@@ -103,4 +103,28 @@
     <string name="about_body">Контрольные суммы под контролем. Ноль разрешений, полностью офлайн. Ничто не покидает устройство, кроме того, чем вы явно делитесь или что сохраняете.</string>
     <string name="licenses_title">Лицензии открытого кода</string>
     <string name="licenses_note">Алгоритмы xxHash — это чистая портация на Kotlin эталонной реализации Янна Колле, с указанием авторства в файле NOTICE проекта.</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">Набор алгоритмов</string>
+    <string name="kit_downloads">Загрузки</string>
+    <string name="kit_forensics">Криминалистика</string>
+    <string name="kit_everything">Все</string>
+    <string name="kit_custom">Свой</string>
+    <string name="kit_all_count">Все алгоритмы (%1$d)</string>
+    <string name="action_paste">Вставить</string>
+    <string name="action_close">Закрыть</string>
+    <string name="action_scan_qr">Сканировать QR-код</string>
+    <string name="scan_no_app">Приложение для сканирования QR-кодов не найдено. Установите его, например Binary Eye, или вставьте значение вручную.</string>
+    <string name="menu_show_qr">Показать QR-код</string>
+    <string name="qr_hint">Отсканируйте код другим устройством, чтобы сравнить.</string>
+    <string name="files_closest">Ближайший: %1$s, отличается символов: %2$d из %3$d</string>
+    <string name="files_no_length">Ни один вычисленный хеш не имеет нужной длины (%1$d симв.). Попробуйте другой набор алгоритмов.</string>
+    <string name="verify_share_receipt">Поделиться отчётом</string>
+    <string name="verify_save_receipt">Сохранить отчёт</string>
+    <string name="receipt_title">Отчёт о проверке HashPony</string>
+    <string name="receipt_sums_file">Файл сумм</string>
+    <string name="receipt_checked">Проверено</string>
+    <string name="receipt_result">Результат</string>
+    <string name="receipt_share_title">Поделиться отчётом о проверке</string>
+    <string name="tile_label">Хешировать файлы</string>
 </resources>

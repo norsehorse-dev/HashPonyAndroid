@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashCancelledException
+import com.hashpony.android.data.AlgorithmKit
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.hash.FileHashing
 import com.hashpony.android.hash.SafTree
@@ -66,6 +67,11 @@ class FilesViewModel(app: Application) : AndroidViewModel(app) {
     /** Quick-toggle an algorithm from the Files tab (SHA-512/SHA-1/MD5). */
     fun setAlgorithmEnabled(id: String, enabled: Boolean) {
         viewModelScope.launch { prefs.setAlgorithmEnabled(id, enabled) }
+    }
+
+    /** Switch the global algorithm kit; open files rehash through the settings flow. */
+    fun applyKit(kit: AlgorithmKit) {
+        viewModelScope.launch { prefs.applyKit(kit) }
     }
 
     fun addUris(uris: List<Uri>) {

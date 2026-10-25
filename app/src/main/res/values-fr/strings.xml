@@ -103,4 +103,28 @@
     <string name="about_body">Des sommes de contrôle, contrôlées. Zéro autorisation, entièrement hors ligne. Rien ne quitte l\'appareil sauf ce que vous partagez ou enregistrez explicitement.</string>
     <string name="licenses_title">Licences open source</string>
     <string name="licenses_note">Les algorithmes xxHash sont un portage Kotlin « clean-room » de l\'implémentation de référence de Yann Collet, avec attribution dans le fichier NOTICE du projet.</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">Jeu d\'algorithmes</string>
+    <string name="kit_downloads">Téléchargements</string>
+    <string name="kit_forensics">Forensique</string>
+    <string name="kit_everything">Tout</string>
+    <string name="kit_custom">Personnalisé</string>
+    <string name="kit_all_count">Tous les %1$d algorithmes</string>
+    <string name="action_paste">Coller</string>
+    <string name="action_close">Fermer</string>
+    <string name="action_scan_qr">Scanner un code QR</string>
+    <string name="scan_no_app">Aucune application de scan QR trouvée. Installez-en une, comme Binary Eye, ou collez plutôt la valeur.</string>
+    <string name="menu_show_qr">Afficher le code QR</string>
+    <string name="qr_hint">Scannez-le avec un autre appareil pour comparer.</string>
+    <string name="files_closest">Plus proche : %1$s, %2$d caractères sur %3$d diffèrent</string>
+    <string name="files_no_length">Aucune des empreintes calculées ne fait %1$d caractères. Essayez un autre jeu d\'algorithmes.</string>
+    <string name="verify_share_receipt">Partager le reçu</string>
+    <string name="verify_save_receipt">Enregistrer le reçu</string>
+    <string name="receipt_title">Reçu de vérification HashPony</string>
+    <string name="receipt_sums_file">Fichier de sommes</string>
+    <string name="receipt_checked">Vérifié</string>
+    <string name="receipt_result">Résultat</string>
+    <string name="receipt_share_title">Partager le reçu de vérification</string>
+    <string name="tile_label">Calculer des empreintes</string>
 </resources>

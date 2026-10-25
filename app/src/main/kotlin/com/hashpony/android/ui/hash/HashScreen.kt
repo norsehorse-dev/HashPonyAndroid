@@ -34,12 +34,17 @@ fun HashScreen(
     sharedUris: List<Uri>,
     onSharedConsumed: () -> Unit,
     modifier: Modifier = Modifier,
+    pickFilesRequest: Int = 0,
+    onPickFilesConsumed: () -> Unit = {},
 ) {
     var mode by rememberSaveable { mutableIntStateOf(0) } // 0 = Files, 1 = Text
 
-    // A share always lands on the Files source.
+    // A share, or the Quick Settings tile, always lands on the Files source.
     LaunchedEffect(sharedUris) {
         if (sharedUris.isNotEmpty()) mode = 0
+    }
+    LaunchedEffect(pickFilesRequest) {
+        if (pickFilesRequest > 0) mode = 0
     }
 
     Column(modifier.fillMaxSize()) {
@@ -52,7 +57,11 @@ fun HashScreen(
         }
         Spacer(Modifier.height(4.dp))
         when (mode) {
-            0 -> FilesScreen(filesViewModel, sharedUris, onSharedConsumed)
+            0 -> FilesScreen(
+                filesViewModel, sharedUris, onSharedConsumed,
+                pickFilesRequest = pickFilesRequest,
+                onPickFilesConsumed = onPickFilesConsumed,
+            )
             else -> TextScreen(textViewModel)
         }
     }

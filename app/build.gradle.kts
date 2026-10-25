@@ -84,6 +84,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.documentfile)
+    // QR encoder only (pure Java, no camera, no network). Scanning is handed to
+    // an installed scanner app, so HashPony stays zero-permission.
+    implementation(libs.zxing.core)
 
     debugImplementation(libs.androidx.ui.tooling)
 

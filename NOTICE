@@ -26,3 +26,9 @@ bundled under app/src/main/res/font:
     Copyright (c) IBM Corp.
     Licensed under the SIL Open Font License, Version 1.1.
     Full license text: licenses/IBM-Plex-Mono-OFL.txt
+
+QR codes are rendered with the ZXing core library (encoder only):
+
+    ZXing ("Zebra Crossing")
+    https://github.com/zxing/zxing
+    Licensed under the Apache License, Version 2.0.

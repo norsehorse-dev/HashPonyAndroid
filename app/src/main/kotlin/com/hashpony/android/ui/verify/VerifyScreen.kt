@@ -1,6 +1,15 @@
 package com.hashpony.android.ui.verify
 
 import android.net.Uri
+import android.content.Intent
+import android.widget.Toast
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import com.hashpony.core.sums.VerifyReceipt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -271,12 +280,14 @@ private fun ResultsView(sumsName: String, report: VerifyReport, onReset: () -> U
         HeaderRow(sumsName, stringResource(R.string.verify_done), onReset)
         val verdict = if (report.allOk) stringResource(R.string.verify_all_ok, report.ok) else stringResource(R.string.verify_issues)
         val counts = stringResource(R.string.verify_counts, report.ok, report.failed, report.missing)
+        val countsLine = if (report.unsupported > 0) stringResource(R.string.verify_counts_unknown, counts, report.unsupported) else counts
         VerdictPanel(
             title = verdict,
-            detail = if (report.unsupported > 0) stringResource(R.string.verify_counts_unknown, counts, report.unsupported) else counts,
+            detail = countsLine,
             color = if (report.allOk) MatchGreen else FailRed,
             modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
         )
+        ReceiptActions(sumsName, report, verdict, countsLine)
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(bottom = 24.dp),
@@ -349,4 +360,54 @@ private fun statusLabel(status: EntryStatus): String = when (status) {
     EntryStatus.FAILED -> stringResource(R.string.entry_failed)
     EntryStatus.MISSING -> stringResource(R.string.entry_missing)
     EntryStatus.UNSUPPORTED -> stringResource(R.string.entry_unknown)
+}
+
+/** Share or save a plain-text receipt of this verify run. */
+@Composable
+private fun ReceiptActions(sumsName: String, report: VerifyReport, verdict: String, countsLine: String) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val labels = VerifyReceipt.Labels(
+        title = stringResource(R.string.receipt_title),
+        sumsFile = stringResource(R.string.receipt_sums_file),
+        checked = stringResource(R.string.receipt_checked),
+        result = stringResource(R.string.receipt_result),
+        verdict = verdict,
+        counts = countsLine,
+        footer = stringResource(R.string.about_version),
+    )
+    // Stamped once per result, so sharing twice gives the same receipt.
+    val checkedAt = remember(report) { OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() }
+    val receipt = remember(report, labels, checkedAt) { VerifyReceipt.build(sumsName, report, checkedAt, labels) }
+    val shareTitle = stringResource(R.string.receipt_share_title)
+    val savedMsg = stringResource(R.string.export_saved)
+
+    val saver = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+        if (uri != null) {
+            scope.launch(Dispatchers.IO) {
+                runCatching { context.contentResolver.openOutputStream(uri)?.use { it.write(receipt.toByteArray()) } }
+            }
+            Toast.makeText(context, savedMsg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    Row(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+        SecondaryAction(
+            text = stringResource(R.string.verify_share_receipt),
+            onClick = {
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, receipt)
+                }
+                context.startActivity(Intent.createChooser(send, shareTitle))
+            },
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(8.dp))
+        SecondaryAction(
+            text = stringResource(R.string.verify_save_receipt),
+            onClick = { saver.launch("$sumsName.receipt.txt") },
+            modifier = Modifier.weight(1f),
+        )
+    }
 }

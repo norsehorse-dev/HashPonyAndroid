@@ -1,12 +1,18 @@
 package com.hashpony.android.ui.files
 
 import android.net.Uri
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.widget.Toast
+import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import com.hashpony.android.ui.qr.QrHandoff
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,9 +43,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
 import com.hashpony.android.ui.DigestRow
+import com.hashpony.android.ui.KitPicker
 import com.hashpony.android.ui.formatSize
 import com.hashpony.android.ui.theme.FailRed
-import com.hashpony.android.ui.theme.InstrumentChip
 import com.hashpony.android.ui.theme.InstrumentField
 import com.hashpony.android.ui.theme.InstrumentPanel
 import com.hashpony.android.ui.theme.InstrumentProgress
@@ -60,14 +66,14 @@ import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashComparer
 import com.hashpony.core.Hex
 
-private val QUICK_TOGGLE_IDS = listOf("sha512", "sha1", "md5")
-
 @Composable
 fun FilesScreen(
     viewModel: FilesViewModel,
     sharedUris: List<Uri>,
     onSharedConsumed: () -> Unit,
     modifier: Modifier = Modifier,
+    pickFilesRequest: Int = 0,
+    onPickFilesConsumed: () -> Unit = {},
 ) {
     val files by viewModel.files.collectAsState()
     val compareInput by viewModel.compareInput.collectAsState()
@@ -80,6 +86,30 @@ fun FilesScreen(
     }
     val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         if (uri != null) viewModel.addFolder(uri)
+    }
+
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
+    val noScannerMsg = stringResource(R.string.scan_no_app)
+    // Scanning is handed to an installed scanner app; HashPony never asks for the camera.
+    val scanner = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val text = result.data?.getStringExtra(QrHandoff.SCAN_RESULT)
+        if (result.resultCode == Activity.RESULT_OK && !text.isNullOrBlank()) viewModel.setCompareInput(text.trim())
+    }
+    fun launchScan() {
+        try {
+            scanner.launch(QrHandoff.scanIntent())
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, noScannerMsg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Quick Settings tile: open the picker as soon as Files is on screen.
+    LaunchedEffect(pickFilesRequest) {
+        if (pickFilesRequest > 0) {
+            onPickFilesConsumed()
+            picker.launch(arrayOf("*/*"))
+        }
     }
 
     LaunchedEffect(sharedUris) {
@@ -104,20 +134,31 @@ fun FilesScreen(
                     value = compareInput,
                     onValueChange = viewModel::setCompareInput,
                     placeholder = stringResource(R.string.files_compare_label),
-                    trailingIcon = if (compareInput.isNotEmpty()) {
-                        {
-                            IconButton(onClick = { viewModel.setCompareInput("") }) {
-                                Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.action_clear))
+                    trailingIcon = {
+                        Row {
+                            if (compareInput.isEmpty()) {
+                                IconButton(onClick = {
+                                    clipboard.getText()?.text?.trim()?.takeIf { it.isNotEmpty() }
+                                        ?.let(viewModel::setCompareInput)
+                                }) {
+                                    Icon(Icons.Filled.ContentPaste, contentDescription = stringResource(R.string.action_paste))
+                                }
+                            }
+                            IconButton(onClick = { launchScan() }) {
+                                Icon(Icons.Filled.QrCodeScanner, contentDescription = stringResource(R.string.action_scan_qr))
+                            }
+                            if (compareInput.isNotEmpty()) {
+                                IconButton(onClick = { viewModel.setCompareInput("") }) {
+                                    Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.action_clear))
+                                }
                             }
                         }
-                    } else {
-                        null
                     },
                 )
 
                 Spacer(Modifier.height(14.dp))
-                SectionLabel(stringResource(R.string.settings_algorithms))
-                QuickToggles(enabled) { id, on -> viewModel.setAlgorithmEnabled(id, on) }
+                SectionLabel(stringResource(R.string.kit_label))
+                KitPicker(enabled = enabled, onSelect = viewModel::applyKit)
 
                 Spacer(Modifier.height(14.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -180,25 +221,6 @@ private fun FileVsFileVerdict(a: FileUiState, b: FileUiState) {
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun QuickToggles(enabled: Set<String>, onToggle: (String, Boolean) -> Unit) {
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        for (id in QUICK_TOGGLE_IDS) {
-            val algo = AlgorithmRegistry.byId(id) ?: continue
-            val on = id in enabled
-            InstrumentChip(
-                label = algo.displayName,
-                selected = on,
-                onClick = { onToggle(id, !on) },
-            )
-        }
-    }
-}
-
 @Composable
 private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean) {
     val outcome = remember(file.results, compareInput) { HashComparer.compare(compareInput, file.results) }
@@ -236,6 +258,23 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
             InstrumentProgress(file.progress)
         }
 
+        val nearMiss = remember(file.results, outcome) {
+            if (comparing && !outcome.isMatch) HashComparer.nearest(outcome.normalizedExpected, file.results) else null
+        }
+        if (comparing && !outcome.isMatch && outcome.normalizedExpected.isNotEmpty() && file.status == HashStatus.DONE) {
+            val note = if (nearMiss != null) {
+                stringResource(
+                    R.string.files_closest,
+                    AlgorithmRegistry.byId(nearMiss.algorithmId)?.displayName ?: nearMiss.algorithmId,
+                    nearMiss.differing,
+                    nearMiss.length,
+                )
+            } else {
+                stringResource(R.string.files_no_length, outcome.normalizedExpected.length)
+            }
+            Text(note, style = MonoLabelStyle, color = FailRed, modifier = Modifier.padding(top = 8.dp))
+        }
+
         if (comparing && outcome.isMatch) {
             val matchNames = outcome.matched.mapNotNull { AlgorithmRegistry.byId(it)?.displayName }
             Text(
@@ -258,6 +297,7 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
                 hex = Hex.encode(bytes, uppercase),
                 matched = comparing && id in outcome.matched,
                 shareContext = file.name,
+                diffAgainst = if (nearMiss?.algorithmId == id) outcome.normalizedExpected else null,
             )
         }
     }

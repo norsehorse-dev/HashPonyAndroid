@@ -112,4 +112,28 @@
     <string name="about_body">Checksums, checked. Zero permissions, fully offline. Nothing leaves the device except what you explicitly share or save.</string>
     <string name="licenses_title">Open-source licenses</string>
     <string name="licenses_note">The xxHash algorithms are a clean-room Kotlin port of Yann Collet\'s reference implementation, with attribution in the project NOTICE file.</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">Algorithm kit</string>
+    <string name="kit_downloads">Downloads</string>
+    <string name="kit_forensics">Forensics</string>
+    <string name="kit_everything">Everything</string>
+    <string name="kit_custom">Custom</string>
+    <string name="kit_all_count">All %1$d algorithms</string>
+    <string name="action_paste">Paste</string>
+    <string name="action_close">Close</string>
+    <string name="action_scan_qr">Scan a QR code</string>
+    <string name="scan_no_app">No QR scanner app found. Install one, such as Binary Eye, or paste the value instead.</string>
+    <string name="menu_show_qr">Show QR code</string>
+    <string name="qr_hint">Scan this with another device to compare.</string>
+    <string name="files_closest">Closest: %1$s, %2$d of %3$d characters differ</string>
+    <string name="files_no_length">None of the computed digests is %1$d characters long. Try another algorithm kit.</string>
+    <string name="verify_share_receipt">Share receipt</string>
+    <string name="verify_save_receipt">Save receipt</string>
+    <string name="receipt_title">HashPony verify receipt</string>
+    <string name="receipt_sums_file">Sums file</string>
+    <string name="receipt_checked">Checked</string>
+    <string name="receipt_result">Result</string>
+    <string name="receipt_share_title">Share verify receipt</string>
+    <string name="tile_label">Hash files</string>
 </resources>

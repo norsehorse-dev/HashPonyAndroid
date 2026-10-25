@@ -103,4 +103,28 @@
     <string name="about_body">Somas de verificação, verificadas. Zero permissões, totalmente offline. Nada sai do dispositivo além do que você compartilhar ou salvar explicitamente.</string>
     <string name="licenses_title">Licenças de código aberto</string>
     <string name="licenses_note">Os algoritmos xxHash são uma adaptação limpa em Kotlin da implementação de referência de Yann Collet, com atribuição no arquivo NOTICE do projeto.</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">Kit de algoritmos</string>
+    <string name="kit_downloads">Downloads</string>
+    <string name="kit_forensics">Forense</string>
+    <string name="kit_everything">Todos</string>
+    <string name="kit_custom">Personalizado</string>
+    <string name="kit_all_count">Todos os %1$d algoritmos</string>
+    <string name="action_paste">Colar</string>
+    <string name="action_close">Fechar</string>
+    <string name="action_scan_qr">Ler um código QR</string>
+    <string name="scan_no_app">Nenhum app leitor de QR encontrado. Instale um, como o Binary Eye, ou cole o valor.</string>
+    <string name="menu_show_qr">Mostrar código QR</string>
+    <string name="qr_hint">Escaneie com outro dispositivo para comparar.</string>
+    <string name="files_closest">Mais próximo: %1$s, %2$d de %3$d caracteres diferem</string>
+    <string name="files_no_length">Nenhum dos hashes calculados tem %1$d caracteres. Tente outro kit de algoritmos.</string>
+    <string name="verify_share_receipt">Compartilhar comprovante</string>
+    <string name="verify_save_receipt">Salvar comprovante</string>
+    <string name="receipt_title">Comprovante de verificação do HashPony</string>
+    <string name="receipt_sums_file">Arquivo de somas</string>
+    <string name="receipt_checked">Verificado em</string>
+    <string name="receipt_result">Resultado</string>
+    <string name="receipt_share_title">Compartilhar comprovante de verificação</string>
+    <string name="tile_label">Calcular hashes</string>
 </resources>

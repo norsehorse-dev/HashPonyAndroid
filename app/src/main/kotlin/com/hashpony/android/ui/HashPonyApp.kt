@@ -56,6 +56,8 @@ fun HashPonyApp(
     onSharedConsumed: () -> Unit,
     verifyUri: Uri?,
     onVerifyConsumed: () -> Unit,
+    pickFilesRequest: Int = 0,
+    onPickFilesConsumed: () -> Unit = {},
 ) {
     val filesViewModel: FilesViewModel = viewModel()
     val textViewModel: TextViewModel = viewModel()
@@ -71,6 +73,10 @@ fun HashPonyApp(
     // A share lands on Hash / Files; an open-with sums file lands on Verify.
     LaunchedEffect(sharedUris) {
         if (sharedUris.isNotEmpty()) { showSettings = false; pillar = Pillar.HASH.ordinal }
+    }
+    // The Quick Settings tile lands on Hash / Files, which then opens the picker.
+    LaunchedEffect(pickFilesRequest) {
+        if (pickFilesRequest > 0) { showSettings = false; pillar = Pillar.HASH.ordinal }
     }
     LaunchedEffect(verifyUri) {
         if (verifyUri != null) { showSettings = false; pillar = Pillar.VERIFY.ordinal }
@@ -115,7 +121,11 @@ fun HashPonyApp(
             when {
                 showSettings -> SettingsScreen(settingsViewModel)
                 Pillar.entries[pillar] == Pillar.HASH ->
-                    HashScreen(filesViewModel, textViewModel, sharedUris, onSharedConsumed)
+                    HashScreen(
+                        filesViewModel, textViewModel, sharedUris, onSharedConsumed,
+                        pickFilesRequest = pickFilesRequest,
+                        onPickFilesConsumed = onPickFilesConsumed,
+                    )
                 else -> VerifyScreen(verifyViewModel, verifyUri, onVerifyConsumed)
             }
         }

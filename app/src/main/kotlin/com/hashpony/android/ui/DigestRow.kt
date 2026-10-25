@@ -31,8 +31,13 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
+import com.hashpony.android.ui.qr.QrDialog
+import com.hashpony.android.ui.theme.FailRed
 import com.hashpony.android.ui.theme.MatchGreen
 import com.hashpony.android.ui.theme.MonoDigestStyle
 import com.hashpony.android.ui.theme.MonoLabelStyle
@@ -48,10 +53,17 @@ import com.hashpony.android.ui.theme.TextPrimary
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String) {
+fun DigestRow(
+    label: String,
+    hex: String,
+    matched: Boolean,
+    shareContext: String,
+    diffAgainst: String? = null,
+) {
     val clipboard = LocalClipboardManager.current
     val context = LocalContext.current
     var menuOpen by remember { mutableStateOf(false) }
+    var showQr by remember { mutableStateOf(false) }
 
     val copiedMsg = stringResource(R.string.copied, label)
     val copiedUpperMsg = stringResource(R.string.copied_uppercase)
@@ -96,6 +108,13 @@ fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String
                         },
                     )
                     DropdownMenuItem(
+                        text = { Text(stringResource(R.string.menu_show_qr), style = MaterialTheme.typography.bodyMedium) },
+                        onClick = {
+                            menuOpen = false
+                            showQr = true
+                        },
+                    )
+                    DropdownMenuItem(
                         text = { Text(stringResource(R.string.action_share), style = MaterialTheme.typography.bodyMedium) },
                         onClick = {
                             menuOpen = false
@@ -109,8 +128,9 @@ fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String
                 }
             }
         }
+        val shown = remember(hex, diffAgainst) { diffHighlight(hex, diffAgainst) }
         Text(
-            text = hex,
+            text = shown,
             style = MonoDigestStyle,
             color = if (matched) MatchGreen else TextPrimary,
             modifier = Modifier
@@ -121,5 +141,24 @@ fun DigestRow(label: String, hex: String, matched: Boolean, shareContext: String
                     onLongClick = { menuOpen = true },
                 ),
         )
+    }
+    if (showQr) {
+        QrDialog(label = label, value = hex, onDismiss = { showQr = false })
+    }
+}
+
+/**
+ * [hex] with every position that differs from [expected] marked in red, so a
+ * near-miss shows exactly where a pasted value diverges. Comparison ignores case
+ * (the uppercase-hex setting changes display only). Lengths must match.
+ */
+private fun diffHighlight(hex: String, expected: String?): AnnotatedString {
+    if (expected == null || expected.length != hex.length) return AnnotatedString(hex)
+    val bad = SpanStyle(color = FailRed, background = FailRed.copy(alpha = 0.18f))
+    return buildAnnotatedString {
+        for (i in hex.indices) {
+            if (hex[i].lowercaseChar() == expected[i].lowercaseChar()) append(hex[i])
+            else withStyle(bad) { append(hex[i]) }
+        }
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +26,12 @@ import com.hashpony.android.ui.theme.HashPonyTheme
 
 class MainActivity : ComponentActivity() {
 
+    // Incoming work, held at activity level so a second intent (onNewIntent,
+    // e.g. the Quick Settings tile while the app is open) reaches the UI too.
+    private var sharedUris by mutableStateOf<List<Uri>>(emptyList())
+    private var verifyUri by mutableStateOf<Uri?>(null)
+    private var pickFilesRequest by mutableIntStateOf(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // The Instrument is dark-only for now, so system bar icons stay light even
@@ -34,8 +41,9 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
         )
 
-        val initialShared = extractSharedUris(intent)
-        val initialVerify = extractVerifyUri(intent)
+        // Only a fresh launch consumes the intent; a rotation must not re-open
+        // the picker or restart a verify that already has results.
+        if (savedInstanceState == null) handleIntent(intent)
 
         setContent {
             val prefs = remember { PreferencesRepository(applicationContext) }
@@ -48,19 +56,32 @@ class MainActivity : ComponentActivity() {
             }
             val dynamic = settings?.dynamicColor ?: true
 
-            var shared by remember { mutableStateOf(initialShared) }
-            var verify by remember { mutableStateOf(initialVerify) }
-
             HashPonyTheme(darkTheme = dark, dynamicColor = dynamic) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     HashPonyApp(
-                        sharedUris = shared,
-                        onSharedConsumed = { shared = emptyList() },
-                        verifyUri = verify,
-                        onVerifyConsumed = { verify = null },
+                        sharedUris = sharedUris,
+                        onSharedConsumed = { sharedUris = emptyList() },
+                        verifyUri = verifyUri,
+                        onVerifyConsumed = { verifyUri = null },
+                        pickFilesRequest = pickFilesRequest,
+                        onPickFilesConsumed = { pickFilesRequest = 0 },
                     )
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        when (intent?.action) {
+            ACTION_PICK_FILES -> pickFilesRequest++
+            Intent.ACTION_SEND, Intent.ACTION_SEND_MULTIPLE -> sharedUris = extractSharedUris(intent)
+            Intent.ACTION_VIEW -> verifyUri = extractVerifyUri(intent)
         }
     }
 
@@ -87,4 +108,9 @@ class MainActivity : ComponentActivity() {
     private inline fun <reified T : android.os.Parcelable> Intent.parcelableArrayListExtra(key: String): ArrayList<T>? =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getParcelableArrayListExtra(key, T::class.java)
         else getParcelableArrayListExtra(key)
+
+    companion object {
+        /** Sent by the Quick Settings tile: open Hash / Files and launch the picker. */
+        const val ACTION_PICK_FILES = "com.hashpony.android.action.PICK_FILES"
+    }
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
+import com.hashpony.android.ui.KitPicker
 import com.hashpony.android.ui.Links
 import com.hashpony.android.ui.theme.InstrumentPanel
 import com.hashpony.android.ui.theme.LineSoft
@@ -81,6 +82,9 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
             .verticalScroll(rememberScrollState())
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
     ) {
+        SectionLabel(stringResource(R.string.kit_label))
+        KitPicker(enabled = enabled, onSelect = { viewModel.applyKit(it) }, modifier = Modifier.padding(bottom = 18.dp))
+
         SectionLabel(stringResource(R.string.settings_algorithms))
         for (group in AlgorithmGroup.entries) {
             InstrumentPanel(Modifier.padding(bottom = 10.dp), contentPadding = ListPadding) {
@@ -195,6 +199,7 @@ private val COMPONENTS = listOf(
     "Bouncy Castle (bcprov)" to "Bouncy Castle License (MIT-style)",
     "xxHash (vendored port)" to "BSD 2-Clause — © Yann Collet",
     "IBM Plex Mono" to "SIL Open Font License 1.1 — © IBM Corp.",
+    "ZXing core (QR encoder)" to "Apache License 2.0",
     "AndroidX & Jetpack Compose" to "Apache License 2.0",
     "Material Components / Material 3" to "Apache License 2.0",
     "Kotlin & Kotlin Coroutines" to "Apache License 2.0",

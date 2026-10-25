@@ -103,4 +103,28 @@
     <string name="about_body">校验和，已校验。零权限，完全离线。除了你明确分享或保存的内容，任何数据都不会离开设备。</string>
     <string name="licenses_title">开源许可</string>
     <string name="licenses_note">xxHash 算法是对 Yann Collet 参考实现的洁净室 Kotlin 移植，署名见项目的 NOTICE 文件。</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">算法套件</string>
+    <string name="kit_downloads">下载</string>
+    <string name="kit_forensics">取证</string>
+    <string name="kit_everything">全部</string>
+    <string name="kit_custom">自定义</string>
+    <string name="kit_all_count">全部 %1$d 种算法</string>
+    <string name="action_paste">粘贴</string>
+    <string name="action_close">关闭</string>
+    <string name="action_scan_qr">扫描二维码</string>
+    <string name="scan_no_app">未找到二维码扫描应用。请安装一个（例如 Binary Eye），或改为粘贴该值。</string>
+    <string name="menu_show_qr">显示二维码</string>
+    <string name="qr_hint">用另一台设备扫描此码进行比较。</string>
+    <string name="files_closest">最接近：%1$s，%3$d 个字符中有 %2$d 个不同</string>
+    <string name="files_no_length">计算出的哈希值中没有长度为 %1$d 个字符的。请尝试其他算法套件。</string>
+    <string name="verify_share_receipt">分享回执</string>
+    <string name="verify_save_receipt">保存回执</string>
+    <string name="receipt_title">HashPony 校验回执</string>
+    <string name="receipt_sums_file">校验和文件</string>
+    <string name="receipt_checked">校验时间</string>
+    <string name="receipt_result">结果</string>
+    <string name="receipt_share_title">分享校验回执</string>
+    <string name="tile_label">计算文件哈希</string>
 </resources>
