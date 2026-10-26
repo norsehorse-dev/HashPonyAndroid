@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.hashpony.android"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.hashpony.android"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 100
         versionName = "1.0.0"
 

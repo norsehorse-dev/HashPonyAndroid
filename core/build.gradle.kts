@@ -22,7 +22,7 @@ kotlin {
 
 dependencies {
     // One BouncyCastle dependency covers every cryptographic digest outside the
-    // SHA-2 family. Confirm this coordinate/version matches PGPonyAndroid.
+    // SHA-2 family. Same version as PGPonyAndroid (see the catalog).
     api(libs.bouncycastle.prov)
 
     testImplementation(libs.junit)
