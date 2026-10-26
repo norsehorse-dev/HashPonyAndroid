@@ -127,4 +127,26 @@
     <string name="receipt_result">Resultado</string>
     <string name="receipt_share_title">Compartir comprobante de verificación</string>
     <string name="tile_label">Calcular hashes</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">Kits de algoritmos</string>
+    <string name="help_kits_body">Elige un kit de algoritmos para decidir qué se calcula: Descargas (SHA-256, SHA-512, SHA-1, MD5), Forense (MD5, SHA-1, SHA-256) o Todo. Si activas o desactivas algoritmos en Ajustes, tu propia selección se guarda como Personalizado.</string>
+    <string name="help_compare_title">Comprobar un valor</string>
+    <string name="help_compare_body">Pega o escanea el valor publicado en el campo de comparación. Si coincide, ese hash se pone en verde. Si nada coincide, HashPony muestra el hash más parecido de la misma longitud y marca cada carácter distinto.</string>
+    <string name="help_qr_title">Códigos QR</string>
+    <string name="help_qr_body">Mantén pulsado cualquier hash y elige «Mostrar código QR» para que otro dispositivo pueda escanearlo. El botón de escanear del campo de comparación abre una app de escaneo que ya tengas, como Binary Eye. HashPony nunca usa la cámara.</string>
+    <string name="help_receipt_title">Comprobantes de verificación</string>
+    <string name="help_receipt_body">Tras una verificación, comparte o guarda un comprobante en texto plano que incluye cada archivo con su resultado y sus hashes, y cuándo se comprobó.</string>
+    <string name="help_tile_title">Icono de Ajustes rápidos</string>
+    <string name="help_tile_body">Añade el icono «Calcular hashes» a Ajustes rápidos para abrir el selector de archivos desde cualquier sitio.</string>
+    <string name="family_pgpony">Cifrado OpenPGP para tus mensajes y archivos.</string>
+    <string name="family_passpony">Un gestor de contraseñas que guarda tu bóveda en tus propios dispositivos.</string>
+    <string name="family_vaultpony">Bóvedas cifradas bajo tu control, compatibles con VeraCrypt.</string>
+    <string name="family_agepony">Cifrado y firma de archivos modernos con el protocolo age.</string>
+    <string name="family_carrierpony">Mensajería privada y envío de archivos, sellados de extremo a extremo.</string>
+    <string name="family_burnpony">Envía un secreto. Cifrado en tu teléfono, destruido tras leerlo.</string>
+    <string name="family_relaypony">Transferencia de archivos cifrada, de teléfono a teléfono.</string>
+    <string name="family_quorumpony">Divide un secreto en tarjetas. Unas pocas lo reconstruyen. Una sola no revela nada.</string>
+    <string name="family_scrubpony">Elimina los metadatos identificativos de los JPEG sin tocar ni un píxel.</string>
+    <string name="family_tappony">Toca una etiqueta NFC para enviar una solicitud a tu propio servidor.</string>
 </resources>

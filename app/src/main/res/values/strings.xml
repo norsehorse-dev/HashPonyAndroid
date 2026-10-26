@@ -136,4 +136,26 @@
     <string name="receipt_result">Result</string>
     <string name="receipt_share_title">Share verify receipt</string>
     <string name="tile_label">Hash files</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">Algorithm kits</string>
+    <string name="help_kits_body">Pick a kit to choose what gets computed: Downloads (SHA-256, SHA-512, SHA-1, MD5), Forensics (MD5, SHA-1, SHA-256) or Everything. Turning algorithms on or off in Settings saves your own selection as Custom.</string>
+    <string name="help_compare_title">Checking a value</string>
+    <string name="help_compare_body">Paste or scan the published value into the compare box. A match turns that digest green. If nothing matches, HashPony shows the closest digest of the same length and marks every character that differs.</string>
+    <string name="help_qr_title">QR codes</string>
+    <string name="help_qr_body">Long-press any digest and choose Show QR code so another device can scan it. The scan button in the compare box opens a scanner app you already have, such as Binary Eye. HashPony itself never uses the camera.</string>
+    <string name="help_receipt_title">Verify receipts</string>
+    <string name="help_receipt_body">After a verify run, share or save a plain-text receipt that lists every file with its result and digests, and when it was checked.</string>
+    <string name="help_tile_title">Quick Settings tile</string>
+    <string name="help_tile_body">Add the Hash files tile to Quick Settings to open the file picker from anywhere.</string>
+    <string name="family_pgpony">OpenPGP encryption for your messages and files.</string>
+    <string name="family_passpony">A password manager that keeps your vault on your own devices.</string>
+    <string name="family_vaultpony">Encrypted vaults you control, compatible with VeraCrypt.</string>
+    <string name="family_agepony">Modern file encryption and signing with the age protocol.</string>
+    <string name="family_carrierpony">Private messaging and file transfer, sealed end to end.</string>
+    <string name="family_burnpony">Send a secret. Encrypted on your phone, burned after reading.</string>
+    <string name="family_relaypony">Encrypted file transfer, phone to phone.</string>
+    <string name="family_quorumpony">Split a secret into cards. Any few rebuild it. One alone reveals nothing.</string>
+    <string name="family_scrubpony">Strips identifying metadata out of JPEGs without touching a pixel.</string>
+    <string name="family_tappony">Tap an NFC tag to send a request to your own server.</string>
 </resources>

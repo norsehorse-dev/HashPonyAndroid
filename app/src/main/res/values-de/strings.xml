@@ -127,4 +127,26 @@
     <string name="receipt_result">Ergebnis</string>
     <string name="receipt_share_title">Prüfbeleg teilen</string>
     <string name="tile_label">Dateien hashen</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">Algorithmen-Sets</string>
+    <string name="help_kits_body">Wähle ein Algorithmen-Set, um festzulegen, was berechnet wird: Downloads (SHA-256, SHA-512, SHA-1, MD5), Forensik (MD5, SHA-1, SHA-256) oder Alles. Wenn du in den Einstellungen Algorithmen ein- oder ausschaltest, wird deine eigene Auswahl als Eigenes gespeichert.</string>
+    <string name="help_compare_title">Einen Wert prüfen</string>
+    <string name="help_compare_body">Füge den veröffentlichten Wert in das Vergleichsfeld ein oder scanne ihn. Bei einer Übereinstimmung wird diese Prüfsumme grün. Wenn nichts übereinstimmt, zeigt HashPony die ähnlichste Prüfsumme gleicher Länge und markiert jedes abweichende Zeichen.</string>
+    <string name="help_qr_title">QR-Codes</string>
+    <string name="help_qr_body">Drücke lange auf eine Prüfsumme und wähle „QR-Code anzeigen“, damit ein anderes Gerät sie scannen kann. Die Scan-Schaltfläche im Vergleichsfeld öffnet eine Scanner-App, die du bereits hast, etwa Binary Eye. HashPony selbst nutzt nie die Kamera.</string>
+    <string name="help_receipt_title">Prüfbelege</string>
+    <string name="help_receipt_body">Nach einer Prüfung kannst du einen Beleg als reinen Text teilen oder speichern. Er listet jede Datei mit Ergebnis und Prüfsummen auf und zeigt, wann geprüft wurde.</string>
+    <string name="help_tile_title">Kachel in den Schnelleinstellungen</string>
+    <string name="help_tile_body">Füge die Kachel „Dateien hashen“ zu den Schnelleinstellungen hinzu, um die Dateiauswahl von überall aus zu öffnen.</string>
+    <string name="family_pgpony">OpenPGP-Verschlüsselung für deine Nachrichten und Dateien.</string>
+    <string name="family_passpony">Ein Passwortmanager, der deinen Tresor auf deinen eigenen Geräten behält.</string>
+    <string name="family_vaultpony">Verschlüsselte Tresore unter deiner Kontrolle, kompatibel mit VeraCrypt.</string>
+    <string name="family_agepony">Moderne Dateiverschlüsselung und Signierung mit dem age-Protokoll.</string>
+    <string name="family_carrierpony">Private Nachrichten und Dateiübertragung, Ende-zu-Ende versiegelt.</string>
+    <string name="family_burnpony">Sende ein Geheimnis. Auf deinem Handy verschlüsselt, nach dem Lesen vernichtet.</string>
+    <string name="family_relaypony">Verschlüsselte Dateiübertragung von Handy zu Handy.</string>
+    <string name="family_quorumpony">Teile ein Geheimnis in Karten auf. Ein paar davon setzen es wieder zusammen. Eine allein verrät nichts.</string>
+    <string name="family_scrubpony">Entfernt identifizierende Metadaten aus JPEGs, ohne ein Pixel anzurühren.</string>
+    <string name="family_tappony">Tippe auf einen NFC-Tag, um eine Anfrage an deinen eigenen Server zu senden.</string>
 </resources>

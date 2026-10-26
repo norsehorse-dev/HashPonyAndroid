@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -131,6 +132,11 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
             HelpText(stringResource(R.string.help_files_title), stringResource(R.string.help_files_body))
             HelpText(stringResource(R.string.help_verify_title), stringResource(R.string.help_verify_body))
             HelpText(stringResource(R.string.help_text_title), stringResource(R.string.help_text_body))
+            HelpText(stringResource(R.string.help_kits_title), stringResource(R.string.help_kits_body))
+            HelpText(stringResource(R.string.help_compare_title), stringResource(R.string.help_compare_body))
+            HelpText(stringResource(R.string.help_qr_title), stringResource(R.string.help_qr_body))
+            HelpText(stringResource(R.string.help_receipt_title), stringResource(R.string.help_receipt_body))
+            HelpText(stringResource(R.string.help_tile_title), stringResource(R.string.help_tile_body))
         }
 
         Spacer(Modifier.height(18.dp))
@@ -142,6 +148,11 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
                 color = TextDim,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
             )
+            for (app in Links.FAMILY) {
+                RowDivider()
+                FamilyRow(app.name, stringResource(app.tagline)) { open(app.url) }
+            }
+            RowDivider()
             LinkRow(stringResource(R.string.link_hub)) { open(Links.HUB) }
             RowDivider()
             LinkRow(stringResource(R.string.link_source)) { open(Links.SOURCE) }
@@ -237,5 +248,20 @@ private fun LinkRow(label: String, onClick: () -> Unit) {
     ) {
         Text(label, Modifier.weight(1f), style = MonoUiStyle, color = TextPrimary)
         Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextFaint)
+    }
+}
+
+/** A sibling Pony app: mono name, tagline underneath, opens its product site. */
+@Composable
+private fun FamilyRow(name: String, tagline: String, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(name, style = MonoUiStyle, fontWeight = FontWeight.SemiBold, color = TextPrimary)
+            Text(tagline, style = MaterialTheme.typography.bodySmall, color = TextDim, modifier = Modifier.padding(top = 2.dp))
+        }
+        Icon(Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null, tint = TextFaint)
     }
 }

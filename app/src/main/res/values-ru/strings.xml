@@ -127,4 +127,26 @@
     <string name="receipt_result">Результат</string>
     <string name="receipt_share_title">Поделиться отчётом о проверке</string>
     <string name="tile_label">Хешировать файлы</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">Наборы алгоритмов</string>
+    <string name="help_kits_body">Выберите набор, чтобы указать, что вычислять: «Загрузки» (SHA-256, SHA-512, SHA-1, MD5), «Криминалистика» (MD5, SHA-1, SHA-256) или «Все». Если включить или отключить алгоритмы в Настройках, ваш выбор сохранится как «Свой».</string>
+    <string name="help_compare_title">Проверка значения</string>
+    <string name="help_compare_body">Вставьте или отсканируйте опубликованное значение в поле сравнения. При совпадении этот хеш станет зелёным. Если совпадений нет, HashPony покажет ближайший хеш той же длины и отметит каждый отличающийся символ.</string>
+    <string name="help_qr_title">QR-коды</string>
+    <string name="help_qr_body">Нажмите и удерживайте любой хеш и выберите «Показать QR-код», чтобы его могло отсканировать другое устройство. Кнопка сканирования в поле сравнения открывает уже установленное у вас приложение-сканер, например Binary Eye. Сам HashPony никогда не использует камеру.</string>
+    <string name="help_receipt_title">Отчёты о проверке</string>
+    <string name="help_receipt_body">После проверки поделитесь отчётом в виде простого текста или сохраните его. В нём перечислены все файлы с результатами и хешами, а также время проверки.</string>
+    <string name="help_tile_title">Плитка быстрых настроек</string>
+    <string name="help_tile_body">Добавьте плитку «Хешировать файлы» в Быстрые настройки, чтобы открывать выбор файлов откуда угодно.</string>
+    <string name="family_pgpony">Шифрование OpenPGP для ваших сообщений и файлов.</string>
+    <string name="family_passpony">Менеджер паролей, который держит хранилище на ваших собственных устройствах.</string>
+    <string name="family_vaultpony">Зашифрованные хранилища под вашим контролем, совместимые с VeraCrypt.</string>
+    <string name="family_agepony">Современное шифрование и подпись файлов по протоколу age.</string>
+    <string name="family_carrierpony">Приватные сообщения и передача файлов со сквозным шифрованием.</string>
+    <string name="family_burnpony">Отправьте секрет. Шифруется на телефоне, сгорает после прочтения.</string>
+    <string name="family_relaypony">Зашифрованная передача файлов с телефона на телефон.</string>
+    <string name="family_quorumpony">Разделите секрет на карточки. Несколько из них его восстановят. Одна ничего не раскроет.</string>
+    <string name="family_scrubpony">Удаляет идентифицирующие метаданные из JPEG, не трогая ни пикселя.</string>
+    <string name="family_tappony">Коснитесь NFC-метки, чтобы отправить запрос на свой сервер.</string>
 </resources>

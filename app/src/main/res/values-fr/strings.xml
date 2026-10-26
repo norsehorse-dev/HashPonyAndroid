@@ -127,4 +127,26 @@
     <string name="receipt_result">Résultat</string>
     <string name="receipt_share_title">Partager le reçu de vérification</string>
     <string name="tile_label">Calculer des empreintes</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">Jeux d\'algorithmes</string>
+    <string name="help_kits_body">Choisissez un jeu d\'algorithmes pour définir ce qui est calculé : Téléchargements (SHA-256, SHA-512, SHA-1, MD5), Forensique (MD5, SHA-1, SHA-256) ou Tout. Activer ou désactiver des algorithmes dans les Réglages enregistre votre propre sélection sous Personnalisé.</string>
+    <string name="help_compare_title">Vérifier une valeur</string>
+    <string name="help_compare_body">Collez ou scannez la valeur publiée dans la zone de comparaison. En cas de correspondance, l\'empreinte concernée passe au vert. Si rien ne correspond, HashPony affiche l\'empreinte de même longueur la plus proche et signale chaque caractère qui diffère.</string>
+    <string name="help_qr_title">Codes QR</string>
+    <string name="help_qr_body">Appuyez longuement sur une empreinte et choisissez « Afficher le code QR » pour qu\'un autre appareil puisse la scanner. Le bouton de scan de la zone de comparaison ouvre une application de scan que vous avez déjà, comme Binary Eye. HashPony n\'utilise jamais l\'appareil photo.</string>
+    <string name="help_receipt_title">Reçus de vérification</string>
+    <string name="help_receipt_body">Après une vérification, partagez ou enregistrez un reçu en texte brut qui liste chaque fichier avec son résultat et ses empreintes, ainsi que la date de la vérification.</string>
+    <string name="help_tile_title">Tuile des Réglages rapides</string>
+    <string name="help_tile_body">Ajoutez la tuile « Calculer des empreintes » aux Réglages rapides pour ouvrir le sélecteur de fichiers depuis n\'importe où.</string>
+    <string name="family_pgpony">Chiffrement OpenPGP pour vos messages et vos fichiers.</string>
+    <string name="family_passpony">Un gestionnaire de mots de passe qui garde votre coffre sur vos propres appareils.</string>
+    <string name="family_vaultpony">Des coffres chiffrés que vous contrôlez, compatibles avec VeraCrypt.</string>
+    <string name="family_agepony">Chiffrement et signature de fichiers modernes avec le protocole age.</string>
+    <string name="family_carrierpony">Messagerie privée et transfert de fichiers, scellés de bout en bout.</string>
+    <string name="family_burnpony">Envoyez un secret. Chiffré sur votre téléphone, détruit après lecture.</string>
+    <string name="family_relaypony">Transfert de fichiers chiffré, de téléphone à téléphone.</string>
+    <string name="family_quorumpony">Divisez un secret en cartes. Quelques-unes suffisent à le reconstituer. Une seule ne révèle rien.</string>
+    <string name="family_scrubpony">Retire les métadonnées identifiantes des JPEG sans toucher à un pixel.</string>
+    <string name="family_tappony">Touchez un tag NFC pour envoyer une requête à votre propre serveur.</string>
 </resources>

@@ -127,4 +127,26 @@
     <string name="receipt_result">结果</string>
     <string name="receipt_share_title">分享校验回执</string>
     <string name="tile_label">计算文件哈希</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">算法套件</string>
+    <string name="help_kits_body">选择一个套件来决定计算哪些哈希值：“下载”（SHA-256、SHA-512、SHA-1、MD5）、“取证”（MD5、SHA-1、SHA-256）或“全部”。在设置中开启或关闭算法后，你的选择会保存为“自定义”。</string>
+    <string name="help_compare_title">核对数值</string>
+    <string name="help_compare_body">将公布的值粘贴或扫描到比较框中。匹配时该哈希值会变绿。如果没有匹配，HashPony 会显示长度相同的最接近的哈希值，并标出每个不同的字符。</string>
+    <string name="help_qr_title">二维码</string>
+    <string name="help_qr_body">长按任意哈希值并选择“显示二维码”，即可让其他设备扫描。比较框中的扫描按钮会打开你已安装的扫码应用，例如 Binary Eye。HashPony 本身从不使用相机。</string>
+    <string name="help_receipt_title">验证回执</string>
+    <string name="help_receipt_body">验证完成后，可以分享或保存纯文本回执，其中列出每个文件的结果和哈希值，以及核对时间。</string>
+    <string name="help_tile_title">快捷设置图块</string>
+    <string name="help_tile_body">将“计算文件哈希”图块添加到快捷设置，即可随时随地打开文件选择器。</string>
+    <string name="family_pgpony">为你的消息和文件提供 OpenPGP 加密。</string>
+    <string name="family_passpony">密码管理器，密码库只保存在你自己的设备上。</string>
+    <string name="family_vaultpony">由你掌控的加密保险库，兼容 VeraCrypt。</string>
+    <string name="family_agepony">基于 age 协议的现代文件加密与签名。</string>
+    <string name="family_carrierpony">私密消息与文件传输，全程端到端加密。</string>
+    <string name="family_burnpony">发送秘密。在手机上加密，阅后即焚。</string>
+    <string name="family_relaypony">加密文件传输，手机直达手机。</string>
+    <string name="family_quorumpony">把秘密拆分成卡片。凑齐几张即可还原，单独一张毫无信息。</string>
+    <string name="family_scrubpony">清除 JPEG 中的身份元数据，不动一个像素。</string>
+    <string name="family_tappony">轻触 NFC 标签，向你自己的服务器发送请求。</string>
 </resources>
