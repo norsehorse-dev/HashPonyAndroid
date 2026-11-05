@@ -58,6 +58,8 @@ fun HashPonyApp(
     onVerifyConsumed: () -> Unit,
     pickFilesRequest: Int = 0,
     onPickFilesConsumed: () -> Unit = {},
+    demoScreen: String? = null,
+    demoTick: Int = 0,
 ) {
     val filesViewModel: FilesViewModel = viewModel()
     val textViewModel: TextViewModel = viewModel()
@@ -85,6 +87,15 @@ fun HashPonyApp(
     }
     LaunchedEffect(verifyUri) {
         if (verifyUri != null) { showSettings = false; pillar = Pillar.VERIFY.ordinal }
+    }
+    // Store screenshots only: Demo.kt in src/debug names the screen to open.
+    LaunchedEffect(demoTick) {
+        when (demoScreen) {
+            "files", "text" -> { showSettings = false; pillar = Pillar.HASH.ordinal }
+            "verify" -> { showSettings = false; pillar = Pillar.VERIFY.ordinal }
+            "algorithms" -> { settingsPage = SettingsPage.ALGORITHMS; showSettings = true }
+            "settings" -> { settingsPage = SettingsPage.MAIN; showSettings = true }
+        }
     }
 
     Scaffold(
@@ -135,6 +146,8 @@ fun HashPonyApp(
                         filesViewModel, textViewModel, sharedUris, onSharedConsumed,
                         pickFilesRequest = pickFilesRequest,
                         onPickFilesConsumed = onPickFilesConsumed,
+                        modeRequest = when (demoScreen) { "files" -> 0; "text" -> 1; else -> -1 },
+                        modeRequestTick = demoTick,
                     )
                 else -> VerifyScreen(verifyViewModel, verifyUri, onVerifyConsumed)
             }

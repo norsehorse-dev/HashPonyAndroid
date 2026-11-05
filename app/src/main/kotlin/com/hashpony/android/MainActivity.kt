@@ -20,11 +20,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.data.ThemeMode
 import com.hashpony.android.i18n.LanguageState
 import com.hashpony.android.ui.HashPonyApp
+import com.hashpony.android.ui.files.FilesViewModel
+import com.hashpony.android.ui.text.TextViewModel
 import com.hashpony.android.ui.theme.HashPonyTheme
+import com.hashpony.android.ui.verify.VerifyViewModel
 
 // AppCompatActivity rather than ComponentActivity so the in-app language
 // picker also works on Android 8 to 12 (see i18n/LanguageManager.kt).
@@ -35,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private var sharedUris by mutableStateOf<List<Uri>>(emptyList())
     private var verifyUri by mutableStateOf<Uri?>(null)
     private var pickFilesRequest by mutableIntStateOf(0)
+    // Store screenshots only (Demo.kt in src/debug; the release stub returns null).
+    private var demoScreen by mutableStateOf<String?>(null)
+    private var demoTick by mutableIntStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +55,10 @@ class MainActivity : AppCompatActivity() {
 
         // Only a fresh launch consumes the intent; a rotation must not re-open
         // the picker or restart a verify that already has results.
-        if (savedInstanceState == null) handleIntent(intent)
+        if (savedInstanceState == null) {
+            handleIntent(intent)
+            handleDemo(intent)
+        }
 
         setContent {
             val prefs = remember { PreferencesRepository(applicationContext) }
@@ -70,6 +80,8 @@ class MainActivity : AppCompatActivity() {
                         onVerifyConsumed = { verifyUri = null },
                         pickFilesRequest = pickFilesRequest,
                         onPickFilesConsumed = { pickFilesRequest = 0 },
+                        demoScreen = demoScreen,
+                        demoTick = demoTick,
                     )
                 }
             }
@@ -93,6 +105,15 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
+        handleDemo(intent)
+    }
+
+    private fun handleDemo(intent: Intent?) {
+        val vms = ViewModelProvider(this)
+        Demo.handle(
+            this, intent,
+            vms[FilesViewModel::class.java], vms[TextViewModel::class.java], vms[VerifyViewModel::class.java],
+        )?.let { demoScreen = it; demoTick++ }
     }
 
     private fun handleIntent(intent: Intent?) {

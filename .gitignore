@@ -15,3 +15,11 @@ local.properties
 
 /_deploy/
 keystore.properties
+
+# fastlane
+.env
+.env.*
+*service-account*.json
+fastlane/report.xml
+vendor/bundle/
+fastlane/README.md

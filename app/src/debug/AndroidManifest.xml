@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug builds only: serves the screenshot demo's files from the cache, so the
+  Files tab sees them as ordinary content Uris with a name and a size.
+  Release builds have none of this (see Demo.kt in src/release).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.demo"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/demo_files" />
+        </provider>
+    </application>
+</manifest>

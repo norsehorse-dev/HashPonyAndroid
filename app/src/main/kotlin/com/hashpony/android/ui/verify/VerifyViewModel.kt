@@ -156,6 +156,11 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Store screenshots only (Demo.kt in src/debug): show a finished report. */
+    fun showDemo(sumsName: String, report: VerifyReport) {
+        _state.value = VerifyUiState.Results(sumsName, report)
+    }
+
     private fun fail(message: String) { _state.value = VerifyUiState.Failed(message) }
 
     /** User-facing text comes from resources, never from exception messages. */

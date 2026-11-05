@@ -32,8 +32,15 @@ fun HashScreen(
     modifier: Modifier = Modifier,
     pickFilesRequest: Int = 0,
     onPickFilesConsumed: () -> Unit = {},
+    modeRequest: Int = -1,
+    modeRequestTick: Int = 0,
 ) {
     var mode by rememberSaveable { mutableIntStateOf(0) } // 0 = Files, 1 = Text
+
+    // Store screenshots (Demo.kt in src/debug) pick Files or Text directly.
+    LaunchedEffect(modeRequestTick) {
+        if (modeRequest >= 0) mode = modeRequest
+    }
 
     // A share, or the Quick Settings tile, always lands on the Files source.
     LaunchedEffect(sharedUris) {
