@@ -117,13 +117,25 @@ apksigner verify --print-certs HashPony-<version>.apk
 
 The printed "certificate SHA-256 digest" must match the fingerprint above.
 
-Every published APK, release or release candidate, has a `.sha256` file and
-a detached GPG signature (`.asc`) beside it:
+Every GitHub release and release candidate carries five files, and
+releases are immutable, so they can't be swapped after publishing:
+
+- `HashPony-<version>.apk`, the APK
+- `HashPony-<version>.apk.sha256`, its SHA-256
+- `HashPony-<version>.apk.asc`, its detached OpenPGP signature
+- `NorseHorse-release-key.asc`, the armored OpenPGP release key
+- `HashPony-<version>-signing-keys.txt`, the OpenPGP release key
+  fingerprint and the APK signing certificate SHA-256
 
 ```
 sha256sum -c HashPony-<version>.apk.sha256
+gpg --import NorseHorse-release-key.asc
 gpg --verify HashPony-<version>.apk.asc HashPony-<version>.apk
 ```
+
+Before trusting the key that ships with a release, check its fingerprint
+against a source GitHub doesn't control: keys.openpgp.org, keys.pgpony.app,
+or the verify page on pgpony.app. It's the same key that signs PGPony.
 
 Commits and tags are signed with the norsehorse-dev SSH signing key:
 
@@ -143,7 +155,20 @@ git log --show-signature -1
 
 The same key is registered on the norsehorse-dev GitHub account, so GitHub
 marks these commits and tags Verified. The copy here lets you check them
-without relying on that badge. `SIGNING.md` has the rest.
+without relying on that badge.
+
+Rebuild from source and compare. The release gate script clones a tag twice
+into clean, isolated build roots, proves the two builds are identical, and
+compares them against a downloaded APK, ignoring only the signature:
+
+```
+tools/verify_repro.sh rebuild v<version> HashPony-<version>.apk
+```
+
+It needs an Android SDK and network access for the clone and the dependency
+downloads, and prints the per-dex SHA-256s and a content hash. Each release's
+notes carry the whole-file SHA-256 for downloaders and the content hash for
+rebuilders. `SIGNING.md` has the rest.
 
 ## License
 

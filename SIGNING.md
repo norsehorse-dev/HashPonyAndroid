@@ -65,16 +65,32 @@ APKs are signed with the HashPony release keystore. Its path and passwords live
 in `keystore.properties` at the repo root, which is gitignored; without that
 file the release build is left unsigned instead of failing.
 
-Every published APK (release or RC) ships with two files beside it:
+The APK that gets signed is never a working-tree build. Each release and RC
+goes through `tools/verify_repro.sh rebuild <tag>`, which builds the tag twice
+from clean clones and proves the two builds are identical; the signed APK is
+then built inside the first clone and compared against that clean build, and
+only a match gets published.
 
-- `<apk>.sha256`, the SHA-256 of the APK
-- `<apk>.asc`, a detached, armored GPG signature made with
-  `gpg --detach-sign --armor <apk>`
+Every GitHub release and RC carries five files:
+
+- `HashPony-<version>.apk`
+- `HashPony-<version>.apk.sha256`, the SHA-256 of the APK
+- `HashPony-<version>.apk.asc`, a detached, armored OpenPGP signature made
+  with the NorseHorse release key (`0x53F9798E4919DE62`, the same key that
+  signs PGPony releases)
+- `NorseHorse-release-key.asc`, that key, armored
+- `HashPony-<version>-signing-keys.txt`, the key's fingerprint and the APK
+  signing certificate's SHA-256
+
+Immutable releases are on for the repository, so none of these can be
+replaced after publishing. Everything is attached to a draft, checked, and
+then published.
 
 To verify a download:
 
 ```
 sha256sum -c HashPony-1.0.0.apk.sha256
+gpg --import NorseHorse-release-key.asc
 gpg --verify HashPony-1.0.0.apk.asc HashPony-1.0.0.apk
 ```
 
