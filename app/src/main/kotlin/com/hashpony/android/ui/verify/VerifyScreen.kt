@@ -7,9 +7,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -417,7 +419,7 @@ private fun ReceiptActions(sumsName: String, report: VerifyReport, verdict: Stri
         }
     }
 
-    Row(Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(bottom = 12.dp)) {
         SecondaryAction(
             text = stringResource(R.string.verify_share_receipt),
             onClick = {
@@ -427,13 +429,13 @@ private fun ReceiptActions(sumsName: String, report: VerifyReport, verdict: Stri
                 }
                 context.startActivity(Intent.createChooser(send, shareTitle))
             },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
         Spacer(Modifier.width(8.dp))
         SecondaryAction(
             text = stringResource(R.string.verify_save_receipt),
             onClick = { saver.launch("$sumsName.receipt.txt") },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
     }
 }

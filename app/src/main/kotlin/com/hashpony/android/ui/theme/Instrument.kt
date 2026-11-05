@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
@@ -241,7 +242,8 @@ fun PrimaryAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifi
         ),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Text(text, style = UiStyle, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        // Two lines, centered: a long translation wraps instead of being cut off.
+        Text(text, style = UiStyle, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -256,7 +258,7 @@ fun SecondaryAction(text: String, onClick: () -> Unit, modifier: Modifier = Modi
         colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Text(text, style = UiStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(text, style = UiStyle, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
 
