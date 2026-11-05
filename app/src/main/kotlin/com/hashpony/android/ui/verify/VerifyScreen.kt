@@ -1,18 +1,11 @@
 package com.hashpony.android.ui.verify
 
-import android.net.Uri
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
-import com.hashpony.core.sums.VerifyReceipt
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,7 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,40 +34,45 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
 import com.hashpony.android.hash.SumsCandidate
+import com.hashpony.android.ui.rememberVersionName
 import com.hashpony.android.ui.theme.FailRed
-import com.hashpony.android.ui.theme.InstrumentPanel
 import com.hashpony.android.ui.theme.InstrumentWorking
+import com.hashpony.android.ui.theme.ListDivider
 import com.hashpony.android.ui.theme.MatchGreen
+import com.hashpony.android.ui.theme.MetaStyle
 import com.hashpony.android.ui.theme.MissAmber
 import com.hashpony.android.ui.theme.MonoDigestStyle
-import com.hashpony.android.ui.theme.MonoLabelStyle
-import com.hashpony.android.ui.theme.MonoUiStyle
 import com.hashpony.android.ui.theme.PrimaryAction
 import com.hashpony.android.ui.theme.QuietAction
 import com.hashpony.android.ui.theme.SecondaryAction
-import com.hashpony.android.ui.theme.SectionLabel
-import com.hashpony.android.ui.theme.SilverBright
 import com.hashpony.android.ui.theme.SilverDim
-import com.hashpony.android.ui.theme.StatusTag
+import com.hashpony.android.ui.theme.StatusText
 import com.hashpony.android.ui.theme.TextDim
 import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.android.ui.theme.TextPrimary
+import com.hashpony.android.ui.theme.UiStyle
 import com.hashpony.android.ui.theme.VerdictPanel
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.sums.EntryResult
 import com.hashpony.core.sums.EntryStatus
+import com.hashpony.core.sums.VerifyReceipt
 import com.hashpony.core.sums.VerifyReport
-import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun VerifyScreen(
@@ -98,7 +100,7 @@ fun VerifyScreen(
         }
     }
 
-    Column(modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
+    Column(modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
         when (val s = state) {
             is VerifyUiState.Idle -> IdleView(
                 onPickFolder = { folderPicker.launch(null) },
@@ -115,18 +117,17 @@ fun VerifyScreen(
                 onReset = viewModel::reset,
             )
 
-            is VerifyUiState.AwaitingFolder -> InstrumentPanel {
+            is VerifyUiState.AwaitingFolder -> Column {
                 Text(
                     stringResource(R.string.verify_opened, s.sumsName),
-                    style = MonoUiStyle,
-                    fontWeight = FontWeight.SemiBold,
-                    color = SilverBright,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = TextPrimary,
                 )
                 Text(
                     stringResource(R.string.verify_need_folder),
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextDim,
-                    modifier = Modifier.padding(top = 6.dp, bottom = 14.dp),
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
                 )
                 PrimaryAction(
                     text = stringResource(R.string.verify_choose_folder),
@@ -136,27 +137,34 @@ fun VerifyScreen(
             }
 
             is VerifyUiState.NeedAlgorithm -> Column(Modifier.verticalScroll(rememberScrollState())) {
-                InstrumentPanel {
-                    Text(
-                        stringResource(R.string.verify_need_algo_title, s.sumsName),
-                        style = MonoUiStyle,
-                        fontWeight = FontWeight.SemiBold,
-                        color = SilverBright,
-                    )
-                    Text(
-                        stringResource(R.string.verify_need_algo_body),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextDim,
-                        modifier = Modifier.padding(top = 6.dp),
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
+                Text(
+                    stringResource(R.string.verify_need_algo_title, s.sumsName),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = TextPrimary,
+                )
+                Text(
+                    stringResource(R.string.verify_need_algo_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextDim,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+                )
                 for (id in s.candidates) {
-                    SecondaryAction(
-                        text = AlgorithmRegistry.byId(id)?.displayName ?: id,
-                        onClick = { viewModel.chooseAlgorithm(id) },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                    )
+                    ListDivider()
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.chooseAlgorithm(id) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            AlgorithmRegistry.byId(id)?.displayName ?: id,
+                            style = UiStyle,
+                            color = TextPrimary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextFaint)
+                    }
                 }
             }
 
@@ -167,6 +175,7 @@ fun VerifyScreen(
                     title = stringResource(R.string.verify_failed_title),
                     detail = s.message,
                     color = FailRed,
+                    icon = Icons.Filled.Cancel,
                 )
                 QuietAction(
                     stringResource(R.string.verify_start_over),
@@ -181,32 +190,28 @@ fun VerifyScreen(
 @Composable
 private fun IdleView(onPickFolder: () -> Unit, onOpenSums: () -> Unit) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        SectionLabel(stringResource(R.string.tab_verify))
-        InstrumentPanel {
-            Text(
-                stringResource(R.string.verify_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = SilverBright,
-            )
-            Text(
-                stringResource(R.string.verify_intro),
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextDim,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            )
-            PrimaryAction(
-                text = stringResource(R.string.verify_pick_folder),
-                onClick = onPickFolder,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(8.dp))
-            SecondaryAction(
-                text = stringResource(R.string.verify_open_sums),
-                onClick = onOpenSums,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
+        Text(
+            stringResource(R.string.verify_title),
+            style = MaterialTheme.typography.titleLarge,
+            color = TextPrimary,
+        )
+        Text(
+            stringResource(R.string.verify_intro),
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextDim,
+            modifier = Modifier.padding(top = 8.dp, bottom = 20.dp),
+        )
+        PrimaryAction(
+            text = stringResource(R.string.verify_pick_folder),
+            onClick = onPickFolder,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(8.dp))
+        SecondaryAction(
+            text = stringResource(R.string.verify_open_sums),
+            onClick = onOpenSums,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -215,9 +220,8 @@ private fun HeaderRow(title: String, action: String, onAction: () -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(
             title,
-            style = MonoUiStyle,
-            fontWeight = FontWeight.SemiBold,
-            color = SilverBright,
+            style = MaterialTheme.typography.titleMedium,
+            color = TextPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
@@ -237,36 +241,41 @@ private fun FolderScannedView(
     Column {
         HeaderRow(folderName, stringResource(R.string.verify_change), onReset)
         if (candidates.isEmpty()) {
-            InstrumentPanel(Modifier.padding(top = 4.dp)) {
-                Text(
-                    stringResource(R.string.verify_no_sums),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextDim,
-                    modifier = Modifier.padding(bottom = 14.dp),
-                )
-                SecondaryAction(
-                    text = stringResource(R.string.verify_open_sums),
-                    onClick = onOpenSums,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            Text(
+                stringResource(R.string.verify_no_sums),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDim,
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+            )
+            SecondaryAction(
+                text = stringResource(R.string.verify_open_sums),
+                onClick = onOpenSums,
+                modifier = Modifier.fillMaxWidth(),
+            )
         } else {
-            SectionLabel(stringResource(R.string.verify_tap_hint), Modifier.padding(top = 4.dp))
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = 24.dp),
-            ) {
+            Text(
+                stringResource(R.string.verify_tap_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDim,
+                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+            )
+            LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
                 items(candidates, key = { it.relativePath }) { c ->
-                    InstrumentPanel(onClick = { onVerify(c) }) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) {
-                                Text(c.name, style = MonoUiStyle, fontWeight = FontWeight.Medium, color = TextPrimary)
-                                if (c.relativePath != c.name) {
-                                    Text(c.relativePath, style = MonoLabelStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
-                                }
+                    ListDivider()
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { onVerify(c) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(c.name, style = MonoDigestStyle, color = TextPrimary)
+                            if (c.relativePath != c.name) {
+                                Text(c.relativePath, style = MetaStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
                             }
-                            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextFaint)
                         }
+                        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextFaint)
                     }
                 }
             }
@@ -278,6 +287,17 @@ private fun FolderScannedView(
 private fun ResultsView(sumsName: String, report: VerifyReport, onReset: () -> Unit) {
     Column {
         HeaderRow(sumsName, stringResource(R.string.verify_done), onReset)
+        if (report.results.isEmpty()) {
+            // An empty or unreadable sums file is its own state, not "found issues".
+            VerdictPanel(
+                title = stringResource(R.string.verify_empty, sumsName),
+                detail = null,
+                color = MissAmber,
+                icon = Icons.Filled.RemoveCircle,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+            return@Column
+        }
         val verdict = if (report.allOk) stringResource(R.string.verify_all_ok, report.ok) else stringResource(R.string.verify_issues)
         val counts = stringResource(R.string.verify_counts, report.ok, report.failed, report.missing)
         val countsLine = if (report.unsupported > 0) stringResource(R.string.verify_counts_unknown, counts, report.unsupported) else counts
@@ -285,14 +305,14 @@ private fun ResultsView(sumsName: String, report: VerifyReport, onReset: () -> U
             title = verdict,
             detail = countsLine,
             color = if (report.allOk) MatchGreen else FailRed,
-            modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
+            icon = if (report.allOk) Icons.Filled.CheckCircle else Icons.Filled.Cancel,
+            modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
         )
         ReceiptActions(sumsName, report, verdict, countsLine)
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(bottom = 24.dp),
-        ) {
-            items(report.sortedForDisplay(), key = { it.name + it.expectedHex }) { entry ->
+        LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
+            // No item keys: a sums file may legitimately list the same line twice.
+            items(report.sortedForDisplay()) { entry ->
+                ListDivider()
                 EntryRow(entry)
             }
         }
@@ -306,41 +326,47 @@ private fun statusColor(status: EntryStatus): Color = when (status) {
     EntryStatus.UNSUPPORTED -> SilverDim
 }
 
+private fun statusIcon(status: EntryStatus): ImageVector = when (status) {
+    EntryStatus.OK -> Icons.Filled.CheckCircle
+    EntryStatus.FAILED -> Icons.Filled.Cancel
+    EntryStatus.MISSING -> Icons.Filled.RemoveCircle
+    EntryStatus.UNSUPPORTED -> Icons.AutoMirrored.Filled.HelpOutline
+}
+
 @Composable
 private fun EntryRow(entry: EntryResult) {
     var expanded by remember { mutableStateOf(false) }
-    val color = statusColor(entry.status)
-    InstrumentPanel(onClick = { expanded = !expanded }) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }
+            .padding(vertical = 12.dp),
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(
                     entry.name.ifEmpty { stringResource(R.string.entry_unnamed) },
-                    style = MonoUiStyle,
-                    fontWeight = FontWeight.Medium,
+                    style = MonoDigestStyle,
                     color = TextPrimary,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
                 entry.algorithmName?.let {
-                    Text(it, style = MonoLabelStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
+                    Text(it, style = MetaStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
                 }
             }
             Spacer(Modifier.width(8.dp))
-            StatusTag(statusLabel(entry.status), color)
+            StatusText(statusLabel(entry.status), statusColor(entry.status), statusIcon(entry.status))
         }
         if (expanded) {
-            Spacer(Modifier.height(10.dp))
-            Text(
-                stringResource(R.string.verify_expected).uppercase(Locale.getDefault()),
-                style = MonoLabelStyle,
-                color = TextFaint,
-            )
+            Spacer(Modifier.height(12.dp))
+            Text(stringResource(R.string.verify_expected), style = MetaStyle, color = TextFaint)
             Text(entry.expectedHex, style = MonoDigestStyle, color = TextDim)
             val computed = entry.computedHex
             if (computed != null) {
                 Text(
-                    stringResource(R.string.verify_computed).uppercase(Locale.getDefault()),
-                    style = MonoLabelStyle,
+                    stringResource(R.string.verify_computed),
+                    style = MetaStyle,
                     color = TextFaint,
                     modifier = Modifier.padding(top = 8.dp),
                 )
@@ -374,7 +400,7 @@ private fun ReceiptActions(sumsName: String, report: VerifyReport, verdict: Stri
         result = stringResource(R.string.receipt_result),
         verdict = verdict,
         counts = countsLine,
-        footer = stringResource(R.string.about_version),
+        footer = stringResource(R.string.about_version, rememberVersionName()),
     )
     // Stamped once per result, so sharing twice gives the same receipt.
     val checkedAt = remember(report) { OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString() }

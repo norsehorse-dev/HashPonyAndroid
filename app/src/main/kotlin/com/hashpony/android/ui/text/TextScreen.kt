@@ -1,10 +1,10 @@
 package com.hashpony.android.ui.text
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
 import com.hashpony.android.ui.DigestRow
 import com.hashpony.android.ui.theme.InstrumentField
-import com.hashpony.android.ui.theme.InstrumentPanel
-import com.hashpony.android.ui.theme.MonoLabelStyle
-import com.hashpony.android.ui.theme.SectionLabel
+import com.hashpony.android.ui.theme.ListDivider
+import com.hashpony.android.ui.theme.MetaStyle
 import com.hashpony.android.ui.theme.TextDim
 import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.core.AlgorithmRegistry
@@ -38,45 +37,43 @@ fun TextScreen(viewModel: TextViewModel, modifier: Modifier = Modifier) {
     Column(
         modifier
             .fillMaxSize()
+            .imePadding()
             .verticalScroll(rememberScrollState())
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp),
     ) {
-        SectionLabel(stringResource(R.string.text_label))
         InstrumentField(
             value = input,
             onValueChange = viewModel::setInput,
+            label = stringResource(R.string.text_label),
             singleLine = false,
             minLines = 4,
             mono = false,
         )
         Text(
             stringResource(R.string.text_encoding),
-            style = MonoLabelStyle,
+            style = MetaStyle,
             color = TextFaint,
-            modifier = Modifier.padding(start = 2.dp, top = 6.dp),
+            modifier = Modifier.padding(top = 8.dp),
         )
 
         Spacer(Modifier.height(16.dp))
         if (results.isEmpty()) {
-            InstrumentPanel {
-                Text(
-                    stringResource(R.string.text_enable_hint),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextDim,
-                )
-            }
+            Text(
+                stringResource(R.string.text_enable_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDim,
+            )
         } else {
-            SectionLabel(stringResource(R.string.label_digests))
-            InstrumentPanel(contentPadding = PaddingValues(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 10.dp)) {
-                val ids = AlgorithmRegistry.all.map { it.id }.filter { results.containsKey(it) }
-                for (id in ids) {
-                    DigestRow(
-                        label = AlgorithmRegistry.byId(id)?.displayName ?: id,
-                        hex = Hex.encode(results.getValue(id), uppercase),
-                        matched = false,
-                        shareContext = shareContext,
-                    )
-                }
+            ListDivider()
+            Spacer(Modifier.height(8.dp))
+            val ids = AlgorithmRegistry.all.map { it.id }.filter { results.containsKey(it) }
+            for (id in ids) {
+                DigestRow(
+                    label = AlgorithmRegistry.byId(id)?.displayName ?: id,
+                    hex = Hex.encode(results.getValue(id), uppercase),
+                    matched = false,
+                    shareContext = shareContext,
+                )
             }
         }
     }

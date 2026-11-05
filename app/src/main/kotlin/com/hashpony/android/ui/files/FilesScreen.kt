@@ -1,17 +1,11 @@
 package com.hashpony.android.ui.files
 
-import android.net.Uri
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.net.Uri
 import android.widget.Toast
-import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import com.hashpony.android.ui.qr.QrHandoff
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,13 +13,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +35,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,22 +45,22 @@ import com.hashpony.android.R
 import com.hashpony.android.ui.DigestRow
 import com.hashpony.android.ui.KitPicker
 import com.hashpony.android.ui.formatSize
+import com.hashpony.android.ui.qr.QrHandoff
 import com.hashpony.android.ui.theme.FailRed
 import com.hashpony.android.ui.theme.InstrumentField
-import com.hashpony.android.ui.theme.InstrumentPanel
 import com.hashpony.android.ui.theme.InstrumentProgress
-import com.hashpony.android.ui.theme.LineSoft
+import com.hashpony.android.ui.theme.ListDivider
 import com.hashpony.android.ui.theme.MatchGreen
-import com.hashpony.android.ui.theme.MonoLabelStyle
-import com.hashpony.android.ui.theme.MonoUiStyle
+import com.hashpony.android.ui.theme.MetaStyle
 import com.hashpony.android.ui.theme.PrimaryAction
 import com.hashpony.android.ui.theme.QuietAction
 import com.hashpony.android.ui.theme.SecondaryAction
-import com.hashpony.android.ui.theme.SectionLabel
-import com.hashpony.android.ui.theme.StatusTag
+import com.hashpony.android.ui.theme.SectionHeader
+import com.hashpony.android.ui.theme.StatusText
 import com.hashpony.android.ui.theme.TextDim
 import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.android.ui.theme.TextPrimary
+import com.hashpony.android.ui.theme.UiStyle
 import com.hashpony.android.ui.theme.VerdictPanel
 import com.hashpony.core.AlgorithmRegistry
 import com.hashpony.core.HashComparer
@@ -79,7 +79,7 @@ fun FilesScreen(
     val compareInput by viewModel.compareInput.collectAsState()
     val settings by viewModel.settings.collectAsState()
     val uppercase = settings?.uppercaseHex ?: false
-    val enabled = settings?.enabledAlgorithms ?: emptySet()
+    val enabled = settings?.enabledAlgorithms
 
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
         viewModel.addUris(uris)
@@ -121,19 +121,17 @@ fun FilesScreen(
 
     val doneFiles = files.filter { it.status == HashStatus.DONE && it.results.isNotEmpty() }
 
-    // One scrolling column: controls on top, then the file readouts and export.
+    // One scrolling column: controls, then each file's readout, then export.
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = modifier.fillMaxSize().imePadding(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp),
     ) {
         item(key = "controls") {
             Column {
-                SectionLabel(stringResource(R.string.label_compare))
                 InstrumentField(
                     value = compareInput,
                     onValueChange = viewModel::setCompareInput,
-                    placeholder = stringResource(R.string.files_compare_label),
+                    label = stringResource(R.string.files_compare_label),
                     trailingIcon = {
                         Row {
                             if (compareInput.isEmpty()) {
@@ -156,11 +154,13 @@ fun FilesScreen(
                     },
                 )
 
-                Spacer(Modifier.height(14.dp))
-                SectionLabel(stringResource(R.string.kit_label))
-                KitPicker(enabled = enabled, onSelect = viewModel::applyKit)
+                // The kit readout waits for prefs so it never flashes "enable an algorithm".
+                if (enabled != null) {
+                    Spacer(Modifier.height(12.dp))
+                    KitPicker(enabled = enabled, onSelect = viewModel::applyKit)
+                }
 
-                Spacer(Modifier.height(14.dp))
+                Spacer(Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     PrimaryAction(
                         text = stringResource(R.string.files_pick),
@@ -175,8 +175,8 @@ fun FilesScreen(
                     )
                 }
                 if (files.isNotEmpty()) {
-                    Row(Modifier.fillMaxWidth().padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                        SectionLabel(stringResource(R.string.tab_files), Modifier.weight(1f))
+                    Row(Modifier.fillMaxWidth().padding(top = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        SectionHeader(stringResource(R.string.tab_files), Modifier.weight(1f))
                         QuietAction(stringResource(R.string.action_clear), onClick = viewModel::clear)
                     }
                 }
@@ -185,23 +185,32 @@ fun FilesScreen(
 
         if (files.isEmpty()) {
             item(key = "empty") {
-                InstrumentPanel(Modifier.padding(top = 6.dp)) {
-                    Text(
-                        stringResource(R.string.files_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextDim,
-                    )
-                }
+                Text(
+                    stringResource(R.string.files_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextDim,
+                    modifier = Modifier.padding(top = 24.dp),
+                )
             }
         } else {
             if (doneFiles.size == 2) {
-                item(key = "vs") { FileVsFileVerdict(doneFiles[0], doneFiles[1]) }
+                item(key = "vs") {
+                    FileVsFileVerdict(doneFiles[0], doneFiles[1], Modifier.padding(bottom = 12.dp))
+                }
             }
             items(files, key = { it.uri.toString() }) { file ->
-                FileCard(file, compareInput, uppercase)
+                Column {
+                    ListDivider()
+                    FileBlock(file, compareInput, uppercase)
+                }
             }
             if (doneFiles.isNotEmpty()) {
-                item(key = "export") { ExportPanel(doneFiles, uppercase) }
+                item(key = "export") {
+                    Column {
+                        ListDivider()
+                        ExportPanel(doneFiles, uppercase, Modifier.padding(top = 16.dp))
+                    }
+                }
             }
         }
     }
@@ -209,7 +218,7 @@ fun FilesScreen(
 
 /** Identical/differ verdict for exactly two hashed files, over their shared digests. */
 @Composable
-private fun FileVsFileVerdict(a: FileUiState, b: FileUiState) {
+private fun FileVsFileVerdict(a: FileUiState, b: FileUiState, modifier: Modifier = Modifier) {
     val shared = a.results.keys intersect b.results.keys
     if (shared.isEmpty()) return
     val identical = shared.all { a.results.getValue(it).contentEquals(b.results.getValue(it)) }
@@ -218,20 +227,23 @@ private fun FileVsFileVerdict(a: FileUiState, b: FileUiState) {
         title = stringResource(if (identical) R.string.file_vs_identical else R.string.file_vs_differ),
         detail = stringResource(R.string.file_vs_sub, a.name, b.name, algoName),
         color = if (identical) MatchGreen else FailRed,
+        icon = if (identical) Icons.Filled.CheckCircle else Icons.Filled.Cancel,
+        modifier = modifier,
     )
 }
 
+/** One file: name, size and status, then its digests. */
 @Composable
-private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean) {
+private fun FileBlock(file: FileUiState, compareInput: String, uppercase: Boolean) {
     val outcome = remember(file.results, compareInput) { HashComparer.compare(compareInput, file.results) }
     val comparing = compareInput.isNotBlank() && file.results.isNotEmpty()
 
-    InstrumentPanel {
+    Column(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 file.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
+                style = UiStyle,
+                fontWeight = FontWeight.Medium,
                 color = TextPrimary,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -240,21 +252,22 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
             if (comparing) {
                 Spacer(Modifier.width(8.dp))
                 if (outcome.isMatch) {
-                    StatusTag(stringResource(R.string.tag_match), MatchGreen)
+                    StatusText(stringResource(R.string.tag_match), MatchGreen, Icons.Filled.CheckCircle)
                 } else {
-                    StatusTag(stringResource(R.string.files_no_match), FailRed)
+                    StatusText(stringResource(R.string.files_no_match), FailRed, Icons.Filled.Cancel)
                 }
             }
         }
+        val size = formatSize(file.size)
         Text(
-            "${formatSize(file.size)}  ·  ${statusLabel(file)}",
-            style = MonoLabelStyle,
+            if (size.isEmpty()) statusLabel(file) else "$size, ${statusLabel(file)}",
+            style = MetaStyle,
             color = if (file.status == HashStatus.ERROR) FailRed else TextFaint,
-            modifier = Modifier.padding(top = 3.dp),
+            modifier = Modifier.padding(top = 2.dp),
         )
 
         if (file.status == HashStatus.HASHING) {
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
             InstrumentProgress(file.progress)
         }
 
@@ -272,14 +285,14 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
             } else {
                 stringResource(R.string.files_no_length, outcome.normalizedExpected.length)
             }
-            Text(note, style = MonoLabelStyle, color = FailRed, modifier = Modifier.padding(top = 8.dp))
+            Text(note, style = MetaStyle, color = FailRed, modifier = Modifier.padding(top = 8.dp))
         }
 
         if (comparing && outcome.isMatch) {
             val matchNames = outcome.matched.mapNotNull { AlgorithmRegistry.byId(it)?.displayName }
             Text(
                 stringResource(R.string.files_match, matchNames.joinToString(", ")),
-                style = MonoUiStyle,
+                style = MetaStyle,
                 color = MatchGreen,
                 modifier = Modifier.padding(top = 8.dp),
             )
@@ -287,9 +300,7 @@ private fun FileCard(file: FileUiState, compareInput: String, uppercase: Boolean
 
         // Result rows in registry order.
         val ids = AlgorithmRegistry.all.map { it.id }.filter { file.results.containsKey(it) }
-        if (ids.isNotEmpty()) {
-            HorizontalDivider(Modifier.padding(top = 10.dp, bottom = 2.dp), thickness = 1.dp, color = LineSoft)
-        }
+        if (ids.isNotEmpty()) Spacer(Modifier.height(8.dp))
         for (id in ids) {
             val bytes = file.results.getValue(id)
             DigestRow(

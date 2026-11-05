@@ -6,22 +6,21 @@
     <string name="tab_verify">Vérifier</string>
     <string name="tab_settings">Réglages</string>
 
-    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <!-- Hash / Verify pillars, match status -->
     <string name="pillar_hash">Empreinte</string>
-    <string name="label_compare">Comparer</string>
-    <string name="label_digests">Empreintes</string>
     <string name="tag_match">Correspond</string>
 
     <string name="action_clear">Effacer</string>
     <string name="action_share">Partager</string>
     <string name="action_save">Enregistrer</string>
     <string name="action_back">Retour</string>
+    <string name="action_more">Plus d\'options</string>
 
     <string name="files_compare_label">Comparer à une valeur attendue</string>
     <string name="files_pick">Choisir des fichiers</string>
     <string name="files_pick_folder">Choisir un dossier</string>
     <string name="files_empty">Choisissez des fichiers ou un dossier, ou partagez-les vers HashPony depuis une autre appli.</string>
-    <string name="files_match">Correspondance — %1$s</string>
+    <string name="files_match">Correspondance\u00A0: %1$s</string>
     <string name="files_no_match">Pas de correspondance</string>
     <string name="copied">%1$s copié</string>
     <string name="copied_uppercase">Copié en majuscules</string>
@@ -61,12 +60,12 @@
     <string name="verify_counts_unknown">%1$s · Inconnus %2$d</string>
     <string name="verify_failed_title">Vérification impossible</string>
     <string name="verify_start_over">Recommencer</string>
-    <string name="verify_expected">attendu</string>
-    <string name="verify_computed">calculé</string>
+    <string name="verify_expected">Attendu</string>
+    <string name="verify_computed">Calculé</string>
     <string name="entry_ok">OK</string>
-    <string name="entry_failed">ÉCHEC</string>
-    <string name="entry_missing">MANQUANT</string>
-    <string name="entry_unknown">algorithme inconnu</string>
+    <string name="entry_failed">Échec</string>
+    <string name="entry_missing">Manquant</string>
+    <string name="entry_unknown">Algorithme inconnu</string>
     <string name="entry_unnamed">(sans nom)</string>
 
     <string name="export_title">Exporter le fichier de sommes</string>
@@ -90,17 +89,17 @@
     <string name="help_files_title">Fichiers</string>
     <string name="help_files_body">Choisissez des fichiers ou un dossier entier, ou partagez-les depuis une autre appli. Chaque fichier affiche ses empreintes au fil du calcul ; touchez une empreinte pour la copier. Collez une valeur attendue dans le champ de comparaison pour vérifier un téléchargement.</string>
     <string name="help_verify_title">Vérifier</string>
-    <string name="help_verify_body">Dirigez HashPony vers le dossier de téléchargement ; il trouve le fichier de sommes et vérifie chaque entrée : OK, ÉCHEC ou MANQUANT.</string>
+    <string name="help_verify_body">Indiquez à HashPony le dossier dans lequel vous avez téléchargé les fichiers. Il trouve le fichier de sommes et vérifie chaque entrée, en marquant chaque fichier OK, Échec ou Manquant.</string>
     <string name="help_text_title">Texte</string>
     <string name="help_text_body">Empreintes en direct pour du texte saisi ou collé, UTF-8.</string>
     <string name="settings_more">Plus de NorseHorse</string>
     <string name="more_body">Le chiffrement, la gestion des clés et la messagerie privée sont assurés par d\'autres applis de la famille.</string>
-    <string name="link_hub">Visiter le hub</string>
+    <string name="link_hub">Toutes les apps Pony</string>
     <string name="link_source">Code source</string>
     <string name="link_licenses">Licences open source</string>
     <string name="settings_about">À propos</string>
-    <string name="about_version">HashPony 1.0.0</string>
-    <string name="about_body">Des sommes de contrôle, contrôlées. Zéro autorisation, entièrement hors ligne. Rien ne quitte l\'appareil sauf ce que vous partagez ou enregistrez explicitement.</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony ne nécessite aucune autorisation et fonctionne hors ligne. Rien ne quitte votre appareil, sauf si vous le partagez ou l\'enregistrez.</string>
     <string name="licenses_title">Licences open source</string>
     <string name="licenses_note">Les algorithmes xxHash sont un portage Kotlin « clean-room » de l\'implémentation de référence de Yann Collet, avec attribution dans le fichier NOTICE du projet.</string>
 
@@ -144,9 +143,22 @@
     <string name="family_vaultpony">Des coffres chiffrés que vous contrôlez, compatibles avec VeraCrypt.</string>
     <string name="family_agepony">Chiffrement et signature de fichiers modernes avec le protocole age.</string>
     <string name="family_carrierpony">Messagerie privée et transfert de fichiers, scellés de bout en bout.</string>
-    <string name="family_burnpony">Envoyez un secret. Chiffré sur votre téléphone, détruit après lecture.</string>
+    <string name="family_burnpony">Notes chiffrées autodestructrices qui s\'ouvrent depuis un lien.</string>
     <string name="family_relaypony">Transfert de fichiers chiffré, de téléphone à téléphone.</string>
-    <string name="family_quorumpony">Divisez un secret en cartes. Quelques-unes suffisent à le reconstituer. Une seule ne révèle rien.</string>
-    <string name="family_scrubpony">Retire les métadonnées identifiantes des JPEG sans toucher à un pixel.</string>
+    <string name="family_quorumpony">Shamir Secret Sharing : divisez un secret en cartes et reconstituez-le à partir de quelques-unes d\'entre elles.</string>
+    <string name="family_scrubpony">Supprime les métadonnées identifiantes des fichiers JPEG.</string>
     <string name="family_tappony">Touchez un tag NFC pour envoyer une requête à votre propre serveur.</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_modern">Modernes</string>
+    <string name="group_legacy">Anciens</string>
+    <string name="group_regional">Régionaux</string>
+    <string name="group_checksum">Sommes de contrôle et hachages rapides</string>
+    <string name="note_keccak">Remplissage de type Ethereum. Différent de SHA3-256.</string>
+    <string name="err_read_folder">HashPony n\'a pas pu lire ce dossier. Sélectionnez-le à nouveau pour accorder l\'accès.</string>
+    <string name="err_open_file">Impossible d\'ouvrir %1$s.</string>
+    <string name="err_read_sums">Impossible de lire ce fichier de sommes.</string>
+    <string name="err_verify">Vérification interrompue, car un fichier n\'a pas pu être lu.</string>
+    <string name="err_hash_file">Impossible de lire ce fichier</string>
+    <string name="verify_empty">%1$s ne contient aucune entrée que HashPony puisse vérifier.</string>
 </resources>

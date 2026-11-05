@@ -6,22 +6,21 @@
     <string name="tab_verify">Verificar</string>
     <string name="tab_settings">Ajustes</string>
 
-    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <!-- Hash / Verify pillars, match status -->
     <string name="pillar_hash">Hash</string>
-    <string name="label_compare">Comparar</string>
-    <string name="label_digests">Hashes</string>
     <string name="tag_match">Coincide</string>
 
     <string name="action_clear">Limpiar</string>
     <string name="action_share">Compartir</string>
     <string name="action_save">Guardar</string>
     <string name="action_back">Atrás</string>
+    <string name="action_more">Más opciones</string>
 
     <string name="files_compare_label">Comparar con un valor esperado</string>
     <string name="files_pick">Elegir archivos</string>
     <string name="files_pick_folder">Elegir carpeta</string>
     <string name="files_empty">Elige archivos o una carpeta, o compártelos con HashPony desde otra app.</string>
-    <string name="files_match">Coincide — %1$s</string>
+    <string name="files_match">Coincide: %1$s</string>
     <string name="files_no_match">No coincide</string>
     <string name="copied">%1$s copiado</string>
     <string name="copied_uppercase">Copiado en mayúsculas</string>
@@ -61,12 +60,12 @@
     <string name="verify_counts_unknown">%1$s · Desconocidos %2$d</string>
     <string name="verify_failed_title">No se pudo verificar</string>
     <string name="verify_start_over">Empezar de nuevo</string>
-    <string name="verify_expected">esperado</string>
-    <string name="verify_computed">calculado</string>
+    <string name="verify_expected">Esperado</string>
+    <string name="verify_computed">Calculado</string>
     <string name="entry_ok">OK</string>
-    <string name="entry_failed">FALLIDO</string>
-    <string name="entry_missing">FALTA</string>
-    <string name="entry_unknown">algoritmo desconocido</string>
+    <string name="entry_failed">Fallido</string>
+    <string name="entry_missing">Falta</string>
+    <string name="entry_unknown">Algoritmo desconocido</string>
     <string name="entry_unnamed">(sin nombre)</string>
 
     <string name="export_title">Exportar archivo de sumas</string>
@@ -90,17 +89,17 @@
     <string name="help_files_title">Archivos</string>
     <string name="help_files_body">Elige archivos o una carpeta entera, o compártelos desde otra app. Cada archivo muestra sus hashes a medida que se calculan; toca un hash para copiarlo. Pega un valor esperado en el campo de comparación para comprobar una descarga.</string>
     <string name="help_verify_title">Verificar</string>
-    <string name="help_verify_body">Apunta HashPony a la carpeta de descargas y encuentra el archivo de sumas y comprueba cada entrada: OK, FALLIDO o FALTA.</string>
+    <string name="help_verify_body">Indica a HashPony la carpeta en la que descargaste los archivos. Encuentra el archivo de sumas y comprueba cada entrada, marcando cada archivo como OK, Fallido o Falta.</string>
     <string name="help_text_title">Texto</string>
     <string name="help_text_body">Hashes en vivo para texto escrito o pegado, UTF-8.</string>
     <string name="settings_more">Más de NorseHorse</string>
     <string name="more_body">El cifrado, la gestión de claves y la mensajería privada los manejan otras apps de la familia.</string>
-    <string name="link_hub">Visitar el hub</string>
+    <string name="link_hub">Todas las apps Pony</string>
     <string name="link_source">Código fuente</string>
     <string name="link_licenses">Licencias de código abierto</string>
     <string name="settings_about">Acerca de</string>
-    <string name="about_version">HashPony 1.0.0</string>
-    <string name="about_body">Sumas de verificación, verificadas. Cero permisos, totalmente sin conexión. Nada sale del dispositivo salvo lo que compartas o guardes explícitamente.</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony no necesita permisos y funciona sin conexión. Nada sale de tu dispositivo a menos que lo compartas o lo guardes.</string>
     <string name="licenses_title">Licencias de código abierto</string>
     <string name="licenses_note">Los algoritmos xxHash son una adaptación limpia a Kotlin de la implementación de referencia de Yann Collet, con atribución en el archivo NOTICE del proyecto.</string>
 
@@ -144,9 +143,22 @@
     <string name="family_vaultpony">Bóvedas cifradas bajo tu control, compatibles con VeraCrypt.</string>
     <string name="family_agepony">Cifrado y firma de archivos modernos con el protocolo age.</string>
     <string name="family_carrierpony">Mensajería privada y envío de archivos, sellados de extremo a extremo.</string>
-    <string name="family_burnpony">Envía un secreto. Cifrado en tu teléfono, destruido tras leerlo.</string>
+    <string name="family_burnpony">Notas cifradas que se autodestruyen y se abren desde un enlace.</string>
     <string name="family_relaypony">Transferencia de archivos cifrada, de teléfono a teléfono.</string>
-    <string name="family_quorumpony">Divide un secreto en tarjetas. Unas pocas lo reconstruyen. Una sola no revela nada.</string>
-    <string name="family_scrubpony">Elimina los metadatos identificativos de los JPEG sin tocar ni un píxel.</string>
+    <string name="family_quorumpony">Shamir Secret Sharing: divide un secreto en tarjetas y reconstrúyelo a partir de algunas de ellas.</string>
+    <string name="family_scrubpony">Elimina los metadatos identificativos de los archivos JPEG.</string>
     <string name="family_tappony">Toca una etiqueta NFC para enviar una solicitud a tu propio servidor.</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_modern">Modernos</string>
+    <string name="group_legacy">Antiguos</string>
+    <string name="group_regional">Regionales</string>
+    <string name="group_checksum">Sumas de verificación y hashes rápidos</string>
+    <string name="note_keccak">Relleno al estilo de Ethereum. No es lo mismo que SHA3-256.</string>
+    <string name="err_read_folder">HashPony no pudo leer esa carpeta. Vuelve a elegirla para conceder acceso.</string>
+    <string name="err_open_file">No se pudo abrir %1$s.</string>
+    <string name="err_read_sums">No se pudo leer ese archivo de sumas.</string>
+    <string name="err_verify">La verificación se detuvo porque no se pudo leer un archivo.</string>
+    <string name="err_hash_file">No se pudo leer este archivo</string>
+    <string name="verify_empty">%1$s no tiene entradas que HashPony pueda comprobar.</string>
 </resources>

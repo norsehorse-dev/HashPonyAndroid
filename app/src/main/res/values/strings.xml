@@ -8,11 +8,8 @@
     <string name="tab_verify">Verify</string>
     <string name="tab_settings">Settings</string>
 
-    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
-    <string name="wordmark" translatable="false">hashpony</string>
+    <!-- Hash / Verify pillars, match status -->
     <string name="pillar_hash">Hash</string>
-    <string name="label_compare">Compare</string>
-    <string name="label_digests">Digests</string>
     <string name="tag_match">Match</string>
 
     <!-- Common -->
@@ -20,13 +17,14 @@
     <string name="action_share">Share</string>
     <string name="action_save">Save</string>
     <string name="action_back">Back</string>
+    <string name="action_more">More options</string>
 
     <!-- Files -->
     <string name="files_compare_label">Compare against an expected value</string>
     <string name="files_pick">Pick files</string>
     <string name="files_pick_folder">Pick folder</string>
     <string name="files_empty">Pick files or a folder, or share them to HashPony from any app.</string>
-    <string name="files_match">Match — %1$s</string>
+    <string name="files_match">Match: %1$s</string>
     <string name="files_no_match">No match</string>
     <string name="copied">Copied %1$s</string>
     <string name="copied_uppercase">Copied uppercase</string>
@@ -68,12 +66,12 @@
     <string name="verify_counts_unknown">%1$s · Unknown %2$d</string>
     <string name="verify_failed_title">Couldn\'t verify</string>
     <string name="verify_start_over">Start over</string>
-    <string name="verify_expected">expected</string>
-    <string name="verify_computed">computed</string>
+    <string name="verify_expected">Expected</string>
+    <string name="verify_computed">Computed</string>
     <string name="entry_ok">OK</string>
-    <string name="entry_failed">FAILED</string>
-    <string name="entry_missing">MISSING</string>
-    <string name="entry_unknown">algorithm unknown</string>
+    <string name="entry_failed">Failed</string>
+    <string name="entry_missing">Missing</string>
+    <string name="entry_unknown">Algorithm unknown</string>
     <string name="entry_unnamed">(unnamed)</string>
 
     <!-- Export -->
@@ -99,17 +97,17 @@
     <string name="help_files_title">Files</string>
     <string name="help_files_body">Pick files or a whole folder, or share them in from another app. Each file shows its digests as they stream; tap a digest to copy. Paste an expected value into the compare box to check a download.</string>
     <string name="help_verify_title">Verify</string>
-    <string name="help_verify_body">Point HashPony at the folder you downloaded into and it finds the sums file and checks every entry: OK, FAILED or MISSING.</string>
+    <string name="help_verify_body">Point HashPony at the folder you downloaded into. It finds the sums file and checks every entry, marking each file OK, Failed or Missing.</string>
     <string name="help_text_title">Text</string>
     <string name="help_text_body">Live digests for typed or pasted text, UTF-8.</string>
     <string name="settings_more">More from NorseHorse</string>
     <string name="more_body">Encryption, key management and private messaging are handled by other apps in the family.</string>
-    <string name="link_hub">Visit the hub</string>
+    <string name="link_hub">All Pony apps</string>
     <string name="link_source">Source code</string>
     <string name="link_licenses">Open-source licenses</string>
     <string name="settings_about">About</string>
-    <string name="about_version">HashPony 1.0.0</string>
-    <string name="about_body">Checksums, checked. Zero permissions, fully offline. Nothing leaves the device except what you explicitly share or save.</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony needs no permissions and works offline. Nothing leaves your device unless you share or save it.</string>
     <string name="licenses_title">Open-source licenses</string>
     <string name="licenses_note">The xxHash algorithms are a clean-room Kotlin port of Yann Collet\'s reference implementation, with attribution in the project NOTICE file.</string>
 
@@ -153,9 +151,22 @@
     <string name="family_vaultpony">Encrypted vaults you control, compatible with VeraCrypt.</string>
     <string name="family_agepony">Modern file encryption and signing with the age protocol.</string>
     <string name="family_carrierpony">Private messaging and file transfer, sealed end to end.</string>
-    <string name="family_burnpony">Send a secret. Encrypted on your phone, burned after reading.</string>
+    <string name="family_burnpony">Self-destructing encrypted notes that open from a link.</string>
     <string name="family_relaypony">Encrypted file transfer, phone to phone.</string>
-    <string name="family_quorumpony">Split a secret into cards. Any few rebuild it. One alone reveals nothing.</string>
-    <string name="family_scrubpony">Strips identifying metadata out of JPEGs without touching a pixel.</string>
+    <string name="family_quorumpony">Shamir Secret Sharing: split a secret into cards and rebuild it from a few of them.</string>
+    <string name="family_scrubpony">Removes identifying metadata from JPEG files.</string>
     <string name="family_tappony">Tap an NFC tag to send a request to your own server.</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_modern">Modern</string>
+    <string name="group_legacy">Legacy</string>
+    <string name="group_regional">Regional</string>
+    <string name="group_checksum">Checksums and fast hashes</string>
+    <string name="note_keccak">Ethereum-style padding. Not the same as SHA3-256.</string>
+    <string name="err_read_folder">HashPony couldn\'t read that folder. Pick it again to grant access.</string>
+    <string name="err_open_file">Couldn\'t open %1$s.</string>
+    <string name="err_read_sums">Couldn\'t read that sums file.</string>
+    <string name="err_verify">Verification stopped because a file couldn\'t be read.</string>
+    <string name="err_hash_file">Couldn\'t read this file</string>
+    <string name="verify_empty">%1$s has no entries HashPony can check.</string>
 </resources>

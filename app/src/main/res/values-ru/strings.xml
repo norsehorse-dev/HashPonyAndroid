@@ -6,22 +6,21 @@
     <string name="tab_verify">Проверка</string>
     <string name="tab_settings">Настройки</string>
 
-    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <!-- Hash / Verify pillars, match status -->
     <string name="pillar_hash">Хеш</string>
-    <string name="label_compare">Сравнение</string>
-    <string name="label_digests">Хеши</string>
     <string name="tag_match">Совпадает</string>
 
     <string name="action_clear">Очистить</string>
     <string name="action_share">Поделиться</string>
     <string name="action_save">Сохранить</string>
     <string name="action_back">Назад</string>
+    <string name="action_more">Ещё</string>
 
     <string name="files_compare_label">Сравнить с ожидаемым значением</string>
     <string name="files_pick">Выбрать файлы</string>
     <string name="files_pick_folder">Выбрать папку</string>
     <string name="files_empty">Выберите файлы или папку либо отправьте их в HashPony из другого приложения.</string>
-    <string name="files_match">Совпадение — %1$s</string>
+    <string name="files_match">Совпадение: %1$s</string>
     <string name="files_no_match">Нет совпадения</string>
     <string name="copied">%1$s скопировано</string>
     <string name="copied_uppercase">Скопировано в верхнем регистре</string>
@@ -61,12 +60,12 @@
     <string name="verify_counts_unknown">%1$s · Неизвестно %2$d</string>
     <string name="verify_failed_title">Не удалось проверить</string>
     <string name="verify_start_over">Начать заново</string>
-    <string name="verify_expected">ожидается</string>
-    <string name="verify_computed">вычислено</string>
+    <string name="verify_expected">Ожидается</string>
+    <string name="verify_computed">Вычислено</string>
     <string name="entry_ok">OK</string>
-    <string name="entry_failed">ОШИБКА</string>
-    <string name="entry_missing">ОТСУТСТВУЕТ</string>
-    <string name="entry_unknown">алгоритм неизвестен</string>
+    <string name="entry_failed">Ошибка</string>
+    <string name="entry_missing">Отсутствует</string>
+    <string name="entry_unknown">Алгоритм неизвестен</string>
     <string name="entry_unnamed">(без имени)</string>
 
     <string name="export_title">Экспортировать файл сумм</string>
@@ -90,19 +89,19 @@
     <string name="help_files_title">Файлы</string>
     <string name="help_files_body">Выберите файлы или целую папку либо отправьте их из другого приложения. Каждый файл показывает свои хеши по мере вычисления; коснитесь хеша, чтобы скопировать. Вставьте ожидаемое значение в поле сравнения, чтобы проверить загрузку.</string>
     <string name="help_verify_title">Проверка</string>
-    <string name="help_verify_body">Укажите HashPony папку загрузок; он найдёт файл сумм и проверит каждую запись: OK, ОШИБКА или ОТСУТСТВУЕТ.</string>
+    <string name="help_verify_body">Укажите HashPony папку, в которую вы скачали файлы. Приложение найдёт файл сумм и проверит каждую запись, отмечая каждый файл как OK, Ошибка или Отсутствует.</string>
     <string name="help_text_title">Текст</string>
     <string name="help_text_body">Хеши в реальном времени для введённого или вставленного текста, UTF-8.</string>
     <string name="settings_more">Ещё от NorseHorse</string>
     <string name="more_body">Шифрование, управление ключами и приватные сообщения обеспечивают другие приложения семейства.</string>
-    <string name="link_hub">Перейти на хаб</string>
+    <string name="link_hub">Все приложения Pony</string>
     <string name="link_source">Исходный код</string>
     <string name="link_licenses">Лицензии открытого кода</string>
     <string name="settings_about">О приложении</string>
-    <string name="about_version">HashPony 1.0.0</string>
-    <string name="about_body">Контрольные суммы под контролем. Ноль разрешений, полностью офлайн. Ничто не покидает устройство, кроме того, чем вы явно делитесь или что сохраняете.</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony не требует разрешений и работает офлайн. Данные не покидают ваше устройство, пока вы сами не поделитесь ими или не сохраните их.</string>
     <string name="licenses_title">Лицензии открытого кода</string>
-    <string name="licenses_note">Алгоритмы xxHash — это чистая портация на Kotlin эталонной реализации Янна Колле, с указанием авторства в файле NOTICE проекта.</string>
+    <string name="licenses_note">Алгоритмы xxHash представляют собой чистую портацию на Kotlin эталонной реализации Янна Колле, с указанием авторства в файле NOTICE проекта.</string>
 
     <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
     <string name="kit_label">Набор алгоритмов</string>
@@ -144,9 +143,22 @@
     <string name="family_vaultpony">Зашифрованные хранилища под вашим контролем, совместимые с VeraCrypt.</string>
     <string name="family_agepony">Современное шифрование и подпись файлов по протоколу age.</string>
     <string name="family_carrierpony">Приватные сообщения и передача файлов со сквозным шифрованием.</string>
-    <string name="family_burnpony">Отправьте секрет. Шифруется на телефоне, сгорает после прочтения.</string>
+    <string name="family_burnpony">Самоуничтожающиеся зашифрованные заметки, которые открываются по ссылке.</string>
     <string name="family_relaypony">Зашифрованная передача файлов с телефона на телефон.</string>
-    <string name="family_quorumpony">Разделите секрет на карточки. Несколько из них его восстановят. Одна ничего не раскроет.</string>
-    <string name="family_scrubpony">Удаляет идентифицирующие метаданные из JPEG, не трогая ни пикселя.</string>
+    <string name="family_quorumpony">Разделение секрета по схеме Шамира (Shamir): секрет делится на карточки и восстанавливается по нескольким из них.</string>
+    <string name="family_scrubpony">Удаляет идентифицирующие метаданные из файлов JPEG.</string>
     <string name="family_tappony">Коснитесь NFC-метки, чтобы отправить запрос на свой сервер.</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_modern">Современные</string>
+    <string name="group_legacy">Устаревшие</string>
+    <string name="group_regional">Региональные</string>
+    <string name="group_checksum">Контрольные суммы и быстрые хеши</string>
+    <string name="note_keccak">Дополнение в стиле Ethereum. Не то же самое, что SHA3-256.</string>
+    <string name="err_read_folder">HashPony не удалось прочитать эту папку. Выберите её снова, чтобы предоставить доступ.</string>
+    <string name="err_open_file">Не удалось открыть %1$s.</string>
+    <string name="err_read_sums">Не удалось прочитать этот файл сумм.</string>
+    <string name="err_verify">Проверка остановлена, так как не удалось прочитать файл.</string>
+    <string name="err_hash_file">Не удалось прочитать этот файл</string>
+    <string name="verify_empty">В файле %1$s нет записей, которые HashPony может проверить.</string>
 </resources>

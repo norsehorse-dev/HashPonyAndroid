@@ -3,6 +3,7 @@ package com.hashpony.android.ui.files
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import com.hashpony.android.R
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.hashpony.core.AlgorithmRegistry
@@ -145,7 +146,7 @@ class FilesViewModel(app: Application) : AndroidViewModel(app) {
                 } catch (c: CancellationException) {
                     throw c
                 } catch (e: Exception) {
-                    updateAt(index) { it.copy(status = HashStatus.ERROR, error = e.message ?: "Failed", progress = null) }
+                    updateAt(index) { it.copy(status = HashStatus.ERROR, error = getApplication<Application>().getString(R.string.err_hash_file), progress = null) }
                 }
             }
         }

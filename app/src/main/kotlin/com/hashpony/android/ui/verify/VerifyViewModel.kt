@@ -3,6 +3,7 @@ package com.hashpony.android.ui.verify
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import com.hashpony.android.R
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.hashpony.core.sums.ParsedSums
@@ -65,7 +66,7 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
                 currentTree = tree
                 _state.value = VerifyUiState.FolderScanned(folderName, tree.sumsCandidates)
             } catch (e: Exception) {
-                _state.value = VerifyUiState.Failed(e.message ?: "Could not read that folder")
+                fail(str(R.string.err_read_folder))
             }
         }
     }
@@ -77,11 +78,11 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val text = withContext(Dispatchers.IO) { readText(candidate.uri) }
-                    ?: return@launch fail("Could not open ${candidate.name}")
+                    ?: return@launch fail(str(R.string.err_open_file, candidate.name))
                 val parsed = SumsParser.parse(text, candidate.name)
                 runVerify(parsed, candidate.name, tree)
             } catch (e: Exception) {
-                fail(e.message ?: "Verification failed")
+                fail(str(R.string.err_verify))
             }
         }
     }
@@ -95,12 +96,12 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val name = FileHashing.queryMeta(resolver, sumsUri).name
                 val text = withContext(Dispatchers.IO) { readText(sumsUri) }
-                    ?: return@launch fail("Could not open $name")
+                    ?: return@launch fail(str(R.string.err_open_file, name))
                 pendingParsed = SumsParser.parse(text, name)
                 pendingSumsName = name
                 _state.value = VerifyUiState.AwaitingFolder(name)
             } catch (e: Exception) {
-                fail(e.message ?: "Could not read that sums file")
+                fail(str(R.string.err_read_sums))
             }
         }
     }
@@ -117,7 +118,7 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
                 currentTree = tree
                 runVerify(parsed, name, tree)
             } catch (e: Exception) {
-                fail(e.message ?: "Could not read that folder")
+                fail(str(R.string.err_read_folder))
             }
         }
     }
@@ -155,6 +156,9 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun fail(message: String) { _state.value = VerifyUiState.Failed(message) }
+
+    /** User-facing text comes from resources, never from exception messages. */
+    private fun str(id: Int, vararg args: Any): String = getApplication<Application>().getString(id, *args)
 
     private fun readText(uri: Uri): String? =
         runCatching { resolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } }.getOrNull()

@@ -23,18 +23,3 @@ val TextFaint    = Color(0xFF6B727B)
 val MatchGreen   = Color(0xFF46D17F) // OK / match — name preserved (referenced app-wide)
 val FailRed      = Color(0xFFF0575D)
 val MissAmber    = Color(0xFFE2A54A)
-
-// Light variant grounds (Instrument is dark-first; light is a fallback for now).
-val LightGround  = Color(0xFFEDEFF2)
-val LightPanel   = Color(0xFFFFFFFF)
-val LightInk     = Color(0xFF1A1D22)
-
-// Legacy names kept as literals so any older reference still resolves.
-val Graphite         = Color(0xFF0B0D10)
-val GraphiteElev     = Color(0xFF15181D)
-val SteelSilver      = Color(0xFFC7CBD0)
-val SteelSilverDark  = Color(0xFF7D838B)
-val MatchGreenContainer = Color(0xFF16321F)
-val MatchGreenDark   = Color(0xFF46D17F)
-val White            = Color(0xFFFFFFFF)
-val BackgroundLight  = Color(0xFFEDEFF2)

@@ -23,7 +23,7 @@ import com.hashpony.android.R
 import com.hashpony.android.ui.theme.InstrumentPanel
 import com.hashpony.android.ui.theme.MonoDigestStyle
 import com.hashpony.android.ui.theme.QuietAction
-import com.hashpony.android.ui.theme.SectionLabel
+import com.hashpony.android.ui.theme.SectionHeader
 import com.hashpony.android.ui.theme.TextDim
 import com.hashpony.android.ui.theme.TextFaint
 
@@ -36,15 +36,15 @@ fun QrDialog(label: String, value: String, onDismiss: () -> Unit) {
     val modules = remember(value) { runCatching { QrHandoff.encode(value) }.getOrNull() }
     Dialog(onDismissRequest = onDismiss) {
         InstrumentPanel {
-            SectionLabel(label)
+            SectionHeader(label)
             if (modules != null) {
                 Canvas(
                     Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .background(Color.White)
-                        .padding(18.dp),
+                        .padding(16.dp),
                 ) {
                     val n = modules.size
                     val cell = size.minDimension / n
@@ -65,7 +65,7 @@ fun QrDialog(label: String, value: String, onDismiss: () -> Unit) {
                 stringResource(R.string.qr_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = TextFaint,
-                modifier = Modifier.padding(top = 6.dp),
+                modifier = Modifier.padding(top = 8.dp),
             )
             QuietAction(
                 stringResource(R.string.action_close),

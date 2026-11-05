@@ -8,8 +8,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.hashpony.android.R
 
-// IBM Plex Mono carries the instrument identity: every hash, every uppercase
-// label. UI running text stays on the platform sans.
+// Running UI text uses the platform sans (Material's default typography).
+// IBM Plex Mono is reserved for the things that really are monospace data:
+// hex digests, sums-file content and the hash input field.
 val PlexMono = FontFamily(
     Font(R.font.ibm_plex_mono_regular, FontWeight.Normal),
     Font(R.font.ibm_plex_mono_medium, FontWeight.Medium),
@@ -18,7 +19,7 @@ val PlexMono = FontFamily(
 
 val HashPonyTypography = Typography()
 
-// Monospace hex readout — columns of digits line up and scan cleanly.
+/** Hex digest readout: columns of digits line up and scan cleanly. */
 val MonoDigestStyle = TextStyle(
     fontFamily = PlexMono,
     fontWeight = FontWeight.Medium,
@@ -26,17 +27,16 @@ val MonoDigestStyle = TextStyle(
     lineHeight = 19.sp,
 )
 
-// Small uppercase section label, e.g. "// ALGORITHM KIT".
-val MonoLabelStyle = TextStyle(
-    fontFamily = PlexMono,
-    fontWeight = FontWeight.Medium,
-    fontSize = 11.sp,
-    letterSpacing = 1.sp,
+/** Default UI text for names, buttons, list rows (same as bodyLarge). */
+val UiStyle = TextStyle(
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
 )
 
-// The [hashpony] wordmark and chip text.
-val MonoUiStyle = TextStyle(
-    fontFamily = PlexMono,
-    fontWeight = FontWeight.Medium,
-    fontSize = 13.sp,
+/** Secondary line: sizes, statuses, algorithm names, captions. */
+val MetaStyle = TextStyle(
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
 )

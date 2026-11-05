@@ -1,6 +1,7 @@
 package com.hashpony.android.ui
 
 import android.content.Intent
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -33,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
@@ -40,16 +44,17 @@ import com.hashpony.android.ui.qr.QrDialog
 import com.hashpony.android.ui.theme.FailRed
 import com.hashpony.android.ui.theme.MatchGreen
 import com.hashpony.android.ui.theme.MonoDigestStyle
-import com.hashpony.android.ui.theme.MonoLabelStyle
+import com.hashpony.android.ui.theme.MetaStyle
 import com.hashpony.android.ui.theme.Silver
-import com.hashpony.android.ui.theme.StatusTag
+import com.hashpony.android.ui.theme.StatusText
 import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.android.ui.theme.TextPrimary
 
 /**
- * One algorithm's readout: mono label with an optional MATCH tag and copy on the
- * first line, the full hex wrapping underneath so long digests are never cut.
- * Tap the hex copies it, long-press opens the copy-uppercase / share menu.
+ * One algorithm's readout: the algorithm name (with a match status when it
+ * matches), copy and a more-options menu on the first line, and the full hex
+ * underneath so long digests are never cut. Tapping the hex copies it;
+ * long-pressing it opens the same menu (copy uppercase, QR code, share).
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -72,28 +77,40 @@ fun DigestRow(
 
     fun copy(text: String, toast: String) {
         clipboard.setText(AnnotatedString(text))
-        Toast.makeText(context, toast, Toast.LENGTH_SHORT).show()
+        // Android 13+ shows its own clipboard confirmation; don't double it.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(context, toast, Toast.LENGTH_SHORT).show()
+        }
     }
 
-    Column(Modifier.fillMaxWidth().padding(top = 6.dp)) {
+    Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = label,
-                style = MonoLabelStyle,
+                style = MetaStyle,
+                fontWeight = FontWeight.Medium,
                 color = if (matched) MatchGreen else Silver,
             )
             if (matched) {
-                Spacer(Modifier.width(8.dp))
-                StatusTag(stringResource(R.string.tag_match), MatchGreen)
+                Spacer(Modifier.width(12.dp))
+                StatusText(stringResource(R.string.tag_match), MatchGreen, Icons.Filled.CheckCircle)
             }
             Spacer(Modifier.weight(1f))
+            IconButton(onClick = { copy(hex, copiedMsg) }) {
+                Icon(
+                    Icons.Filled.ContentCopy,
+                    contentDescription = copyDesc,
+                    tint = TextFaint,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
             Box {
-                IconButton(onClick = { copy(hex, copiedMsg) }, modifier = Modifier.size(36.dp)) {
+                IconButton(onClick = { menuOpen = true }) {
                     Icon(
-                        Icons.Filled.ContentCopy,
-                        contentDescription = copyDesc,
+                        Icons.Filled.MoreVert,
+                        contentDescription = stringResource(R.string.action_more),
                         tint = TextFaint,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(20.dp),
                     )
                 }
                 DropdownMenu(

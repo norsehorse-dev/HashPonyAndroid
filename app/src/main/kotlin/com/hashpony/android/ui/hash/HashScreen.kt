@@ -2,10 +2,7 @@ package com.hashpony.android.ui.hash
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,7 +11,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
 import com.hashpony.android.ui.files.FilesScreen
 import com.hashpony.android.ui.files.FilesViewModel
@@ -48,14 +44,11 @@ fun HashScreen(
     }
 
     Column(modifier.fillMaxSize()) {
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp)) {
-            SourceSwitcher(
-                options = listOf(stringResource(R.string.tab_files), stringResource(R.string.tab_text)),
-                selected = mode,
-                onSelect = { mode = it },
-            )
-        }
-        Spacer(Modifier.height(4.dp))
+        SourceSwitcher(
+            options = listOf(stringResource(R.string.tab_files), stringResource(R.string.tab_text)),
+            selected = mode,
+            onSelect = { mode = it },
+        )
         when (mode) {
             0 -> FilesScreen(
                 filesViewModel, sharedUris, onSharedConsumed,

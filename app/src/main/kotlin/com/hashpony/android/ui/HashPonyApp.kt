@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Tag
-import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,7 +38,6 @@ import com.hashpony.android.ui.text.TextViewModel
 import com.hashpony.android.ui.theme.Ground
 import com.hashpony.android.ui.theme.HashPonyTopBar
 import com.hashpony.android.ui.theme.LineSoft
-import com.hashpony.android.ui.theme.MonoUiStyle
 import com.hashpony.android.ui.theme.PanelHigh
 import com.hashpony.android.ui.theme.SilverBright
 import com.hashpony.android.ui.theme.TextFaint
@@ -47,7 +46,7 @@ import com.hashpony.android.ui.verify.VerifyViewModel
 
 private enum class Pillar(@StringRes val labelRes: Int, val icon: ImageVector) {
     HASH(R.string.pillar_hash, Icons.Filled.Tag),
-    VERIFY(R.string.tab_verify, Icons.Filled.VerifiedUser),
+    VERIFY(R.string.tab_verify, Icons.Filled.FactCheck),
 }
 
 @Composable
@@ -66,9 +65,12 @@ fun HashPonyApp(
 
     var pillar by rememberSaveable { mutableIntStateOf(0) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showLicenses by rememberSaveable { mutableStateOf(false) }
 
-    // System back leaves Settings instead of closing the app.
-    BackHandler(enabled = showSettings) { showSettings = false }
+    // Back steps out of Licenses to Settings, then out of Settings, before the
+    // app closes. The app bar arrow does the same.
+    val goBack: () -> Unit = { if (showLicenses) showLicenses = false else showSettings = false }
+    BackHandler(enabled = showSettings) { goBack() }
 
     // A share lands on Hash / Files; an open-with sums file lands on Verify.
     LaunchedEffect(sharedUris) {
@@ -88,7 +90,8 @@ fun HashPonyApp(
             HashPonyTopBar(
                 inSettings = showSettings,
                 onSettings = { showSettings = true },
-                onBack = { showSettings = false },
+                onBack = goBack,
+                title = if (showSettings && showLicenses) stringResource(R.string.licenses_title) else null,
             )
         },
         bottomBar = {
@@ -102,7 +105,7 @@ fun HashPonyApp(
                                 selected = pillar == index,
                                 onClick = { pillar = index },
                                 icon = { Icon(p.icon, contentDescription = label) },
-                                label = { Text(label, style = MonoUiStyle) },
+                                label = { Text(label) },
                                 colors = NavigationBarItemDefaults.colors(
                                     selectedIconColor = SilverBright,
                                     selectedTextColor = SilverBright,
@@ -119,7 +122,11 @@ fun HashPonyApp(
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when {
-                showSettings -> SettingsScreen(settingsViewModel)
+                showSettings -> SettingsScreen(
+                    settingsViewModel,
+                    showLicenses = showLicenses,
+                    onOpenLicenses = { showLicenses = true },
+                )
                 Pillar.entries[pillar] == Pillar.HASH ->
                     HashScreen(
                         filesViewModel, textViewModel, sharedUris, onSharedConsumed,

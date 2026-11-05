@@ -2,7 +2,6 @@ package com.hashpony.android.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 // The Instrument: a bespoke silver-on-charcoal identity. Dynamic (Material You)
@@ -41,15 +40,6 @@ private val InstrumentDark = darkColorScheme(
     inverseSurface = SilverBright,
     inverseOnSurface = Ground,
     scrim = Ground,
-)
-
-private val InstrumentLight = lightColorScheme(
-    primary = SilverDim,
-    onPrimary = White,
-    background = LightGround,
-    surface = LightPanel,
-    onSurface = LightInk,
-    error = FailRed,
 )
 
 /**

@@ -6,22 +6,21 @@
     <string name="tab_verify">校验</string>
     <string name="tab_settings">设置</string>
 
-    <!-- Instrument shell (Hash / Verify pillars, section labels, tags) -->
+    <!-- Hash / Verify pillars, match status -->
     <string name="pillar_hash">哈希</string>
-    <string name="label_compare">比较</string>
-    <string name="label_digests">哈希值</string>
     <string name="tag_match">匹配</string>
 
     <string name="action_clear">清除</string>
     <string name="action_share">分享</string>
     <string name="action_save">保存</string>
     <string name="action_back">返回</string>
+    <string name="action_more">更多选项</string>
 
     <string name="files_compare_label">与预期值比较</string>
     <string name="files_pick">选择文件</string>
     <string name="files_pick_folder">选择文件夹</string>
     <string name="files_empty">选择文件或文件夹，或从其他应用分享到 HashPony。</string>
-    <string name="files_match">匹配 — %1$s</string>
+    <string name="files_match">匹配：%1$s</string>
     <string name="files_no_match">不匹配</string>
     <string name="copied">已复制 %1$s</string>
     <string name="copied_uppercase">已按大写复制</string>
@@ -90,17 +89,17 @@
     <string name="help_files_title">文件</string>
     <string name="help_files_body">选择文件或整个文件夹，或从其他应用分享进来。每个文件在计算时会显示各算法的哈希值；点按哈希值即可复制。将预期值粘贴到比较框中即可校验下载。</string>
     <string name="help_verify_title">校验</string>
-    <string name="help_verify_body">将 HashPony 指向下载文件夹，它会找到校验和文件并逐项校验：正常、失败或缺失。</string>
+    <string name="help_verify_body">将 HashPony 指向你下载文件所在的文件夹。它会找到校验和文件并检查每一项，将每个文件标记为正常、失败或缺失。</string>
     <string name="help_text_title">文本</string>
     <string name="help_text_body">对输入或粘贴的文本实时计算哈希，UTF-8。</string>
     <string name="settings_more">更多 NorseHorse 应用</string>
     <string name="more_body">加密、密钥管理和私密通讯由本系列的其他应用负责。</string>
-    <string name="link_hub">访问主页</string>
+    <string name="link_hub">所有 Pony 应用</string>
     <string name="link_source">源代码</string>
     <string name="link_licenses">开源许可</string>
     <string name="settings_about">关于</string>
-    <string name="about_version">HashPony 1.0.0</string>
-    <string name="about_body">校验和，已校验。零权限，完全离线。除了你明确分享或保存的内容，任何数据都不会离开设备。</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony 无需任何权限，可离线使用。除非你分享或保存，否则任何内容都不会离开你的设备。</string>
     <string name="licenses_title">开源许可</string>
     <string name="licenses_note">xxHash 算法是对 Yann Collet 参考实现的洁净室 Kotlin 移植，署名见项目的 NOTICE 文件。</string>
 
@@ -144,9 +143,22 @@
     <string name="family_vaultpony">由你掌控的加密保险库，兼容 VeraCrypt。</string>
     <string name="family_agepony">基于 age 协议的现代文件加密与签名。</string>
     <string name="family_carrierpony">私密消息与文件传输，全程端到端加密。</string>
-    <string name="family_burnpony">发送秘密。在手机上加密，阅后即焚。</string>
+    <string name="family_burnpony">通过链接打开的自毁式加密笔记。</string>
     <string name="family_relaypony">加密文件传输，手机直达手机。</string>
-    <string name="family_quorumpony">把秘密拆分成卡片。凑齐几张即可还原，单独一张毫无信息。</string>
-    <string name="family_scrubpony">清除 JPEG 中的身份元数据，不动一个像素。</string>
+    <string name="family_quorumpony">Shamir 秘密共享：将秘密拆分成多张卡片，并凭其中几张重建。</string>
+    <string name="family_scrubpony">移除 JPEG 文件中可识别身份的元数据。</string>
     <string name="family_tappony">轻触 NFC 标签，向你自己的服务器发送请求。</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_modern">现代</string>
+    <string name="group_legacy">传统</string>
+    <string name="group_regional">地区</string>
+    <string name="group_checksum">校验和与快速哈希算法</string>
+    <string name="note_keccak">Ethereum 风格的填充方式。与 SHA3-256 不同。</string>
+    <string name="err_read_folder">HashPony 无法读取该文件夹。请重新选择以授予访问权限。</string>
+    <string name="err_open_file">无法打开 %1$s。</string>
+    <string name="err_read_sums">无法读取该校验和文件。</string>
+    <string name="err_verify">由于无法读取某个文件，验证已停止。</string>
+    <string name="err_hash_file">无法读取此文件</string>
+    <string name="verify_empty">%1$s 中没有 HashPony 可以检查的条目。</string>
 </resources>

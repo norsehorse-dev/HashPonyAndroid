@@ -4,29 +4,28 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -34,42 +33,58 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hashpony.android.R
-import java.util.Locale
 
-private val PanelShape = RoundedCornerShape(14.dp)
-private val ControlShape = RoundedCornerShape(11.dp)
-private val ChipShape = RoundedCornerShape(8.dp)
-private val TagShape = RoundedCornerShape(5.dp)
+// Shared building blocks. The rules they encode: platform sans for UI text,
+// monospace only for digests; plain sentence-case headings instead of eyebrow
+// labels; hairline-separated lists instead of a card around everything; color
+// only where it carries meaning (match, failure, missing, the primary action).
 
-/** "// ALGORITHM KIT" style eyebrow. Uppercased here so call sites pass plain resources. */
+private val ControlShape = RoundedCornerShape(12.dp)
+private val BoxShape = RoundedCornerShape(12.dp)
+
+/** A plain section heading, e.g. "Export sums file". */
 @Composable
-fun SectionLabel(text: String, modifier: Modifier = Modifier) {
+fun SectionHeader(text: String, modifier: Modifier = Modifier) {
     Text(
-        text = "// " + text.uppercase(Locale.getDefault()),
-        style = MonoLabelStyle,
-        color = TextFaint,
-        modifier = modifier.padding(start = 2.dp, top = 2.dp, bottom = 6.dp),
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = Silver,
+        modifier = modifier.padding(top = 4.dp, bottom = 8.dp),
     )
 }
 
-/** Segmented source switcher (Files / Text). */
+/** Hairline between list rows and sections. */
+@Composable
+fun ListDivider(modifier: Modifier = Modifier) {
+    HorizontalDivider(modifier, thickness = 1.dp, color = LineSoft)
+}
+
+/** Files / Text source tabs under the app bar. */
 @Composable
 fun SourceSwitcher(
     options: List<String>,
@@ -77,162 +92,129 @@ fun SourceSwitcher(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .clip(ControlShape)
-            .background(Panel)
-            .border(1.dp, Line, ControlShape)
-            .padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    TabRow(
+        selectedTabIndex = selected,
+        modifier = modifier,
+        containerColor = Ground,
+        contentColor = SilverBright,
+        divider = { ListDivider() },
     ) {
         options.forEachIndexed { i, label ->
-            val on = i == selected
-            Box(
-                Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (on) PanelHigh else Color.Transparent)
-                    .selectable(selected = on, onClick = { onSelect(i) }, role = Role.Tab)
-                    .padding(vertical = 9.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    label,
-                    style = MonoUiStyle,
-                    fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal,
-                    color = if (on) SilverBright else TextDim,
-                )
-            }
+            Tab(
+                selected = i == selected,
+                onClick = { onSelect(i) },
+                text = { Text(label, style = UiStyle) },
+                selectedContentColor = SilverBright,
+                unselectedContentColor = TextDim,
+            )
         }
     }
 }
 
-/** Top bar: the [hashpony] wordmark and a gear, or a back arrow while in Settings. */
+/** App bar: the app name and a gear, or a back arrow and "Settings". Platform TopAppBar. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HashPonyTopBar(
     inSettings: Boolean,
     onSettings: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    title: String? = null,
 ) {
     val settingsLabel = stringResource(R.string.tab_settings)
-    Surface(color = Ground, modifier = modifier.fillMaxWidth()) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .height(52.dp)
-                .padding(start = 8.dp, end = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(title ?: if (inSettings) settingsLabel else stringResource(R.string.app_name))
+        },
+        navigationIcon = {
             if (inSettings) {
                 IconButton(onClick = onBack) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.action_back),
-                        tint = TextDim,
-                    )
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
                 }
-                Text(settingsLabel.lowercase(Locale.getDefault()), style = MonoUiStyle, color = SilverBright)
-            } else {
-                Spacer(Modifier.width(8.dp))
-                Text("#", style = MonoUiStyle, fontWeight = FontWeight.SemiBold, color = Silver)
-                Spacer(Modifier.width(8.dp))
-                Row {
-                    Text("[", style = MonoUiStyle, color = SilverDim)
-                    Text(
-                        stringResource(R.string.wordmark),
-                        style = MonoUiStyle,
-                        fontWeight = FontWeight.SemiBold,
-                        color = SilverBright,
-                    )
-                    Text("]", style = MonoUiStyle, color = SilverDim)
-                }
-                Spacer(Modifier.weight(1f))
+            }
+        },
+        actions = {
+            if (!inSettings) {
                 IconButton(onClick = onSettings) {
-                    Icon(Icons.Filled.Settings, contentDescription = settingsLabel, tint = TextDim)
+                    Icon(Icons.Filled.Settings, contentDescription = settingsLabel)
                 }
             }
-        }
-    }
-}
-
-/** The Instrument card: charcoal panel, hairline border, optional tap target. */
-@Composable
-fun InstrumentPanel(
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-    contentPadding: PaddingValues = PaddingValues(14.dp),
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    val base = modifier
-        .fillMaxWidth()
-        .clip(PanelShape)
-        .background(Panel)
-        .border(1.dp, Line, PanelShape)
-    val tappable = if (onClick != null) base.clickable(onClick = onClick) else base
-    Column(tappable.padding(contentPadding), content = content)
-}
-
-/** A verdict readout: colored rail, tinted panel, mono headline. */
-@Composable
-fun VerdictPanel(title: String, detail: String?, color: Color, modifier: Modifier = Modifier) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .clip(PanelShape)
-            .background(color.copy(alpha = 0.08f))
-            .border(1.dp, color.copy(alpha = 0.45f), PanelShape),
-    ) {
-        Box(
-            Modifier
-                .width(4.dp)
-                .fillMaxHeight()
-                .background(color),
-        )
-        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
-            Text(
-                title,
-                style = MonoUiStyle.copy(fontSize = 15.sp, lineHeight = 20.sp),
-                fontWeight = FontWeight.SemiBold,
-                color = color,
-            )
-            if (detail != null) {
-                Text(
-                    detail,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextDim,
-                    modifier = Modifier.padding(top = 3.dp),
-                )
-            }
-        }
-    }
-}
-
-/** Small uppercase status pill: MATCH, OK, FAILED, MISSING. */
-@Composable
-fun StatusTag(text: String, color: Color, modifier: Modifier = Modifier) {
-    Text(
-        text = text.uppercase(Locale.getDefault()),
-        style = MonoLabelStyle,
-        fontWeight = FontWeight.SemiBold,
-        color = color,
-        maxLines = 1,
-        modifier = modifier
-            .clip(TagShape)
-            .background(color.copy(alpha = 0.14f))
-            .padding(horizontal = 6.dp, vertical = 3.dp),
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Ground,
+            titleContentColor = TextPrimary,
+            navigationIconContentColor = TextPrimary,
+            actionIconContentColor = TextDim,
+        ),
     )
 }
 
-/** Solid silver call to action. */
+/** A bordered surface, used only where something really is a separate object (dialogs). */
+@Composable
+fun InstrumentPanel(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(16.dp),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .clip(BoxShape)
+            .background(Panel)
+            .border(1.dp, Line, BoxShape)
+            .padding(contentPadding),
+        content = content,
+    )
+}
+
+/**
+ * The outcome of a check: a neutral bordered box with a status icon. Only the
+ * icon and the title carry the status color.
+ */
+@Composable
+fun VerdictPanel(
+    title: String,
+    detail: String?,
+    color: Color,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .clip(BoxShape)
+            .border(1.dp, Line, BoxShape)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.padding(top = 1.dp).size(20.dp))
+        Spacer(Modifier.width(12.dp))
+        Column {
+            Text(title, style = UiStyle, fontWeight = FontWeight.SemiBold, color = color)
+            if (detail != null) {
+                Text(detail, style = MetaStyle, color = TextDim, modifier = Modifier.padding(top = 2.dp))
+            }
+        }
+    }
+}
+
+/** Inline status: a small icon and a word in the status color. No pill. */
+@Composable
+fun StatusText(text: String, color: Color, icon: ImageVector, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(16.dp))
+        Spacer(Modifier.width(4.dp))
+        Text(text, style = MetaStyle, fontWeight = FontWeight.Medium, color = color, maxLines = 1)
+    }
+}
+
+/** The one filled button on a screen. */
 @Composable
 fun PrimaryAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
     Button(
         onClick = onClick,
-        modifier = modifier.heightIn(min = 46.dp),
+        modifier = modifier,
         enabled = enabled,
         shape = ControlShape,
         colors = ButtonDefaults.buttonColors(
@@ -241,24 +223,24 @@ fun PrimaryAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifi
             disabledContainerColor = PanelHigh,
             disabledContentColor = TextFaint,
         ),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Text(text, style = MonoUiStyle, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(text, style = UiStyle, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
-/** Panel-colored outlined action. */
+/** Outlined secondary button. */
 @Composable
 fun SecondaryAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.heightIn(min = 46.dp),
+        modifier = modifier,
         shape = ControlShape,
         border = BorderStroke(1.dp, Line),
-        colors = ButtonDefaults.outlinedButtonColors(containerColor = Panel, contentColor = TextPrimary),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Text(text, style = MonoUiStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(text, style = UiStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -268,42 +250,70 @@ fun QuietAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier
     TextButton(
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.textButtonColors(contentColor = TextDim),
+        colors = ButtonDefaults.textButtonColors(contentColor = Silver),
     ) {
-        Text(text, style = MonoUiStyle)
+        Text(text, style = UiStyle)
     }
 }
 
-/** Toggle or single-choice chip. */
+/**
+ * A labelled single choice that opens a menu: algorithm kit, export
+ * algorithm, export format. Handles long translated labels, which a row of
+ * chips or segments does not.
+ */
 @Composable
-fun InstrumentChip(
+fun <T> ChoiceField(
     label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
+    selected: T,
+    options: List<T>,
+    optionLabel: @Composable (T) -> String,
+    onSelect: (T) -> Unit,
     modifier: Modifier = Modifier,
-    role: Role = Role.Checkbox,
 ) {
-    Text(
-        text = label,
-        style = MonoUiStyle,
-        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-        color = if (selected) SilverBright else TextDim,
-        maxLines = 1,
-        modifier = modifier
-            .clip(ChipShape)
-            .background(if (selected) PanelHigh else Panel)
-            .border(1.dp, if (selected) SilverDim else Line, ChipShape)
-            .selectable(selected = selected, onClick = onClick, role = role)
-            .padding(horizontal = 11.dp, vertical = 7.dp),
-    )
+    var open by remember { mutableStateOf(false) }
+    Box(modifier) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clip(ControlShape)
+                .border(1.dp, Line, ControlShape)
+                .clickable { open = true }
+                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(label, style = MetaStyle, color = TextDim)
+                Text(optionLabel(selected), style = UiStyle, color = TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = TextDim)
+        }
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            for (option in options) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            optionLabel(option),
+                            style = UiStyle,
+                            fontWeight = if (option == selected) FontWeight.Medium else FontWeight.Normal,
+                        )
+                    },
+                    onClick = {
+                        open = false
+                        onSelect(option)
+                    },
+                )
+            }
+        }
+    }
 }
 
-/** Panel-filled text field; mono by default since most input here is hex. */
+/** Outlined text field; monospace when the input is a hash. */
 @Composable
 fun InstrumentField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    label: String? = null,
     placeholder: String? = null,
     singleLine: Boolean = true,
     minLines: Int = 1,
@@ -317,6 +327,11 @@ fun InstrumentField(
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
         textStyle = textStyle,
+        label = if (label != null) {
+            { Text(label) }
+        } else {
+            null
+        },
         placeholder = if (placeholder != null) {
             { Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = TextFaint) }
         } else {
@@ -329,10 +344,10 @@ fun InstrumentField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = TextPrimary,
             unfocusedTextColor = TextPrimary,
-            focusedContainerColor = Panel,
-            unfocusedContainerColor = Panel,
             focusedBorderColor = SilverDim,
             unfocusedBorderColor = Line,
+            focusedLabelColor = Silver,
+            unfocusedLabelColor = TextDim,
             cursorColor = Silver,
             focusedTrailingIconColor = TextDim,
             unfocusedTrailingIconColor = TextFaint,
@@ -340,7 +355,7 @@ fun InstrumentField(
     )
 }
 
-/** Thin silver progress rail; null progress is indeterminate. */
+/** Thin progress bar; null progress is indeterminate. */
 @Composable
 fun InstrumentProgress(progress: Float?, modifier: Modifier = Modifier) {
     val m = modifier
@@ -354,7 +369,7 @@ fun InstrumentProgress(progress: Float?, modifier: Modifier = Modifier) {
     }
 }
 
-/** Centered spinner with a mono caption. */
+/** Centered spinner with a caption. */
 @Composable
 fun InstrumentWorking(label: String, modifier: Modifier = Modifier) {
     Column(
@@ -362,7 +377,7 @@ fun InstrumentWorking(label: String, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator(color = Silver, trackColor = PanelHigh, strokeWidth = 2.dp)
-        Text(label, style = MonoUiStyle, color = TextDim, modifier = Modifier.padding(top = 14.dp))
+        Text(label, style = UiStyle, color = TextDim, modifier = Modifier.padding(top = 12.dp))
     }
 }
 
