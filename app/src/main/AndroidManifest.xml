@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Zero permissions. Not "minimal" — zero. No INTERNET, so the offline claim
-      is independently checkable in the merged manifest. All file access flows
-      through SAF pickers and share intents.
+      No permissions declared here. No INTERNET, so the offline claim can be
+      checked in the merged manifest. All file access goes through SAF pickers
+      and share intents. The merged manifest's only uses-permission entry is
+      DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, a signature permission AndroidX
+      Core defines for this app alone (see README, "Permissions, exactly").
     -->
 
     <application

@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.FactCheck
 import androidx.compose.material.icons.filled.Tag
-import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -47,7 +47,7 @@ import com.hashpony.android.ui.verify.VerifyViewModel
 
 private enum class Pillar(@StringRes val labelRes: Int, val icon: ImageVector) {
     HASH(R.string.pillar_hash, Icons.Filled.Tag),
-    VERIFY(R.string.tab_verify, Icons.Filled.FactCheck),
+    VERIFY(R.string.tab_verify, Icons.AutoMirrored.Filled.FactCheck),
 }
 
 @Composable

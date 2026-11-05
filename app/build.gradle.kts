@@ -9,6 +9,11 @@ plugins {
 android {
     namespace = "com.hashpony.android"
     compileSdk = 36
+    // Pinned, same as PGPonyAndroid. Unpinned, it follows whatever the AGP on
+    // the building machine defaults to, an uncontrolled input to F-Droid's
+    // reproducible build. 35.0.0 is what AGP 8.13.2 resolves anyway. Bump it
+    // deliberately alongside an AGP upgrade.
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.hashpony.android"
@@ -18,7 +23,7 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // No default vector-drawable/appcompat shims needed; zero-permission app.
+        // minSdk 26 renders vector drawables natively; no support-library shim.
     }
 
     signingConfigs {
@@ -48,6 +53,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Keep the git commit reference (META-INF/version-control-info.textproto)
+            // out of the APK, so a build from F-Droid's clone matches one from this
+            // working tree byte for byte.
+            vcsInfo.include = false
             signingConfig = signingConfigs.getByName("release").takeIf { it.storeFile != null }
         }
     }
@@ -61,6 +70,13 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    // Drop the Google-signed dependency metadata blob from the APK and bundle.
+    // Only Google can read it, F-Droid asks for it gone, and it has no effect
+    // on the app.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
     packaging {
         resources {
