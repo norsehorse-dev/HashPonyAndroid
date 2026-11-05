@@ -3,17 +3,18 @@ package com.hashpony.android.ui.verify
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import com.hashpony.android.R
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.hashpony.core.sums.ParsedSums
-import com.hashpony.core.sums.SumsParser
-import com.hashpony.core.sums.SumsVerifier
-import com.hashpony.core.sums.VerifyReport
+import com.hashpony.android.R
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.hash.FileHashing
 import com.hashpony.android.hash.SafTree
 import com.hashpony.android.hash.SumsCandidate
+import com.hashpony.android.i18n.LanguageManager
+import com.hashpony.core.sums.ParsedSums
+import com.hashpony.core.sums.SumsParser
+import com.hashpony.core.sums.SumsVerifier
+import com.hashpony.core.sums.VerifyReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -158,7 +159,8 @@ class VerifyViewModel(app: Application) : AndroidViewModel(app) {
     private fun fail(message: String) { _state.value = VerifyUiState.Failed(message) }
 
     /** User-facing text comes from resources, never from exception messages. */
-    private fun str(id: Int, vararg args: Any): String = getApplication<Application>().getString(id, *args)
+    private fun str(id: Int, vararg args: Any): String =
+        LanguageManager.localizedContext(getApplication<Application>()).getString(id, *args)
 
     private fun readText(uri: Uri): String? =
         runCatching { resolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } }.getOrNull()

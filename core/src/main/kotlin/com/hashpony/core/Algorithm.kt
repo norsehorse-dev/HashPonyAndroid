@@ -1,11 +1,16 @@
 package com.hashpony.core
 
-/** The four groups exactly as they appear in Settings. */
+/**
+ * The groups exactly as they appear in Settings, by family. The labels are an
+ * English fallback only; the app shows its own localized group names.
+ */
 enum class AlgorithmGroup(val label: String) {
-    MODERN("Modern"),
-    LEGACY("Legacy"),
-    REGIONAL("Regional"),
-    CHECKSUM("Checksums and fast hashes"),
+    SHA2("SHA-2"),
+    SHA3("SHA-3"),
+    BLAKE("BLAKE"),
+    OLDER("Older"),
+    NATIONAL("National standards"),
+    CHECKSUM("Checksums (not for security)"),
 }
 
 /**
@@ -18,6 +23,7 @@ enum class AlgorithmGroup(val label: String) {
  * @param enabledByDefault true only for SHA-256.
  * @param quickAccess shown as a one-tap toggle on the Files tab (SHA-512/1, MD5).
  * @param nonCryptographic labels the checksum/fast-hash group honestly.
+ * @param broken collision-broken; still offered to match sums published with it.
  * @param note optional one-line UI explainer (e.g. Keccak vs SHA3).
  * @param factory builds a fresh [StreamingDigest].
  */
@@ -29,6 +35,7 @@ data class Algorithm(
     val enabledByDefault: Boolean = false,
     val quickAccess: Boolean = false,
     val nonCryptographic: Boolean = false,
+    val broken: Boolean = false,
     val note: String? = null,
     val factory: () -> StreamingDigest,
 ) {

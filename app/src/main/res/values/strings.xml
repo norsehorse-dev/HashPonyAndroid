@@ -86,7 +86,6 @@
 
     <!-- Settings -->
     <string name="settings_algorithms">Algorithms</string>
-    <string name="settings_display">Display</string>
     <string name="settings_uppercase">Uppercase hex</string>
     <string name="settings_dynamic">Material You colors</string>
     <string name="settings_theme">Theme</string>
@@ -137,7 +136,7 @@
 
     <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
     <string name="help_kits_title">Algorithm kits</string>
-    <string name="help_kits_body">Pick a kit to choose what gets computed: Downloads (SHA-256, SHA-512, SHA-1, MD5), Forensics (MD5, SHA-1, SHA-256) or Everything. Turning algorithms on or off in Settings saves your own selection as Custom.</string>
+    <string name="help_kits_body">Pick a kit to choose what gets computed: Downloads (SHA-256, SHA-512, SHA-1, MD5), Forensics (MD5, SHA-1, SHA-256) or Everything. Turning algorithms on or off yourself, on the Algorithms page in Settings, saves your own selection as Custom.</string>
     <string name="help_compare_title">Checking a value</string>
     <string name="help_compare_body">Paste or scan the published value into the compare box. A match turns that digest green. If nothing matches, HashPony shows the closest digest of the same length and marks every character that differs.</string>
     <string name="help_qr_title">QR codes</string>
@@ -158,11 +157,24 @@
     <string name="family_tappony">Tap an NFC tag to send a request to your own server.</string>
 
     <!-- Plain errors, group names and the empty-sums message -->
-    <string name="group_modern">Modern</string>
-    <string name="group_legacy">Legacy</string>
-    <string name="group_regional">Regional</string>
-    <string name="group_checksum">Checksums and fast hashes</string>
+    <string name="group_sha2" translatable="false">SHA-2</string>
+    <string name="group_sha3" translatable="false">SHA-3</string>
+    <string name="group_blake" translatable="false">BLAKE</string>
+    <string name="group_older">Older</string>
+    <string name="group_national">National standards</string>
+    <string name="group_checksum">Checksums (not for security)</string>
+    <string name="group_none_on">None on</string>
     <string name="note_keccak">Ethereum-style padding. Not the same as SHA3-256.</string>
+    <string name="note_broken">Broken for security. Use only to match published sums.</string>
+    <string name="note_sm3">China, GB/T 32905</string>
+    <string name="note_streebog">Russia, GOST R 34.11-2012</string>
+    <string name="algo_bits">%1$d-bit</string>
+    <string name="action_expand">Expand</string>
+    <string name="action_collapse">Collapse</string>
+    <string name="settings_general">General</string>
+    <string name="settings_language">Language</string>
+    <string name="algorithms_summary">%1$s: %2$s</string>
+    <string name="algorithms_none">No algorithms are on</string>
     <string name="err_read_folder">HashPony couldn\'t read that folder. Pick it again to grant access.</string>
     <string name="err_open_file">Couldn\'t open %1$s.</string>
     <string name="err_read_sums">Couldn\'t read that sums file.</string>

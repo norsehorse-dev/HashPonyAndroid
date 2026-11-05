@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -125,7 +126,22 @@ fun HashPonyTopBar(
     TopAppBar(
         modifier = modifier,
         title = {
-            Text(title ?: if (inSettings) settingsLabel else stringResource(R.string.app_name))
+            if (title == null && !inSettings) {
+                // Home: the app icon beside the name. The name already says it,
+                // so the mark itself is decorative for screen readers.
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painterResource(R.drawable.ic_brand_mark),
+                        contentDescription = null,
+                        tint = TextPrimary,
+                        modifier = Modifier.size(28.dp),
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(stringResource(R.string.app_name))
+                }
+            } else {
+                Text(title ?: settingsLabel)
+            }
         },
         navigationIcon = {
             if (inSettings) {

@@ -3,18 +3,19 @@ package com.hashpony.android.ui.files
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import com.hashpony.android.R
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.hashpony.core.AlgorithmRegistry
-import com.hashpony.core.HashCancelledException
+import com.hashpony.android.R
 import com.hashpony.android.data.AlgorithmKit
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.hash.FileHashing
 import com.hashpony.android.hash.SafTree
+import com.hashpony.android.i18n.LanguageManager
+import com.hashpony.core.AlgorithmRegistry
+import com.hashpony.core.HashCancelledException
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.withContext
 
 enum class HashStatus { PENDING, HASHING, DONE, ERROR, CANCELLED }
 
@@ -146,7 +147,7 @@ class FilesViewModel(app: Application) : AndroidViewModel(app) {
                 } catch (c: CancellationException) {
                     throw c
                 } catch (e: Exception) {
-                    updateAt(index) { it.copy(status = HashStatus.ERROR, error = getApplication<Application>().getString(R.string.err_hash_file), progress = null) }
+                    updateAt(index) { it.copy(status = HashStatus.ERROR, error = LanguageManager.localizedContext(getApplication<Application>()).getString(R.string.err_hash_file), progress = null) }
                 }
             }
         }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The languages HashPony ships, so Android 13+ also lists HashPony under
+  Settings > System > Languages > App languages. Must match the values-XX
+  folders and SupportedLanguage in i18n/LanguageManager.kt. Same set as
+  PGPonyAndroid. Simplified Chinese lives in values-b+zh+Hans.
+-->
+<locale-config
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:defaultLocale="en">
+    <locale android:name="en" />
+    <locale android:name="de" />
+    <locale android:name="es" />
+    <locale android:name="fr" />
+    <locale android:name="ja" />
+    <locale android:name="ko" />
+    <locale android:name="pt-BR" />
+    <locale android:name="ru" />
+    <locale android:name="tr" />
+    <locale android:name="uk" />
+    <locale android:name="zh-Hans" />
+</locale-config>

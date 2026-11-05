@@ -1,1 +1,1 @@
-Hash, verify and write checksums — zero permissions, fully offline.
+Hash, verify and write checksums. Zero permissions, fully offline.

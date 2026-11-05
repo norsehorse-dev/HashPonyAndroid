@@ -3,9 +3,11 @@
     <!--
       Compose owns all in-app theming; this XML theme only styles the initial
       window (splash background, transparent system bars for edge-to-edge).
-      Based on a platform theme so no Material Components dependency is needed.
+      MainActivity is an AppCompatActivity (for the in-app language picker), so
+      the window theme must descend from Theme.AppCompat. Still no Material
+      Components dependency.
     -->
-    <style name="Theme.HashPony" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.HashPony" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/instrument_ground</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

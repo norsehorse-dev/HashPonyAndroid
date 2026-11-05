@@ -12,11 +12,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.HashPony">
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="locale|layoutDirection|screenLayout"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.HashPony">
@@ -93,6 +95,22 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
+        </service>
+
+        <!--
+          In-app language picker, same setup as PGPonyAndroid. The configChanges
+          above let a switch land in place (no recreate, no black flash;
+          screenLayout covers the first switch after a cold start). On Android
+          13+ the system stores the per-app language; on Android 8 to 12
+          AppCompat stores it through this service.
+        -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
         </service>
     </application>
 

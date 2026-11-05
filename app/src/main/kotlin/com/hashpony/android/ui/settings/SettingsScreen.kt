@@ -2,6 +2,7 @@ package com.hashpony.android.ui.settings
 
 import android.content.Intent
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,13 +10,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -23,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,40 +40,59 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hashpony.android.R
+import com.hashpony.android.i18n.LanguageManager
+import com.hashpony.android.i18n.LanguageState
+import com.hashpony.android.i18n.SupportedLanguage
 import com.hashpony.android.ui.KitPicker
 import com.hashpony.android.ui.Links
+import com.hashpony.android.ui.algorithmSummary
 import com.hashpony.android.ui.rememberVersionName
 import com.hashpony.android.ui.theme.ListDivider
 import com.hashpony.android.ui.theme.MetaStyle
 import com.hashpony.android.ui.theme.SectionHeader
+import com.hashpony.android.ui.theme.Silver
 import com.hashpony.android.ui.theme.TextDim
 import com.hashpony.android.ui.theme.TextFaint
 import com.hashpony.android.ui.theme.TextPrimary
 import com.hashpony.android.ui.theme.UiStyle
 import com.hashpony.android.ui.theme.instrumentSwitchColors
+import com.hashpony.core.Algorithm
 import com.hashpony.core.AlgorithmGroup
 import com.hashpony.core.AlgorithmRegistry
 
-/** Settings, or its Licenses page. Navigation and the app bar live in HashPonyApp. */
+/** The pages under Settings. The app bar title and back arrow follow the page. */
+enum class SettingsPage(@StringRes val titleRes: Int?) {
+    MAIN(null),
+    ALGORITHMS(R.string.settings_algorithms),
+    LANGUAGE(R.string.settings_language),
+    LICENSES(R.string.licenses_title),
+}
+
+/** Settings and its sub-pages. Navigation and the app bar live in HashPonyApp. */
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    showLicenses: Boolean,
-    onOpenLicenses: () -> Unit,
+    page: SettingsPage,
+    onOpenPage: (SettingsPage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (showLicenses) LicensesScreen(modifier) else MainSettings(viewModel, onOpenLicenses, modifier)
+    when (page) {
+        SettingsPage.MAIN -> MainSettings(viewModel, onOpenPage, modifier)
+        SettingsPage.ALGORITHMS -> AlgorithmsScreen(viewModel, modifier)
+        SettingsPage.LANGUAGE -> LanguageScreen(modifier)
+        SettingsPage.LICENSES -> LicensesScreen(modifier)
+    }
 }
 
 @Composable
-private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Unit, modifier: Modifier) {
+private fun MainSettings(viewModel: SettingsViewModel, onOpenPage: (SettingsPage) -> Unit, modifier: Modifier) {
     val context = LocalContext.current
     val loaded by viewModel.settings.collectAsState()
     // Draw nothing until preferences load, so switches never flash the wrong state.
     val settings = loaded ?: return
-    val enabled = settings.enabledAlgorithms
     val version = rememberVersionName()
 
     fun open(url: String) = runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
@@ -74,40 +103,22 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
             .verticalScroll(rememberScrollState())
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp),
     ) {
-        SectionHeader(stringResource(R.string.settings_algorithms))
-        KitPicker(enabled = enabled, onSelect = { viewModel.applyKit(it) }, modifier = Modifier.padding(bottom = 8.dp))
-        for (group in AlgorithmGroup.entries) {
-            Text(
-                groupLabel(group),
-                style = MaterialTheme.typography.titleSmall,
-                color = TextDim,
-                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-            )
-            for (algo in AlgorithmRegistry.byGroup(group)) {
-                ListDivider()
-                val on = algo.id in enabled
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .toggleable(value = on, role = Role.Switch, onValueChange = { viewModel.setAlgorithmEnabled(algo.id, it) })
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text(algo.displayName, style = UiStyle, color = TextPrimary)
-                        val note = if (algo.id == "keccak-256") stringResource(R.string.note_keccak) else algo.note
-                        if (note != null) {
-                            Text(note, style = MetaStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
-                        }
-                    }
-                    Switch(checked = on, onCheckedChange = null, colors = instrumentSwitchColors())
-                }
-            }
-        }
-
+        SectionHeader(stringResource(R.string.settings_general))
+        LinkRow(
+            stringResource(R.string.settings_algorithms),
+            algorithmSummary(settings.enabledAlgorithms),
+            Icons.Filled.ChevronRight,
+        ) { onOpenPage(SettingsPage.ALGORITHMS) }
+        ListDivider()
+        val language by LanguageState.current
+        LinkRow(
+            stringResource(R.string.settings_language),
+            (SupportedLanguage.resolve(language) ?: SupportedLanguage.EN).nativeName,
+            Icons.Filled.ChevronRight,
+        ) { onOpenPage(SettingsPage.LANGUAGE) }
+        ListDivider()
         // Theme mode and Material You toggles are hidden while the dark look is
         // the only scheme (see HashPonyTheme); the prefs stay in place.
-        SectionStart(stringResource(R.string.settings_display))
         SwitchRow(stringResource(R.string.settings_uppercase), settings.uppercaseHex) { viewModel.setUppercaseHex(it) }
 
         SectionStart(stringResource(R.string.settings_help))
@@ -136,7 +147,7 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
         ListDivider()
         LinkRow(stringResource(R.string.link_source), null, Icons.AutoMirrored.Filled.OpenInNew) { open(Links.SOURCE) }
         ListDivider()
-        LinkRow(stringResource(R.string.link_licenses), null, Icons.Filled.ChevronRight, onOpenLicenses)
+        LinkRow(stringResource(R.string.link_licenses), null, Icons.Filled.ChevronRight) { onOpenPage(SettingsPage.LICENSES) }
 
         SectionStart(stringResource(R.string.settings_about))
         Text(stringResource(R.string.about_version, version), style = UiStyle, color = TextPrimary)
@@ -146,6 +157,150 @@ private fun MainSettings(viewModel: SettingsViewModel, onOpenLicenses: () -> Uni
             color = TextDim,
             modifier = Modifier.padding(top = 4.dp),
         )
+    }
+}
+
+@Composable
+private fun AlgorithmsScreen(viewModel: SettingsViewModel, modifier: Modifier) {
+    val loaded by viewModel.settings.collectAsState()
+    val settings = loaded ?: return
+    val enabled = settings.enabledAlgorithms
+    // Groups with something on start open, the rest start folded. Decided once
+    // per visit, so switching off a group's last algorithm doesn't fold it away
+    // under the user's finger.
+    var expanded by rememberSaveable {
+        mutableStateOf(
+            AlgorithmGroup.entries
+                .filter { g -> AlgorithmRegistry.byGroup(g).any { it.id in enabled } }
+                .map { it.name },
+        )
+    }
+
+    Column(
+        modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp),
+    ) {
+        KitPicker(enabled = enabled, onSelect = { viewModel.applyKit(it) })
+        for (group in AlgorithmGroup.entries) {
+            val algos = AlgorithmRegistry.byGroup(group)
+            val open = group.name in expanded
+            val onNames = algos.filter { it.id in enabled }.joinToString(", ") { it.displayName }
+            Spacer(Modifier.height(16.dp))
+            GroupHeader(
+                title = groupLabel(group),
+                summary = when {
+                    open -> null
+                    onNames.isEmpty() -> stringResource(R.string.group_none_on)
+                    else -> onNames
+                },
+                open = open,
+            ) { expanded = if (open) expanded - group.name else expanded + group.name }
+            if (open) {
+                for (algo in algos) {
+                    ListDivider()
+                    AlgorithmRow(algo, on = algo.id in enabled) { viewModel.setAlgorithmEnabled(algo.id, it) }
+                }
+            }
+        }
+    }
+}
+
+/** A family heading that folds its rows. Folded, it says which of them are on. */
+@Composable
+private fun GroupHeader(title: String, summary: String?, open: Boolean, onToggle: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 48.dp)
+            .clickable(
+                onClickLabel = stringResource(if (open) R.string.action_collapse else R.string.action_expand),
+                onClick = onToggle,
+            )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = Silver)
+            if (summary != null) {
+                Text(summary, style = MetaStyle, color = TextDim, modifier = Modifier.padding(top = 2.dp))
+            }
+        }
+        Icon(
+            if (open) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+            contentDescription = null,
+            tint = TextFaint,
+        )
+    }
+}
+
+@Composable
+private fun AlgorithmRow(algo: Algorithm, on: Boolean, onChange: (Boolean) -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .toggleable(value = on, role = Role.Switch, onValueChange = onChange)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(algo.displayName, style = UiStyle, color = TextPrimary)
+            Text(
+                stringResource(R.string.algo_bits, algo.outputBits),
+                style = MetaStyle,
+                color = TextDim,
+                modifier = Modifier.padding(top = 2.dp),
+            )
+            val note = algorithmNote(algo)
+            if (note != null) {
+                Text(note, style = MetaStyle, color = TextFaint, modifier = Modifier.padding(top = 2.dp))
+            }
+        }
+        Switch(checked = on, onCheckedChange = null, colors = instrumentSwitchColors())
+    }
+}
+
+/** Localized one-line notes. The core's English notes are not shown. */
+@Composable
+private fun algorithmNote(algo: Algorithm): String? = when {
+    algo.broken -> stringResource(R.string.note_broken)
+    algo.id == "keccak-256" -> stringResource(R.string.note_keccak)
+    algo.id == "sm3" -> stringResource(R.string.note_sm3)
+    algo.id.startsWith("streebog") -> stringResource(R.string.note_streebog)
+    else -> null
+}
+
+/**
+ * One row per shipped language, by its own name. Tapping applies it at once,
+ * in place, and this page stays open (the Settings page is saved state, so it
+ * also survives a rotation or other recreate).
+ */
+@Composable
+private fun LanguageScreen(modifier: Modifier) {
+    val current by LanguageState.current
+    Column(
+        modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .selectableGroup()
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+    ) {
+        SupportedLanguage.entries.forEachIndexed { i, lang ->
+            if (i > 0) ListDivider()
+            val selected = current == lang.tag
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 48.dp)
+                    .selectable(selected = selected, role = Role.RadioButton) { LanguageManager.setLanguage(lang) }
+                    .padding(vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(lang.nativeName, Modifier.weight(1f), style = UiStyle, color = TextPrimary)
+                if (selected) Icon(Icons.Filled.Check, contentDescription = null, tint = Silver)
+            }
+        }
     }
 }
 
@@ -207,9 +362,11 @@ private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Un
 @Composable
 private fun groupLabel(group: AlgorithmGroup): String = stringResource(
     when (group) {
-        AlgorithmGroup.MODERN -> R.string.group_modern
-        AlgorithmGroup.LEGACY -> R.string.group_legacy
-        AlgorithmGroup.REGIONAL -> R.string.group_regional
+        AlgorithmGroup.SHA2 -> R.string.group_sha2
+        AlgorithmGroup.SHA3 -> R.string.group_sha3
+        AlgorithmGroup.BLAKE -> R.string.group_blake
+        AlgorithmGroup.OLDER -> R.string.group_older
+        AlgorithmGroup.NATIONAL -> R.string.group_national
         AlgorithmGroup.CHECKSUM -> R.string.group_checksum
     },
 )
@@ -232,7 +389,14 @@ private fun LinkRow(title: String, subtitle: String?, trailing: ImageVector, onC
         Column(Modifier.weight(1f)) {
             Text(title, style = UiStyle, color = TextPrimary)
             if (subtitle != null) {
-                Text(subtitle, style = MetaStyle, color = TextDim, modifier = Modifier.padding(top = 2.dp))
+                Text(
+                    subtitle,
+                    style = MetaStyle,
+                    color = TextDim,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
             }
         }
         Icon(trailing, contentDescription = null, tint = TextFaint)

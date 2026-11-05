@@ -76,6 +76,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
+    // Per-app language (in-app picker). Same version as PGPonyAndroid. Used for
+    // AppCompatDelegate.setApplicationLocales and AppCompatActivity, which
+    // stores and applies the choice on Android 8 to 12; no AppCompat widgets.
+    implementation(libs.androidx.appcompat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

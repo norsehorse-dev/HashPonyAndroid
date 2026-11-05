@@ -32,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hashpony.android.R
 import com.hashpony.android.ui.files.FilesViewModel
 import com.hashpony.android.ui.hash.HashScreen
+import com.hashpony.android.ui.settings.SettingsPage
 import com.hashpony.android.ui.settings.SettingsScreen
 import com.hashpony.android.ui.settings.SettingsViewModel
 import com.hashpony.android.ui.text.TextViewModel
@@ -65,11 +66,13 @@ fun HashPonyApp(
 
     var pillar by rememberSaveable { mutableIntStateOf(0) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
-    var showLicenses by rememberSaveable { mutableStateOf(false) }
+    var settingsPage by rememberSaveable { mutableStateOf(SettingsPage.MAIN) }
 
-    // Back steps out of Licenses to Settings, then out of Settings, before the
-    // app closes. The app bar arrow does the same.
-    val goBack: () -> Unit = { if (showLicenses) showLicenses = false else showSettings = false }
+    // Back steps out of a Settings sub-page to Settings, then out of Settings,
+    // before the app closes. The app bar arrow does the same.
+    val goBack: () -> Unit = {
+        if (settingsPage != SettingsPage.MAIN) settingsPage = SettingsPage.MAIN else showSettings = false
+    }
     BackHandler(enabled = showSettings) { goBack() }
 
     // A share lands on Hash / Files; an open-with sums file lands on Verify.
@@ -89,9 +92,9 @@ fun HashPonyApp(
         topBar = {
             HashPonyTopBar(
                 inSettings = showSettings,
-                onSettings = { showSettings = true },
+                onSettings = { settingsPage = SettingsPage.MAIN; showSettings = true },
                 onBack = goBack,
-                title = if (showSettings && showLicenses) stringResource(R.string.licenses_title) else null,
+                title = if (showSettings) settingsPage.titleRes?.let { stringResource(it) } else null,
             )
         },
         bottomBar = {
@@ -124,8 +127,8 @@ fun HashPonyApp(
             when {
                 showSettings -> SettingsScreen(
                     settingsViewModel,
-                    showLicenses = showLicenses,
-                    onOpenLicenses = { showLicenses = true },
+                    page = settingsPage,
+                    onOpenPage = { settingsPage = it },
                 )
                 Pillar.entries[pillar] == Pillar.HASH ->
                     HashScreen(

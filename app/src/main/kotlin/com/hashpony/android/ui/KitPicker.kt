@@ -32,12 +32,7 @@ fun KitPicker(
     modifier: Modifier = Modifier,
 ) {
     val active = AlgorithmKit.matching(enabled)
-    val names = AlgorithmRegistry.all.filter { it.id in enabled }.map { it.displayName }
-    val summary = when {
-        names.isEmpty() -> stringResource(R.string.text_enable_hint)
-        names.size == AlgorithmRegistry.all.size -> stringResource(R.string.kit_all_count, names.size)
-        else -> names.joinToString(", ")
-    }
+    val summary = enabledNames(enabled) ?: stringResource(R.string.text_enable_hint)
     Column(modifier) {
         ChoiceField(
             label = stringResource(R.string.kit_label),
@@ -53,4 +48,28 @@ fun KitPicker(
             modifier = Modifier.padding(top = 8.dp),
         )
     }
+}
+
+/**
+ * What will be computed, in display order: the names, or "All N algorithms"
+ * when everything is on. Null when nothing is on, so each caller words that case.
+ */
+@Composable
+fun enabledNames(enabled: Set<String>): String? {
+    val names = AlgorithmRegistry.all.filter { it.id in enabled }.map { it.displayName }
+    return when {
+        names.isEmpty() -> null
+        names.size == AlgorithmRegistry.all.size -> stringResource(R.string.kit_all_count, names.size)
+        else -> names.joinToString(", ")
+    }
+}
+
+/** One line for the Settings row: the kit, then what it computes. */
+@Composable
+fun algorithmSummary(enabled: Set<String>): String {
+    val names = enabledNames(enabled) ?: return stringResource(R.string.algorithms_none)
+    val kit = AlgorithmKit.matching(enabled)
+    // "All N algorithms" already says it; "Everything: All N algorithms" repeats itself.
+    if (kit == AlgorithmKit.EVERYTHING) return names
+    return stringResource(R.string.algorithms_summary, kitLabel(kit), names)
 }

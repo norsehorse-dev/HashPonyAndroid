@@ -1,13 +1,14 @@
 package com.hashpony.android
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -21,10 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.hashpony.android.data.PreferencesRepository
 import com.hashpony.android.data.ThemeMode
+import com.hashpony.android.i18n.LanguageState
 import com.hashpony.android.ui.HashPonyApp
 import com.hashpony.android.ui.theme.HashPonyTheme
 
-class MainActivity : ComponentActivity() {
+// AppCompatActivity rather than ComponentActivity so the in-app language
+// picker also works on Android 8 to 12 (see i18n/LanguageManager.kt).
+class MainActivity : AppCompatActivity() {
 
     // Incoming work, held at activity level so a second intent (onNewIntent,
     // e.g. the Quick Settings tile while the app is open) reaches the UI too.
@@ -34,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LanguageState.init(this)
         // The Instrument is dark-only for now, so system bar icons stay light even
         // when the device is in light mode.
         enableEdgeToEdge(
@@ -68,6 +73,19 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    // A language switch lands here in place (configChanges in the manifest).
+    // Re-read it so a change made in system Settings also shows in the picker.
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        LanguageState.init(this)
+        // On Android 8 to 12, AppCompat 1.7 applies the new language in place but
+        // does not pass the change to the view tree, so Compose would keep the old
+        // strings. Pass it on. On 13+ the framework already did; a repeat is harmless.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            window.decorView.dispatchConfigurationChanged(newConfig)
         }
     }
 

@@ -21,47 +21,53 @@ import java.util.zip.CRC32
  */
 object AlgorithmRegistry {
 
+    // Order is the display order everywhere (Settings, result rows, export):
+    // families in Settings order, most-used size first within each family.
     val all: List<Algorithm> = buildList {
-        // ---- Modern ----
-        add(md("sha224", "SHA-224", AlgorithmGroup.MODERN, 224, "SHA-224"))
-        add(md("sha256", "SHA-256", AlgorithmGroup.MODERN, 256, "SHA-256", enabledByDefault = true))
-        add(md("sha384", "SHA-384", AlgorithmGroup.MODERN, 384, "SHA-384"))
-        add(md("sha512", "SHA-512", AlgorithmGroup.MODERN, 512, "SHA-512", quickAccess = true))
-        add(bc("sha3-224", "SHA3-224", AlgorithmGroup.MODERN, 224) { Bc.sha3(224) })
-        add(bc("sha3-256", "SHA3-256", AlgorithmGroup.MODERN, 256) { Bc.sha3(256) })
-        add(bc("sha3-384", "SHA3-384", AlgorithmGroup.MODERN, 384) { Bc.sha3(384) })
-        add(bc("sha3-512", "SHA3-512", AlgorithmGroup.MODERN, 512) { Bc.sha3(512) })
-        add(bc("blake2b-256", "BLAKE2b-256", AlgorithmGroup.MODERN, 256) { Bc.blake2b(256) })
-        add(bc("blake2b-512", "BLAKE2b-512", AlgorithmGroup.MODERN, 512) { Bc.blake2b(512) })
-        add(bc("blake2s-256", "BLAKE2s-256", AlgorithmGroup.MODERN, 256) { Bc.blake2s(256) })
-        add(bc("blake3-256", "BLAKE3-256", AlgorithmGroup.MODERN, 256) { Bc.blake3(32) })
+        // ---- SHA-2 ----
+        add(md("sha256", "SHA-256", AlgorithmGroup.SHA2, 256, "SHA-256", enabledByDefault = true))
+        add(md("sha512", "SHA-512", AlgorithmGroup.SHA2, 512, "SHA-512", quickAccess = true))
+        add(md("sha384", "SHA-384", AlgorithmGroup.SHA2, 384, "SHA-384"))
+        add(md("sha224", "SHA-224", AlgorithmGroup.SHA2, 224, "SHA-224"))
+
+        // ---- SHA-3 (plus Keccak-256, the pre-standard padding) ----
+        add(bc("sha3-256", "SHA3-256", AlgorithmGroup.SHA3, 256) { Bc.sha3(256) })
+        add(bc("sha3-512", "SHA3-512", AlgorithmGroup.SHA3, 512) { Bc.sha3(512) })
+        add(bc("sha3-384", "SHA3-384", AlgorithmGroup.SHA3, 384) { Bc.sha3(384) })
+        add(bc("sha3-224", "SHA3-224", AlgorithmGroup.SHA3, 224) { Bc.sha3(224) })
         add(
             bc(
-                "keccak-256", "Keccak-256", AlgorithmGroup.MODERN, 256,
+                "keccak-256", "Keccak-256", AlgorithmGroup.SHA3, 256,
                 note = "Ethereum-style padding. Not the same as SHA3-256.",
             ) { Bc.keccak256() },
         )
 
-        // ---- Legacy ----
-        add(md("md5", "MD5", AlgorithmGroup.LEGACY, 128, "MD5", quickAccess = true))
-        add(md("sha1", "SHA-1", AlgorithmGroup.LEGACY, 160, "SHA-1", quickAccess = true))
-        add(bc("md4", "MD4", AlgorithmGroup.LEGACY, 128) { Bc.md4() })
-        add(bc("md2", "MD2", AlgorithmGroup.LEGACY, 128) { Bc.md2() })
-        add(bc("ripemd160", "RIPEMD-160", AlgorithmGroup.LEGACY, 160) { Bc.ripemd160() })
-        add(bc("whirlpool", "Whirlpool", AlgorithmGroup.LEGACY, 512) { Bc.whirlpool() })
+        // ---- BLAKE ----
+        add(bc("blake3-256", "BLAKE3-256", AlgorithmGroup.BLAKE, 256) { Bc.blake3(32) })
+        add(bc("blake2b-512", "BLAKE2b-512", AlgorithmGroup.BLAKE, 512) { Bc.blake2b(512) })
+        add(bc("blake2b-256", "BLAKE2b-256", AlgorithmGroup.BLAKE, 256) { Bc.blake2b(256) })
+        add(bc("blake2s-256", "BLAKE2s-256", AlgorithmGroup.BLAKE, 256) { Bc.blake2s(256) })
 
-        // ---- Regional ----
-        add(bc("sm3", "SM3", AlgorithmGroup.REGIONAL, 256, note = "GB/T 32905") { Bc.sm3() })
-        add(bc("streebog-256", "Streebog-256", AlgorithmGroup.REGIONAL, 256, note = "GOST R 34.11-2012") { Bc.streebog256() })
-        add(bc("streebog-512", "Streebog-512", AlgorithmGroup.REGIONAL, 512, note = "GOST R 34.11-2012") { Bc.streebog512() })
+        // ---- Older (MD5, SHA-1, MD4, MD2 are broken; kept to match published sums) ----
+        add(md("md5", "MD5", AlgorithmGroup.OLDER, 128, "MD5", quickAccess = true, broken = true))
+        add(md("sha1", "SHA-1", AlgorithmGroup.OLDER, 160, "SHA-1", quickAccess = true, broken = true))
+        add(bc("ripemd160", "RIPEMD-160", AlgorithmGroup.OLDER, 160) { Bc.ripemd160() })
+        add(bc("whirlpool", "Whirlpool", AlgorithmGroup.OLDER, 512) { Bc.whirlpool() })
+        add(bc("md4", "MD4", AlgorithmGroup.OLDER, 128, broken = true) { Bc.md4() })
+        add(bc("md2", "MD2", AlgorithmGroup.OLDER, 128, broken = true) { Bc.md2() })
+
+        // ---- National standards ----
+        add(bc("sm3", "SM3", AlgorithmGroup.NATIONAL, 256, note = "GB/T 32905") { Bc.sm3() })
+        add(bc("streebog-256", "Streebog-256", AlgorithmGroup.NATIONAL, 256, note = "GOST R 34.11-2012") { Bc.streebog256() })
+        add(bc("streebog-512", "Streebog-512", AlgorithmGroup.NATIONAL, 512, note = "GOST R 34.11-2012") { Bc.streebog512() })
 
         // ---- Checksums and fast hashes (non-cryptographic) ----
         add(checksum("crc32", "CRC32", 32) { ChecksumBackend(CRC32()) })
         add(checksum("adler32", "Adler-32", 32) { ChecksumBackend(Adler32()) })
-        add(checksum("xxh32", "XXH32", 32) { Xxh32Digest() })
-        add(checksum("xxh64", "XXH64", 64) { Xxh64Digest() })
         add(checksum("xxh3-64", "XXH3-64", 64) { Xxh3Digest(64) })
         add(checksum("xxh3-128", "XXH3-128", 128) { Xxh3Digest(128) })
+        add(checksum("xxh64", "XXH64", 64) { Xxh64Digest() })
+        add(checksum("xxh32", "XXH32", 32) { Xxh32Digest() })
     }
 
     private val byId: Map<String, Algorithm> = all.associateBy { it.id }
@@ -85,7 +91,8 @@ object AlgorithmRegistry {
         jca: String,
         enabledByDefault: Boolean = false,
         quickAccess: Boolean = false,
-    ) = Algorithm(id, name, group, bits, enabledByDefault, quickAccess) { MessageDigestBackend.of(jca) }
+        broken: Boolean = false,
+    ) = Algorithm(id, name, group, bits, enabledByDefault, quickAccess, broken = broken) { MessageDigestBackend.of(jca) }
 
     private fun bc(
         id: String,
@@ -93,8 +100,9 @@ object AlgorithmRegistry {
         group: AlgorithmGroup,
         bits: Int,
         note: String? = null,
+        broken: Boolean = false,
         factory: () -> StreamingDigest,
-    ) = Algorithm(id, name, group, bits, note = note, factory = factory)
+    ) = Algorithm(id, name, group, bits, broken = broken, note = note, factory = factory)
 
     private fun checksum(
         id: String,
