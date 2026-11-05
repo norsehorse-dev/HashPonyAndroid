@@ -1,5 +1,14 @@
-HashPony calcule les empreintes de fichiers et de texte, vérifie les téléchargements à l'aide d'un fichier de sommes et écrit des fichiers de sommes acceptés par les outils de bureau.
+HashPony calcule les empreintes de fichiers et de texte, vérifie les téléchargements à l'aide d'un fichier de sommes et écrit des fichiers de sommes que les outils de bureau acceptent octet pour octet.
 
-Zéro autorisation et aucune autorisation INTERNET, si bien que la promesse « hors ligne » est vérifiable dans le manifeste. Tout accès aux fichiers passe par le sélecteur du système et le menu de partage.
+Zéro autorisation. Pas « minimal » : zéro. Il n'y a aucune autorisation INTERNET, donc la promesse « hors ligne » se vérifie dans le manifeste lui-même. Tout accès aux fichiers passe par le sélecteur de fichiers du système et le menu de partage.
 
-Prend en charge les familles SHA-2 et SHA-3, BLAKE2/BLAKE3, Keccak-256, les SM3 et Streebog régionaux, des algorithmes hérités comme MD5/SHA-1, ainsi que les CRC32, Adler-32 et xxHash non cryptographiques.
+Fonctionnalités :
+
+* Calculer l'empreinte d'un ou de plusieurs fichiers, ou d'un dossier entier, avec n'importe quelle combinaison d'algorithmes en une seule lecture
+* Calculer l'empreinte d'un texte saisi ou collé
+* Comparer à une valeur attendue avec un verdict clair, pour vérifier un ISO ou un APK par rapport à une empreinte publiée
+* Vérifier un dossier avec son fichier de sommes (SHA256SUMS, .sha256, .md5, .sfv, étiquettes BSD, fichiers simples à empreinte unique), avec OK, Échec ou Manquant pour chaque entrée
+* Exporter des fichiers de sommes acceptés par « sha256sum -c », « shasum -c » et « xxhsum -c » sur ordinateur, ainsi que SFV
+* Servir de cible de partage, pour que n'importe quelle appli puisse y envoyer des fichiers directement
+
+Les algorithmes comprennent les familles SHA-2 et SHA-3, BLAKE2 et BLAKE3, Keccak-256, les normes nationales SM3 et Streebog, d'anciens algorithmes comme MD5 et SHA-1 pour comparer avec des sommes publiées, et d'autres encore, ainsi que les CRC32, Adler-32 et xxHash non cryptographiques.

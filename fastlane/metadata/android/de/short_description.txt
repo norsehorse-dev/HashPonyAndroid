@@ -1,1 +1,1 @@
-Prüfsummen berechnen, prüfen und schreiben — null Berechtigungen, offline.
+Prüfsummen berechnen, prüfen und schreiben. Null Berechtigungen, offline.

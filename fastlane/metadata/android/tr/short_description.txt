@@ -1,0 +1,1 @@
+Sağlama toplamı hesaplayın, doğrulayın, yazın. Sıfır izin, tamamen çevrimdışı.

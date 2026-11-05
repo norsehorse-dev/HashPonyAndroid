@@ -1,0 +1,14 @@
+HashPony dosyaların ve metinlerin hash'ini hesaplar, indirilen dosyaları bir sağlama toplamı dosyasına göre doğrular ve masaüstü araçlarının bayt bayt kabul ettiği sağlama toplamı dosyaları yazar.
+
+Sıfır izin. "Asgari" değil, sıfır. INTERNET izni yoktur, bu yüzden çevrimdışı çalışma iddiası doğrudan manifest dosyasında denetlenebilir. Tüm dosya erişimi sistem dosya seçicisi ve paylaşım menüsü üzerinden yapılır.
+
+Özellikler:
+
+* Tek bir okuma geçişinde, istediğiniz algoritma birleşimiyle bir veya birçok dosyanın ya da bütün bir klasörün hash'ini hesaplayın
+* Yazılan veya yapıştırılan metnin hash'ini hesaplayın
+* Beklenen bir değerle karşılaştırın ve net bir eşleşme sonucu alın: bir ISO veya APK dosyasını yayımlanmış bir hash'e göre denetlemek için
+* Bir klasörü sağlama toplamı dosyasına göre doğrulayın (SHA256SUMS, .sha256, .md5, .sfv, BSD etiketleri, tek hash içeren düz dosyalar); her girdi için Tamam / Başarısız / Eksik sonucu
+* Masaüstündeki "sha256sum -c", "shasum -c" ve "xxhsum -c" komutlarının kabul ettiği sağlama toplamı dosyalarını ve SFV dosyalarını dışa aktarın
+* Paylaşım hedefi olarak kullanın: herhangi bir uygulama dosyaları doğrudan gönderebilir
+
+Desteklenen algoritmalar arasında SHA-2 ve SHA-3 aileleri, BLAKE2 ve BLAKE3, Keccak-256, ulusal standartlar SM3 ve Streebog, yayımlanmış toplamlarla eşleştirmek için MD5 ve SHA-1 gibi eski algoritmalar ve daha fazlası ile kriptografik olmayan CRC32, Adler-32 ve xxHash bulunur.

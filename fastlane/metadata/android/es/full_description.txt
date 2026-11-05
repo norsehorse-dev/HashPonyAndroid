@@ -1,5 +1,14 @@
-HashPony calcula sumas de archivos y texto, verifica descargas con un archivo de sumas y escribe archivos de sumas que aceptan las herramientas de escritorio.
+HashPony calcula hashes de archivos y texto, verifica descargas con un archivo de sumas y escribe archivos de sumas que las herramientas de escritorio aceptan byte a byte.
 
-Cero permisos y sin permiso de INTERNET, así que la promesa de funcionar sin conexión se puede comprobar en el manifiesto. Todo el acceso a archivos pasa por el selector del sistema y el menú de compartir.
+Cero permisos. No «mínimos»: cero. No hay permiso de INTERNET, así que la promesa de funcionar sin conexión se puede comprobar en el propio manifiesto. Todo el acceso a archivos pasa por el selector de archivos del sistema y el menú de compartir.
 
-Incluye las familias SHA-2 y SHA-3, BLAKE2/BLAKE3, Keccak-256, los regionales SM3 y Streebog, algoritmos heredados como MD5/SHA-1 y los no criptográficos CRC32, Adler-32 y xxHash.
+Funciones:
+
+* Calcular el hash de uno o varios archivos, o de una carpeta entera, con cualquier combinación de algoritmos en una sola pasada de lectura
+* Calcular el hash de texto escrito o pegado
+* Comparar con un valor esperado y obtener un resultado claro, para comprobar una ISO o un APK con un hash publicado
+* Verificar una carpeta con su archivo de sumas (SHA256SUMS, .sha256, .md5, .sfv, etiquetas BSD, archivos simples con un solo hash), con OK, Fallido o Falta para cada entrada
+* Exportar archivos de sumas que aceptan «sha256sum -c», «shasum -c» y «xxhsum -c» en el escritorio, además de SFV
+* Funcionar como destino al compartir, para que cualquier app pueda enviarle archivos directamente
+
+Los algoritmos incluyen las familias SHA-2 y SHA-3, BLAKE2 y BLAKE3, Keccak-256, los estándares nacionales SM3 y Streebog, otros más antiguos como MD5 y SHA-1 para comparar con sumas publicadas, y más, además de los no criptográficos CRC32, Adler-32 y xxHash.

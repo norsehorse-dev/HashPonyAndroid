@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Машинный перевод; текст, связанный с безопасностью, должен проверить носитель языка. -->
 <resources>
+    <!-- Tabs -->
     <string name="tab_files">Файлы</string>
     <string name="tab_text">Текст</string>
     <string name="tab_verify">Проверка</string>
@@ -10,12 +11,14 @@
     <string name="pillar_hash">Хеш</string>
     <string name="tag_match">Совпадает</string>
 
+    <!-- Common -->
     <string name="action_clear">Очистить</string>
     <string name="action_share">Поделиться</string>
     <string name="action_save">Сохранить</string>
     <string name="action_back">Назад</string>
     <string name="action_more">Ещё</string>
 
+    <!-- Files -->
     <string name="files_compare_label">Сравнить с ожидаемым значением</string>
     <string name="files_pick">Выбрать файлы</string>
     <string name="files_pick_folder">Выбрать папку</string>
@@ -36,10 +39,12 @@
     <string name="file_vs_differ">Эти два файла различаются</string>
     <string name="file_vs_sub">%1$s и %2$s · сравнение по %3$s</string>
 
+    <!-- Text -->
     <string name="text_label">Текст для хеширования</string>
     <string name="text_encoding">Кодировка UTF-8</string>
     <string name="text_enable_hint">Включите хотя бы один алгоритм в Настройках.</string>
 
+    <!-- Verify -->
     <string name="verify_title">Проверить загрузку</string>
     <string name="verify_intro">Укажите HashPony папку, куда вы скачали файлы. Он найдёт файл сумм (SHA256SUMS, .sha256, .sfv и другие) и проверит каждую запись.</string>
     <string name="verify_pick_folder">Выбрать папку</string>
@@ -54,7 +59,7 @@
     <string name="verify_choose_folder">Выбрать папку</string>
     <string name="verify_need_algo_title">Каким алгоритмом создан %1$s?</string>
     <string name="verify_need_algo_body">В файле это не указано, а длина хеша подходит сразу к нескольким включённым алгоритмам.</string>
-    <string name="verify_all_ok">Все %1$d файлов проверены</string>
+    <string name="verify_all_ok">Все файлы проверены (%1$d)</string>
     <string name="verify_issues">При проверке обнаружены проблемы</string>
     <string name="verify_counts">OK %1$d · Ошибки %2$d · Отсутствуют %3$d</string>
     <string name="verify_counts_unknown">%1$s · Неизвестно %2$d</string>
@@ -68,6 +73,7 @@
     <string name="entry_unknown">Алгоритм неизвестен</string>
     <string name="entry_unnamed">(без имени)</string>
 
+    <!-- Export -->
     <string name="export_title">Экспортировать файл сумм</string>
     <string name="export_algorithm">Алгоритм</string>
     <string name="export_format">Формат</string>
@@ -77,8 +83,8 @@
     <string name="format_bsd">Тег BSD</string>
     <string name="format_sfv">SFV</string>
 
+    <!-- Settings -->
     <string name="settings_algorithms">Алгоритмы</string>
-    <string name="settings_display">Отображение</string>
     <string name="settings_uppercase">Hex в верхнем регистре</string>
     <string name="settings_dynamic">Цвета Material You</string>
     <string name="settings_theme">Тема</string>
@@ -101,7 +107,7 @@
     <string name="about_version">HashPony %1$s</string>
     <string name="about_body">HashPony не требует разрешений и работает офлайн. Данные не покидают ваше устройство, пока вы сами не поделитесь ими или не сохраните их.</string>
     <string name="licenses_title">Лицензии открытого кода</string>
-    <string name="licenses_note">Алгоритмы xxHash представляют собой чистую портацию на Kotlin эталонной реализации Янна Колле, с указанием авторства в файле NOTICE проекта.</string>
+    <string name="licenses_note">Алгоритмы xxHash портированы на Kotlin методом «чистой комнаты» (clean-room) с эталонной реализации Янна Колле, авторство указано в файле NOTICE проекта.</string>
 
     <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
     <string name="kit_label">Набор алгоритмов</string>
@@ -129,7 +135,7 @@
 
     <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
     <string name="help_kits_title">Наборы алгоритмов</string>
-    <string name="help_kits_body">Выберите набор, чтобы указать, что вычислять: «Загрузки» (SHA-256, SHA-512, SHA-1, MD5), «Криминалистика» (MD5, SHA-1, SHA-256) или «Все». Если включить или отключить алгоритмы в Настройках, ваш выбор сохранится как «Свой».</string>
+    <string name="help_kits_body">Выберите набор, чтобы указать, что вычислять: «Загрузки» (SHA-256, SHA-512, SHA-1, MD5), «Криминалистика» (MD5, SHA-1, SHA-256) или «Все». Если вы сами включаете или отключаете алгоритмы на странице «Алгоритмы» в Настройках, ваш выбор сохраняется как «Свой».</string>
     <string name="help_compare_title">Проверка значения</string>
     <string name="help_compare_body">Вставьте или отсканируйте опубликованное значение в поле сравнения. При совпадении этот хеш станет зелёным. Если совпадений нет, HashPony покажет ближайший хеш той же длины и отметит каждый отличающийся символ.</string>
     <string name="help_qr_title">QR-коды</string>
@@ -150,11 +156,21 @@
     <string name="family_tappony">Коснитесь NFC-метки, чтобы отправить запрос на свой сервер.</string>
 
     <!-- Plain errors, group names and the empty-sums message -->
-    <string name="group_modern">Современные</string>
-    <string name="group_legacy">Устаревшие</string>
-    <string name="group_regional">Региональные</string>
-    <string name="group_checksum">Контрольные суммы и быстрые хеши</string>
+    <string name="group_older">Устаревшие</string>
+    <string name="group_national">Национальные стандарты</string>
+    <string name="group_checksum">Контрольные суммы (не для безопасности)</string>
+    <string name="group_none_on">Ни один не включён</string>
     <string name="note_keccak">Дополнение в стиле Ethereum. Не то же самое, что SHA3-256.</string>
+    <string name="note_broken">Криптографически взломан. Используйте только для сверки с опубликованными суммами.</string>
+    <string name="note_sm3">Китай, GB/T 32905</string>
+    <string name="note_streebog">Россия, ГОСТ Р 34.11-2012</string>
+    <string name="algo_bits">%1$d бит</string>
+    <string name="action_expand">Развернуть</string>
+    <string name="action_collapse">Свернуть</string>
+    <string name="settings_general">Общие</string>
+    <string name="settings_language">Язык</string>
+    <string name="algorithms_summary">%1$s: %2$s</string>
+    <string name="algorithms_none">Ни один алгоритм не включён</string>
     <string name="err_read_folder">HashPony не удалось прочитать эту папку. Выберите её снова, чтобы предоставить доступ.</string>
     <string name="err_open_file">Не удалось открыть %1$s.</string>
     <string name="err_read_sums">Не удалось прочитать этот файл сумм.</string>

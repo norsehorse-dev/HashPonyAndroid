@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tabs -->
+    <string name="tab_files">ファイル</string>
+    <string name="tab_text">テキスト</string>
+    <string name="tab_verify">検証</string>
+    <string name="tab_settings">設定</string>
+
+    <!-- Hash / Verify pillars, match status -->
+    <string name="pillar_hash">ハッシュ</string>
+    <string name="tag_match">一致</string>
+
+    <!-- Common -->
+    <string name="action_clear">クリア</string>
+    <string name="action_share">共有</string>
+    <string name="action_save">保存</string>
+    <string name="action_back">戻る</string>
+    <string name="action_more">その他のオプション</string>
+
+    <!-- Files -->
+    <string name="files_compare_label">期待値と比較</string>
+    <string name="files_pick">ファイルを選択</string>
+    <string name="files_pick_folder">フォルダを選択</string>
+    <string name="files_empty">ファイルかフォルダを選択するか、任意のアプリから HashPony に共有してください。</string>
+    <string name="files_match">一致: %1$s</string>
+    <string name="files_no_match">一致なし</string>
+    <string name="copied">%1$s をコピーしました</string>
+    <string name="copied_uppercase">大文字でコピーしました</string>
+    <string name="copy_content_desc">%1$s をコピー</string>
+    <string name="menu_copy_uppercase">大文字でコピー</string>
+    <string name="share_digest_title">ハッシュ値を共有</string>
+    <string name="status_queued">待機中</string>
+    <string name="status_hashing">ハッシュ計算中…</string>
+    <string name="status_done">完了</string>
+    <string name="status_failed">失敗</string>
+    <string name="status_cancelled">キャンセル済み</string>
+    <string name="file_vs_identical">この 2 つのファイルは同一です</string>
+    <string name="file_vs_differ">この 2 つのファイルは異なります</string>
+    <string name="file_vs_sub">%1$s と %2$s · %3$s で比較</string>
+
+    <!-- Text -->
+    <string name="text_label">ハッシュ化するテキスト</string>
+    <string name="text_encoding">UTF-8 エンコーディング</string>
+    <string name="text_enable_hint">設定でアルゴリズムを 1 つ以上オンにしてください。</string>
+
+    <!-- Verify -->
+    <string name="verify_title">ダウンロードを検証</string>
+    <string name="verify_intro">ダウンロード先のフォルダを HashPony で指定してください。チェックサムファイル（SHA256SUMS、.sha256、.sfv など）を見つけて、すべての項目を確認します。</string>
+    <string name="verify_pick_folder">フォルダを選択</string>
+    <string name="verify_open_sums">チェックサムファイルを開く</string>
+    <string name="verify_working">処理中…</string>
+    <string name="verify_change">変更</string>
+    <string name="verify_done">完了</string>
+    <string name="verify_no_sums">このフォルダにチェックサムファイルが見つかりません。直接開くこともできます。</string>
+    <string name="verify_tap_hint">検証するチェックサムファイルをタップしてください:</string>
+    <string name="verify_opened">%1$s を開きました</string>
+    <string name="verify_need_folder">次に、記載されているファイルが入ったフォルダへのアクセスを許可してください。許可するとファイルを確認できます。</string>
+    <string name="verify_choose_folder">フォルダを選択</string>
+    <string name="verify_need_algo_title">%1$s はどのアルゴリズムで作成されましたか？</string>
+    <string name="verify_need_algo_body">ファイルにアルゴリズムの記載がなく、ハッシュの長さがオンになっている複数のアルゴリズムと一致します。</string>
+    <string name="verify_all_ok">全 %1$d 件のファイルを検証しました</string>
+    <string name="verify_issues">検証で問題が見つかりました</string>
+    <string name="verify_counts">OK %1$d · 失敗 %2$d · 欠落 %3$d</string>
+    <string name="verify_counts_unknown">%1$s · 不明 %2$d</string>
+    <string name="verify_failed_title">検証できませんでした</string>
+    <string name="verify_start_over">最初からやり直す</string>
+    <string name="verify_expected">期待値</string>
+    <string name="verify_computed">計算値</string>
+    <string name="entry_ok">OK</string>
+    <string name="entry_failed">失敗</string>
+    <string name="entry_missing">欠落</string>
+    <string name="entry_unknown">アルゴリズム不明</string>
+    <string name="entry_unnamed">（名前なし）</string>
+
+    <!-- Export -->
+    <string name="export_title">チェックサムファイルを書き出す</string>
+    <string name="export_algorithm">アルゴリズム</string>
+    <string name="export_format">形式</string>
+    <string name="export_saved">保存しました</string>
+    <string name="export_share_title">チェックサムファイルを共有</string>
+    <string name="format_gnu">GNU</string>
+    <string name="format_bsd">BSD タグ</string>
+    <string name="format_sfv">SFV</string>
+
+    <!-- Settings -->
+    <string name="settings_algorithms">アルゴリズム</string>
+    <string name="settings_uppercase">大文字の hex</string>
+    <string name="settings_dynamic">Material You の配色</string>
+    <string name="settings_theme">テーマ</string>
+    <string name="theme_system">システム</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="settings_help">ヘルプ</string>
+    <string name="help_files_title">ファイル</string>
+    <string name="help_files_body">ファイルやフォルダ全体を選択するか、他のアプリから共有して取り込みます。各ファイルのハッシュ値は読み込みながら順に表示され、タップするとコピーできます。ダウンロードを確認するには、期待値を比較欄に貼り付けてください。</string>
+    <string name="help_verify_title">検証</string>
+    <string name="help_verify_body">ダウンロード先のフォルダを HashPony で指定してください。チェックサムファイルを見つけてすべての項目を確認し、各ファイルを OK、失敗、欠落のいずれかで示します。</string>
+    <string name="help_text_title">テキスト</string>
+    <string name="help_text_body">入力または貼り付けたテキストのハッシュ値をその場で表示します（UTF-8）。</string>
+    <string name="settings_more">NorseHorse の他のアプリ</string>
+    <string name="more_body">暗号化、鍵の管理、プライベートなメッセージのやり取りは、ファミリーの他のアプリが担当します。</string>
+    <string name="link_hub">Ponyアプリすべて</string>
+    <string name="link_source">ソースコード</string>
+    <string name="link_licenses">オープンソースライセンス</string>
+    <string name="settings_about">情報</string>
+    <string name="about_version">HashPony %1$s</string>
+    <string name="about_body">HashPony は権限を一切必要とせず、オフラインで動作します。共有や保存をしない限り、端末から何も出ていきません。</string>
+    <string name="licenses_title">オープンソースライセンス</string>
+    <string name="licenses_note">xxHash アルゴリズムは、Yann Collet 氏のリファレンス実装をクリーンルーム方式で Kotlin に移植したものです。帰属表示はプロジェクトの NOTICE ファイルにあります。</string>
+
+    <!-- 1.0 extras: kits, paste-to-verify, QR handoff, verify receipt, QS tile -->
+    <string name="kit_label">アルゴリズムセット</string>
+    <string name="kit_downloads">ダウンロード</string>
+    <string name="kit_forensics">フォレンジック</string>
+    <string name="kit_everything">すべて</string>
+    <string name="kit_custom">カスタム</string>
+    <string name="kit_all_count">全 %1$d 種類のアルゴリズム</string>
+    <string name="action_paste">貼り付け</string>
+    <string name="action_close">閉じる</string>
+    <string name="action_scan_qr">QR コードをスキャン</string>
+    <string name="scan_no_app">QR スキャナーアプリが見つかりません。Binary Eye などをインストールするか、値を貼り付けてください。</string>
+    <string name="menu_show_qr">QR コードを表示</string>
+    <string name="qr_hint">比較するには、別の端末でこれをスキャンしてください。</string>
+    <string name="files_closest">最も近いもの: %1$s（%3$d 文字中 %2$d 文字が異なります）</string>
+    <string name="files_no_length">計算したハッシュ値に %1$d 文字のものはありません。別のアルゴリズムセットを試してください。</string>
+    <string name="verify_share_receipt">検証記録を共有</string>
+    <string name="verify_save_receipt">検証記録を保存</string>
+    <string name="receipt_title">HashPony 検証記録</string>
+    <string name="receipt_sums_file">チェックサムファイル</string>
+    <string name="receipt_checked">確認日時</string>
+    <string name="receipt_result">結果</string>
+    <string name="receipt_share_title">検証記録を共有</string>
+    <string name="tile_label">ファイルのハッシュ</string>
+
+    <!-- Help for the 1.0 extras, and the Pony family list in Settings -->
+    <string name="help_kits_title">アルゴリズムセット</string>
+    <string name="help_kits_body">セットを選ぶと、計算する内容が決まります: ダウンロード（SHA-256、SHA-512、SHA-1、MD5）、フォレンジック（MD5、SHA-1、SHA-256）、すべて。設定のアルゴリズム画面でアルゴリズムを個別にオン・オフすると、その選択はカスタムとして保存されます。</string>
+    <string name="help_compare_title">値の確認</string>
+    <string name="help_compare_body">公開されている値を比較欄に貼り付けるか、スキャンします。一致するとそのハッシュ値が緑色になります。一致しない場合、HashPony は同じ長さで最も近いハッシュ値を表示し、異なる文字すべてに印を付けます。</string>
+    <string name="help_qr_title">QR コード</string>
+    <string name="help_qr_body">ハッシュ値を長押しして「QR コードを表示」を選ぶと、別の端末でスキャンできます。比較欄のスキャンボタンは、Binary Eye など手持ちのスキャナーアプリを開きます。HashPony 自体がカメラを使うことはありません。</string>
+    <string name="help_receipt_title">検証記録</string>
+    <string name="help_receipt_body">検証の実行後、すべてのファイルの結果とハッシュ値、確認日時を記載したプレーンテキストの記録を共有または保存できます。</string>
+    <string name="help_tile_title">クイック設定タイル</string>
+    <string name="help_tile_body">「ファイルのハッシュ」タイルをクイック設定に追加すると、どこからでもファイル選択画面を開けます。</string>
+    <string name="family_pgpony">メッセージとファイルのための OpenPGP 暗号化。</string>
+    <string name="family_passpony">保管庫を自分の端末に置いておけるパスワードマネージャー。</string>
+    <string name="family_vaultpony">自分で管理する、VeraCrypt 互換の暗号化ボールト。</string>
+    <string name="family_agepony">age プロトコルによる最新のファイル暗号化と署名。</string>
+    <string name="family_carrierpony">エンドツーエンドで封印された、プライベートなメッセージとファイル転送。</string>
+    <string name="family_burnpony">リンクから開く、自動で消える暗号化メモ。</string>
+    <string name="family_relaypony">スマートフォン間の暗号化ファイル転送。</string>
+    <string name="family_quorumpony">Shamir の秘密分散法: 秘密をカードに分割し、そのうち数枚から復元します。</string>
+    <string name="family_scrubpony">JPEG ファイルから個人を特定できるメタデータを除去します。</string>
+    <string name="family_tappony">NFC タグをタップして、自分のサーバーにリクエストを送信します。</string>
+
+    <!-- Plain errors, group names and the empty-sums message -->
+    <string name="group_older">旧式</string>
+    <string name="group_national">国家標準</string>
+    <string name="group_checksum">チェックサム（セキュリティ用途外）</string>
+    <string name="group_none_on">すべてオフ</string>
+    <string name="note_keccak">Ethereum 方式のパディング。SHA3-256 とは異なります。</string>
+    <string name="note_broken">暗号としては破られています。公開済みのチェックサムとの照合にのみ使ってください。</string>
+    <string name="note_sm3">中国、GB/T 32905</string>
+    <string name="note_streebog">ロシア、GOST R 34.11-2012</string>
+    <string name="algo_bits">%1$d ビット</string>
+    <string name="action_expand">展開する</string>
+    <string name="action_collapse">折りたたむ</string>
+    <string name="settings_general">一般</string>
+    <string name="settings_language">言語</string>
+    <string name="algorithms_summary">%1$s: %2$s</string>
+    <string name="algorithms_none">オンのアルゴリズムはありません</string>
+    <string name="err_read_folder">HashPony がそのフォルダを読み取れませんでした。もう一度選択してアクセスを許可してください。</string>
+    <string name="err_open_file">%1$s を開けませんでした。</string>
+    <string name="err_read_sums">そのチェックサムファイルを読み取れませんでした。</string>
+    <string name="err_verify">ファイルを読み取れなかったため、検証を中止しました。</string>
+    <string name="err_hash_file">このファイルを読み取れませんでした</string>
+    <string name="verify_empty">%1$s には HashPony が確認できる項目がありません。</string>
+</resources>

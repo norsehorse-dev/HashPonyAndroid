@@ -1,5 +1,14 @@
-HashPony berechnet Prüfsummen von Dateien und Text, prüft Downloads anhand einer Prüfsummendatei und schreibt Prüfsummendateien, die Desktop-Tools akzeptieren.
+HashPony berechnet Prüfsummen von Dateien und Text, prüft Downloads anhand einer Prüfsummendatei und schreibt Prüfsummendateien, die Desktop-Tools Byte für Byte akzeptieren.
 
-Null Berechtigungen und keine INTERNET-Berechtigung, sodass die Offline-Zusage im Manifest überprüfbar ist. Der gesamte Dateizugriff läuft über die System-Dateiauswahl und das Teilen-Menü.
+Null Berechtigungen. Nicht „minimal“, sondern null. Es gibt keine INTERNET-Berechtigung, die Offline-Zusage lässt sich also direkt im Manifest überprüfen. Der gesamte Dateizugriff läuft über die System-Dateiauswahl und das Teilen-Menü.
 
-Unterstützt die SHA-2- und SHA-3-Familien, BLAKE2/BLAKE3, Keccak-256, die regionalen SM3 und Streebog, klassische Verfahren wie MD5/SHA-1 sowie die nicht-kryptografischen CRC32, Adler-32 und xxHash.
+Funktionen:
+
+* Eine oder viele Dateien oder einen ganzen Ordner hashen, mit beliebig kombinierten Algorithmen in einem einzigen Lesedurchgang
+* Getippten oder eingefügten Text hashen
+* Mit einem erwarteten Wert vergleichen und ein klares Ergebnis erhalten, etwa um eine ISO- oder APK-Datei gegen eine veröffentlichte Prüfsumme zu prüfen
+* Einen Ordner anhand seiner Prüfsummendatei prüfen (SHA256SUMS, .sha256, .md5, .sfv, BSD-Tags, einfache Dateien mit nur einer Prüfsumme), mit OK, Fehlgeschlagen oder Fehlt für jeden Eintrag
+* Prüfsummendateien exportieren, die „sha256sum -c“, „shasum -c“ und „xxhsum -c“ auf dem Desktop akzeptieren, dazu SFV
+* Als Teilen-Ziel dienen, damit jede App Dateien direkt übergeben kann
+
+Zu den Algorithmen gehören die SHA-2- und SHA-3-Familien, BLAKE2 und BLAKE3, Keccak-256, die nationalen Standards SM3 und Streebog, ältere wie MD5 und SHA-1 zum Abgleich mit veröffentlichten Prüfsummen und weitere, dazu die nicht-kryptografischen CRC32, Adler-32 und xxHash.

@@ -1,5 +1,14 @@
-O HashPony calcula somas de arquivos e texto, verifica downloads com um arquivo de somas e grava arquivos de somas que as ferramentas de desktop aceitam.
+O HashPony calcula hashes de arquivos e textos, verifica downloads com um arquivo de somas e grava arquivos de somas que as ferramentas de desktop aceitam byte por byte.
 
-Zero permissões e sem permissão de INTERNET, então a promessa de funcionar offline pode ser conferida no manifesto. Todo acesso a arquivos passa pelo seletor do sistema e pelo menu de compartilhamento.
+Zero permissões. Não "mínimas": zero. Não há permissão de INTERNET, então a promessa de funcionar offline pode ser conferida no próprio manifesto. Todo acesso a arquivos passa pelo seletor de arquivos do sistema e pelo menu de compartilhamento.
 
-Inclui as famílias SHA-2 e SHA-3, BLAKE2/BLAKE3, Keccak-256, os regionais SM3 e Streebog, algoritmos legados como MD5/SHA-1 e os não criptográficos CRC32, Adler-32 e xxHash.
+Recursos:
+
+* Calcule o hash de um ou vários arquivos, ou de uma pasta inteira, com qualquer combinação de algoritmos em uma única leitura
+* Calcule o hash de texto digitado ou colado
+* Compare com um valor esperado e veja com clareza se confere, para checar uma ISO ou um APK com um hash publicado
+* Verifique uma pasta com o arquivo de somas dela (SHA256SUMS, .sha256, .md5, .sfv, etiquetas BSD, arquivos simples com um único hash), com OK, Falhou ou Ausente para cada entrada
+* Exporte arquivos de somas que "sha256sum -c", "shasum -c" e "xxhsum -c" aceitam no desktop, além de SFV
+* Funciona como destino de compartilhamento, para que qualquer app envie arquivos direto para ele
+
+Os algoritmos incluem as famílias SHA-2 e SHA-3, BLAKE2 e BLAKE3, Keccak-256, os padrões nacionais SM3 e Streebog, algoritmos mais antigos como MD5 e SHA-1 para conferir somas publicadas, entre outros, e os não criptográficos CRC32, Adler-32 e xxHash.
