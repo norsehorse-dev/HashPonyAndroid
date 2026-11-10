@@ -1,3 +1,1 @@
-First release.
-
-Hash files, text and whole folders; verify downloads against a sums file; export sums files desktop tools accept.
+First release. Hash files, whole folders and text, check a download against a published hash, verify a folder against its sums file, and write sums files that sha256sum -c, shasum -c and xxhsum -c accept. HashPony asks for no permissions and comes in eleven languages.
